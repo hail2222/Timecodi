@@ -1,0 +1,2 @@
+## TimeCodi
+Schedule coodinating application

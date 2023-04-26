@@ -1,0 +1,8 @@
+1. node js를 14버전으로 재설치해주세요. 아마 node 아예 삭제하고 재설치해야 하는 것 같습니다. 
+(Windows 기준) https://nodejs.org/download/release/v14.21.3/ 여기서 확장자가 .msi로 끝나는 거 다운받아서 설치하면 됩니다. 
+2. python 3 말고 2가 필요합니다. (sass 라이브러리 중에 그걸 쓰는 게 있다고 합니다)
+설치하시고, 윈도우는 환경변수 설정할때 `C:\Python27\Scripts` 이렇게 Scripts 폴더의 위치로 설정해주세요.
+3. 터미널에서 현재 위치를 frontend 폴더로 두세요.
+`npm install`하세요: 에러가 뜰 겁니다. sass 때문입니다. 
+`npm install node-sass@4` 이렇게 따로 설치합니다. @4는 버전 때문입니다. 
+4. 이제 npm start하면 예쁜 화면이 떠야 합니다. 안 되면 말씀해주세요
