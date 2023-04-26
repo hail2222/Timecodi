@@ -17,8 +17,8 @@ const Login = lazy(() => import("./user-pages/Login"));
 const Register = lazy(() => import("./user-pages/Register"));
 const BlankPage = lazy(() => import("./general-pages/BlankPage"));
 const StartPage = lazy(() => import("./StartPage"));
-const FriendsPage = lazy(() => import('./friends-page/FriendsPage'))
-const MyTimetablePage = lazy(() => import('./my-timetable/timetable'))
+const FriendsPage = lazy(() => import('./friends-page/FriendsPage'));
+const MyTimetablePage = lazy(() => import('./my-timetable/timetable'));
 
 const MyGroup = lazy(() => import("./mypages/MyGroup"));
 const Group = lazy(() => import("./groups/Group"));
@@ -43,6 +43,7 @@ class AppRoutes extends Component {
           <Route path="/startPage" component={StartPage} />
           <Route path="/friends" component={ FriendsPage } />
           <Route path="/my-timetable/timetable" component={ MyTimetablePage } />
+          
           <Redirect to="/startPage" />
         </Switch>
       </Suspense>
