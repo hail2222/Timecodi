@@ -6,3 +6,4 @@
 `npm install`하세요: 에러가 뜰 겁니다. sass 때문입니다. 
 `npm install node-sass@4` 이렇게 따로 설치합니다. @4는 버전 때문입니다. 
 4. 이제 npm start하면 예쁜 화면이 떠야 합니다. 안 되면 말씀해주세요
+5. 'npm install node-sass@4'에서 오류가 발생하면 'npm install -g npm@7.24.2' 을 해주세요.
