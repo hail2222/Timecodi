@@ -83,7 +83,7 @@ class Sidebar extends Component {
             </a>
           </li>
 
-          <li className={ this.isPathActive('/dashboard') ? 'nav-item active' : 'nav-item' }>
+          <li className={this.isPathActive('/dashboard') ? 'nav-item active' : 'nav-item'}>
             <Link className="nav-link" to="/dashboard">
               <span className="menu-title">
                 <Trans>Dashboard</Trans>
@@ -92,8 +92,8 @@ class Sidebar extends Component {
             </Link>
           </li>
 
-          <li className={ this.isPathActive('/charts') ? 'nav-item active' : 'nav-item' }>
-            <div className={ this.state.chartsMenuOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('chartsMenuOpen') } data-toggle="collapse">
+          <li className={this.isPathActive('/charts') ? 'nav-item active' : 'nav-item'}>
+            <div className={this.state.chartsMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('chartsMenuOpen')} data-toggle="collapse">
               <span className="menu-title">
                 <Trans>My Page</Trans>
               </span>
@@ -115,11 +115,25 @@ class Sidebar extends Component {
                     <Trans>My Groups</Trans>
                   </Link>
                 </li>
+                <li className="nav-item">
+                  {" "}
+                  <Link
+                    className={
+                      this.isPathActive("/my-timetable/timetable")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/my-timetable/timetable"
+                  >
+                    <Trans>My Timetable</Trans>
+                  </Link>
+                </li>
               </ul>
+
             </Collapse>
           </li>
 
-          <li className={ this.isPathActive("/groups") ? "nav-item active" : "nav-item" }>
+          <li className={this.isPathActive("/groups") ? "nav-item active" : "nav-item"}>
             <div
               className={
                 this.state.groupsMenuOpen
@@ -153,8 +167,8 @@ class Sidebar extends Component {
               </ul>
             </Collapse>
           </li>
-          
-          <li className={ this.isPathActive('/friends') ? 'nav-item active' : 'nav-item' }>
+
+          <li className={this.isPathActive('/friends') ? 'nav-item active' : 'nav-item'}>
             <Link className="nav-link" to="/friends">
               <span className="menu-title"><Trans>Friends</Trans></span>
               <i className="mdi mdi-account-star menu-icon"></i>
