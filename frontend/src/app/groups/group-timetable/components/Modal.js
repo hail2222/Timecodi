@@ -27,10 +27,10 @@ const Modal = (props) => {
         Date: {year}.{month}.{elm}
       </ViewDate>
       <StartDate>
-        <input type="datetime-local" id="event_sdue" value="start"></input>
+        startDate: {year}.{month}.{elm}
       </StartDate>
       <EndDate>
-      <input type="datetime-local" id="event_sdue" value="start"></input>
+        endDate: {year}.{month}.{elm}
 
       </EndDate>
       <Events>

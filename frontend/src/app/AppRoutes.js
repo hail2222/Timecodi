@@ -22,6 +22,7 @@ const MyTimetablePage = lazy(() => import('./my-timetable/timetable'))
 
 const MyGroup = lazy(() => import("./mypages/MyGroup"));
 const Group = lazy(() => import("./groups/Group"));
+const GroupTest = lazy(() => import("./groups/GroupTest"));
 
 class AppRoutes extends Component {
   render() {
@@ -43,6 +44,7 @@ class AppRoutes extends Component {
           <Route path="/startPage" component={StartPage} />
           <Route path="/friends" component={ FriendsPage } />
           <Route path="/my-timetable/timetable" component={ MyTimetablePage } />
+          <Route path="/groups/groupTest" component={GroupTest} />
           <Redirect to="/startPage" />
         </Switch>
       </Suspense>

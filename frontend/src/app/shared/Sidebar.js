@@ -151,7 +151,7 @@ class Sidebar extends Component {
             </div>
             <Collapse in={this.state.groupsMenuOpen}>
               <ul className="nav flex-column sub-menu">
-                <li className="nav-item">
+              <li className="nav-item">
                   {" "}
                   <Link
                     className={
@@ -162,6 +162,19 @@ class Sidebar extends Component {
                     to="/groups/group"
                   >
                     <Trans>Group 1</Trans>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  {" "}
+                  <Link
+                    className={
+                      this.isPathActive("/groups/groupTest")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/groups/groupTest"
+                  >
+                    <Trans>Group Test Page</Trans>
                   </Link>
                 </li>
               </ul>
