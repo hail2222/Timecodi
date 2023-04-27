@@ -41,7 +41,7 @@ const Head = (props) => {
 const Form = styled.section`
   display: flex;
   flex-direction: column;
-  width: 38.5vw;
+  width: 36.0vw;
   height: 7vw;
   border: 2px solid #e4e3e6;
   border-radius: 2px;
@@ -69,8 +69,8 @@ const BtnBox = styled.div`
   width: 30vw;
   position: absolute;
   right: 0vw;
-  left: 41vw;
-  top: 4.5vw;
+  left: 30vw;
+  top: 7.5vw;
 
 `;
 const Btn = styled.li`
@@ -95,7 +95,7 @@ const Days = styled.div`
 `;
 const Day = styled.li`
 
-  width: 5.5vw;
+  width: 5.0vw;
   text-align: center;
   list-style: none;
 

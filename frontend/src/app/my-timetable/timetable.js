@@ -147,7 +147,6 @@ export function Dashboard() {
     </div>
   );
 }
-const ListItem = (props) => {
 
   return (
     <li className={(props.isCompleted ? 'completed' : null)}>
@@ -163,7 +162,5 @@ const ListItem = (props) => {
     </li>
   )
 };
-
-
 
 export default Dashboard;

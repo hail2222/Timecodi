@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import Main from './group-timetable/Main';
+import { Form } from 'react-bootstrap';
 
 function Group() {
   const [show, setShow] = useState(false);
@@ -166,14 +167,15 @@ function Group() {
           <div className="card">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-7">
                   <h4 className="card-title">
                     <i className="mdi mdi-calendar-multiple-check"></i> Group
                     Calender
                   </h4>
                   <p className="card-description">Group Calender</p>
                   <Main style={{ flexDirection: 'column' }} />
-                  <button type="button" className="btn btn-primary btn-lg">
+                  <br></br><br></br>
+                  <button type="button" className="btn btn-primary btn-lg" style={{ "margin-left": '3vw' }}>
                     <i className="mdi mdi-calendar-plus"></i>
                     Edit Meeting Info
                   </button>
@@ -182,19 +184,9 @@ function Group() {
                     Create New Meeting
                   </button>
                 </div>
-                <div className="col-md-6">
-                  <h4 className="card-title">
-                    <i className="mdi mdi-timetable"></i> TimeTable
-                  </h4>
-                  <p className="card-description">TimeTable</p>
-                  <button type="button" className="btn btn-primary btn-lg">
-                    <i className="mdi mdi-calendar-plus"></i>
-                    Edit My TimeTable
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-lg">
-                    <i className="mdi mdi-calendar-plus"></i>
-                    Create New Vote
-                  </button>
+                <div className="col-md-5">
+                <h2 style={{"margin":"20vw 0 0 7vw"}}>timetable</h2>
+                
                 </div>
               </div>
             </div>

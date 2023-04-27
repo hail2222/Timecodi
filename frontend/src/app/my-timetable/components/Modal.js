@@ -31,7 +31,6 @@ const Modal = (props) => {
       </StartDate>
       <EndDate>
       <input type="datetime-local" id="event_sdue" value="start"></input>
-
       </EndDate>
       <Events>
         <Contexts

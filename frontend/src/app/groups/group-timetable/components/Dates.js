@@ -90,8 +90,8 @@ const Dates = (props) => {
 const Form = styled.li`
   position: relative;
   padding: 0 0.0vw 0 0.7vw;
-  width: 5.5vw;
-  height: 5.5vw;
+  width: 5.0vw;
+  height: 5.0vw;
   text-align: left;
   border-bottom: 1px solid #e4e3e6;
   border-left: 1px solid #e4e3e6;
@@ -100,7 +100,7 @@ const Form = styled.li`
   :nth-child(7n + 1),
   :nth-child(7n) {
     color: #969696;
-    background-color: #f5f5f5;
+ // background-color: #f5f5f5;
   }
 `;
 
