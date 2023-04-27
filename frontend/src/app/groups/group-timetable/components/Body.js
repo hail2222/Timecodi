@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Dates from './Dates';
 import axios from 'axios';
 
-const Body = (props) => {
+function Body (props) {
   const { totalDate, today, month, year } = props;
   const lastDate = totalDate.indexOf(1);
   const firstDate = totalDate.indexOf(1, 7);
@@ -39,11 +39,17 @@ const Body = (props) => {
   useEffect(() => {
     runAxios();
   }, [month]);
+
   return (
     <Form>
       {totalDate.map((elm, idx) => {
+
         return (
-          <Dates
+
+          <div>
+            {idx%7==6 ? (
+            <div className="row" style={{margin:"0 0 0 0"}}>
+              <Dates
             key={idx}
             idx={idx}
             lastDate={lastDate}
@@ -54,6 +60,29 @@ const Body = (props) => {
             year={year}
             holiday={holiday.item}
           ></Dates>
+          <ViewWeek class="btn-inverse-{Danger}"></ViewWeek>
+          
+          </div>
+          
+          ):(<Dates
+            key={idx}
+            idx={idx}
+            lastDate={lastDate}
+            firstDate={firstDate}
+            elm={elm}
+            findToday={findToday === idx && month === getMonth && findToday}
+            month={month}
+            year={year}
+            holiday={holiday.item}
+          ></Dates>)}
+          </div>
+
+          
+
+          
+
+
+
         );
       })}
     </Form>
@@ -63,8 +92,24 @@ const Body = (props) => {
 const Form = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 0 10px 20px 20px;
-  width: 39vw;
+  margin: 0 10px 0px 20px;
+  width: 38vw;
 
 `;
+
+const ViewWeek = styled.button`
+  position: relative;
+  padding: 0 0.0vw 0 0.7vw;
+  width: 0.5vw;
+  height: 5.0vw;
+  text-align: left;
+  border: 2px solid #fcd4ec;
+  border-radius: 2px;
+
+  list-style: none;
+  background:#ffe5ea;
+  cursor: pointer;
+  }
+`;
+
 export default Body;
