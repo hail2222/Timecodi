@@ -19,7 +19,7 @@ export function Register() {
     axios
       .post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/signup", data)
       .then((res) => {
-        history.push("/user-pages/login-1");
+        history.push("/user-pages/login");
         alert("signup success")
         // 회원가입 성공 메시지 출력
       })
