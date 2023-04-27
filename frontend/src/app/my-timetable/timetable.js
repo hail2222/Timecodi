@@ -65,7 +65,7 @@ export function Dashboard() {
       }
   })
     .then((res) => {
-      alert(res.data);
+      alert("event added successfully");
     })
     .catch((err) => {
       alert("add event failed");
