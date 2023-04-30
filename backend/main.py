@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, status
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, func
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, func, or_, and_
 from sqlalchemy.orm import sessionmaker, scoped_session, Session
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel, BaseSettings
@@ -129,11 +129,23 @@ async def get_event(user: str = Depends(authenticate), db: Session = Depends(get
 @app.post("/event")
 # 일정이 이미 존재하는 경우 고려하는 기능 추가 필요
 async def add_event(event: EventSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, sdatetime=event.sdatetime, edatetime=event.edatetime)
-    db.add(db_event)
-    db.commit()
-    db.refresh(db_event)
-    return {"msg": "event added successfully."}
+    db_event_exist = db.query(Event).filter(Event.uid == user,
+    or_(
+        and_((Event.sdatetime <= event.sdatetime), (event.sdatetime < Event.edatetime)),
+        and_((Event.sdatetime < event.edatetime), (event.edatetime <= Event.edatetime)),
+        and_((event.sdatetime <= Event.sdatetime), (Event.sdatetime < event.edatetime)),
+        and_((event.sdatetime < Event.edatetime), (Event.edatetime <= event.edatetime))
+        )
+    ).all()
+    
+    if db_event_exist:
+        return {"msg": "event exist."}
+    else:
+        db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, sdatetime=event.sdatetime, edatetime=event.edatetime)
+        db.add(db_event)
+        db.commit()
+        db.refresh(db_event)
+        return {"msg": "event added successfully."}
 
 @app.delete("/event")    
 async def del_event(cid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
