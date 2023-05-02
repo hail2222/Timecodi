@@ -19,3 +19,9 @@ class Event(Base):
     visibility = Column(Boolean)
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
+
+class Friend(Base):
+    __tablename__ = "friends"
+
+    uid = Column(String, primary_key=True)
+    fid = Column(String, primary_key=True)

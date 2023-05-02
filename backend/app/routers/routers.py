@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema
-from ..cruds.cruds import get_login, signin, signup, get_all_events, event_register, event_remove
+from ..cruds.cruds import get_login, signin, signup, get_all_events, event_register, event_remove, get_all_friends, friend_register
 
 router = APIRouter()
 
@@ -26,7 +26,6 @@ async def login(user: str = Depends(authenticate)):
 async def signin_user(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     get_token = await signin(user, db)
     return get_token
-
 
 @router.post("/signup")
 async def signup_user(user: UserSchema, db: Session = Depends(get_db)):
@@ -48,3 +47,13 @@ async def add_event(event: EventSchema, user: str = Depends(authenticate), db: S
 async def del_event(cid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     remove_success = await event_remove(cid, user, db)
     return remove_success
+
+@router.get("/friend")
+async def get_friend(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    friend_list = await get_all_friends(user, db)
+    return friend_list
+
+@router.post("/friend")
+async def add_friend(fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await friend_register(fid, user, db)
+    return register_success

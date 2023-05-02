@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, or_, and_
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event
+from ..models.models import User, Event, Friend
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema
 
@@ -41,7 +41,7 @@ async def get_all_events(user: str, db: Session):
     return db.query(Event).filter(Event.uid == user).all()
 
 async def event_register(event: EventSchema, user: str, db: Session):
-    db_event_exist = db.query(Event).filter(Event.uid == user,
+    event_exist = db.query(Event).filter(Event.uid == user,
     or_(
         and_((Event.sdatetime <= event.sdatetime), (event.sdatetime < Event.edatetime)),
         and_((Event.sdatetime < event.edatetime), (event.edatetime <= Event.edatetime)),
@@ -50,7 +50,7 @@ async def event_register(event: EventSchema, user: str, db: Session):
         )
     ).all()
     
-    if db_event_exist:
+    if event_exist:
         return {"msg": "event exist."}
     else:
         db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, sdatetime=event.sdatetime, edatetime=event.edatetime)
@@ -66,3 +66,23 @@ async def event_remove(cid: int, user: str, db: Session):
     db.delete(db_event)
     db.commit()
     return {"msg": "event deleted successfully."}
+
+async def get_all_friends(user: str, db: Session):
+    return db.query(Friend).filter(Friend.uid == user).all()
+
+async def friend_register(fid: str, user: str, db: Session):
+    friend_user_exist = db.query(User).filter(User.id == fid).first()
+    if not friend_user_exist:
+        raise HTTPException(status_code=404, detail="There is no user")
+    already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == fid).first()
+    if already_friend:
+        raise HTTPException(status_code=401, detail="already friend")
+    db_friendship_1 = Friend(uid=user, fid=fid)
+    db_friendship_2 = Friend(uid=fid, fid=user)
+    db.add(db_friendship_1)
+    db.add(db_friendship_2)
+    db.commit()
+    db.refresh(db_friendship_1)
+    db.refresh(db_friendship_2)
+    return {"msg": "friend added successfully."}
+    
