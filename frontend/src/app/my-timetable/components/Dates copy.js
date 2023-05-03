@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import CalendarModal from "./CalendarModal";
+import Modal from "./Modal";
 
-function Dates({
-  lastDate,
-  firstDate,
-  elm,
-  findToday,
-  month,
-  year,
-  idx,
-  holiday,
-}) {
+// 이쪽이 서연씨 원본인데 참고할 부분 많아서 카피해놨어요 나중에 지울게요
+
+const Dates = (props) => {
+  const { lastDate, firstDate, elm, findToday, month, year, idx, holiday } =
+    props;
+
+  const [userInput, setUserInput] = useState({});
   const [evtList, setEvtList] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   let dateKey = `${month}` + `${elm}`;
   const registEvent = (value) => {
     setEvtList([...evtList, value]);
+    setUserInput("");
     setOpenModal(false);
   };
 
@@ -27,14 +25,26 @@ function Dates({
           setOpenModal(true);
         }}
       >
-        <TodayCSS findToday={findToday}>{elm}</TodayCSS>
+        <DateNum
+          idx={idx}
+          lastDate={lastDate}
+          firstDate={firstDate}
+          findToday={findToday}
+        >
+          {/* <TodayCSS findToday={findToday}>{elm}</TodayCSS>일 */}
+
+          <TodayCSS findToday={findToday}>{elm}</TodayCSS>
+        </DateNum>
         {openModal && (
-          <CalendarModal
+          <Modal
             elm={elm}
             month={month}
             year={year}
+            registEvent={registEvent}
             setOpenModal={setOpenModal}
-            openModal={true}
+            openModal={openModal}
+            userInput={userInput}
+            setUserInput={setUserInput}
           />
         )}
         {holiday !== undefined && (
@@ -76,7 +86,7 @@ function Dates({
       </Form>
     </>
   );
-}
+};
 const Form = styled.li`
   position: relative;
   padding: 0 0vw 0 0.7vw;
@@ -93,6 +103,19 @@ const Form = styled.li`
     background-color: #f5f5f5;
   }
 `;
+
+const DateNum = styled.div`
+  padding: 1vw 0.9vw 0 0;
+  ${(props) => props.idx < props.lastDate && `color: #969696;`};
+
+  ${(props) =>
+    props.firstDate > 0 &&
+    props.idx > props.firstDate - 1 &&
+    `
+    color: #969696;
+  `};
+`;
+
 const TodayCSS = styled.span`
   ${(props) =>
     props.findToday &&
