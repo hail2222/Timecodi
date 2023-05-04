@@ -25,3 +25,9 @@ class Friend(Base):
 
     uid = Column(String, primary_key=True)
     fid = Column(String, primary_key=True)
+
+class Group(Base):
+    __tablename__ = "groups"
+
+    gid = Column(Integer, primary_key=True)
+    gname = Column(String)
