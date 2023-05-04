@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema
-from ..cruds.cruds import get_login, signin, signup, get_all_events, event_register, event_remove, get_all_friends, friend_register
+from ..cruds.cruds import get_login, signin, signup, get_all_events, event_register, event_remove, get_all_friends, friend_register, group_register, member_register
 
 router = APIRouter()
 
@@ -38,7 +38,6 @@ async def get_event(user: str = Depends(authenticate), db: Session = Depends(get
     return event_list
 
 @router.post("/event")
-# 일정이 이미 존재하는 경우 고려하는 기능 추가 필요
 async def add_event(event: EventSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await event_register(event, user, db)
     return register_success
@@ -56,4 +55,14 @@ async def get_friend(user: str = Depends(authenticate), db: Session = Depends(ge
 @router.post("/friend")
 async def add_friend(fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await friend_register(fid, user, db)
+    return register_success
+
+@router.post("/group")
+async def add_group(gname: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await group_register(gname, user, db)
+    return register_success
+
+@router.post("/member")
+async def add_member(gid: int, member: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await member_register(gid, member, user, db)
     return register_success
