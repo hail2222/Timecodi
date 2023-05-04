@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, or_, and_
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend
+from ..models.models import User, Event, Friend, Group, Member, GroupEvent
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema
 
@@ -85,4 +85,18 @@ async def friend_register(fid: str, user: str, db: Session):
     db.refresh(db_friendship_1)
     db.refresh(db_friendship_2)
     return {"msg": "friend added successfully."}
-    
+
+async def group_register(gname: str, user: str, db: Session):
+    db_group = Group(gname=gname)
+    db.add(db_group)
+    db.commit()
+    db.refresh(db_group)
+    register_success = await member_register(db_group.gid, user, user, db)
+    return {"msg": "group added successfully."}
+
+async def member_register(gid: int, member: str, user: str, db: Session):
+    db_member = Member(gid=gid, uid=member)
+    db.add(db_member)
+    db.commit()
+    db.refresh(db_member)
+    return {"msg": "member added successfully."}

@@ -31,3 +31,22 @@ class Group(Base):
 
     gid = Column(Integer, primary_key=True)
     gname = Column(String)
+
+class Member(Base):
+    __tablename__ = "members"
+
+    mid = Column(Integer, primary_key=True)
+    gid = Column(Integer)
+    uid = Column(String)
+
+class GroupEvent(Base):
+    __tablename__ = "group calendars"
+
+    cid = Column(Integer, primary_key=True)
+    gid = Column(Integer)
+    cname = Column(String)
+    visibility = Column(Boolean)
+    sdatetime = Column(DateTime)
+    edatetime = Column(DateTime)
+    location = Column(String)
+    memo = Column(String)
