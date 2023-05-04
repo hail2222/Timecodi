@@ -1,12 +1,68 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Modal } from "react-bootstrap";
+import { Form } from 'react-bootstrap';
+import FriendsTable from './FriendsTable';
+import ActionButtons from './ActionButtons';
 
 function FriendsPage() {
-  const [addShow, setShow] = useState(false);
-  const addClose = () => setShow(!addShow);
-
   const [addFriend, setFriend] = useState(false);
   const friendClose = () => setFriend(!addFriend);
+
+  const headers = [
+    {
+      text : 'Name',
+      value : 'name'
+    },
+    {
+      text : 'Actions',
+      value : 'actions'
+    }
+  ]
+
+  const [items, setItems] = useState([
+    { id : 1, name : 'Jacob',
+      actions : <ActionButtons /> },
+    { id : 2, name : 'John',
+      actions : <ActionButtons/> },
+    { id : 3, name : 'Messy',
+      actions : <ActionButtons/>},
+    { id : 4, name : 'Peter',
+      actions : <ActionButtons/>},
+    { id : 5, name : 'Dave',
+      actions : <ActionButtons/>}
+  ])
+
+  const [input, setInput] = useState({
+    name : ''
+  })
+
+  const {name} = input;
+  const onChange = e => {
+    const {name, value} = e.target;
+    setInput({
+      ...input,
+      [name]: value
+    })
+  }
+
+  const nextId = useRef(6);
+
+  const onCreate = () => {
+    const friend = {
+      id: nextId.current,
+      name,
+      actions : <ActionButtons/>
+    }
+    setItems([...items, friend])
+    setInput({
+      name: ''
+    })
+    nextId.current += 1;
+  }
+
+  const onRemove = id => {
+    setItems(items.filter(friend => friend.id !== id));
+  }
 
     return (
       <div>
@@ -15,34 +71,22 @@ function FriendsPage() {
             <span className="page-title-icon bg-gradient-primary text-white mr-2">
               <i className="mdi mdi-account-star"></i>
             </span> Friends </h3>
-            <button type="button" className="btn btn-inverse-primary" onClick={addClose}>
+            <button type="button" className="btn btn-inverse-primary" onClick={friendClose}>
               <span className="mr-2"><i className="mdi mdi-account-plus"></i></span>Add
             </button>
-            <Modal show={addShow} onHide={addClose} centered>
-              <Modal.Header closeButton>
-                <Modal.Title>Add or Invite your friends.</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <button type="button" className="btn btn-primary btn-fw btn-block" onClick={friendClose}>
-                  Add by ID
-                </button>
-                <button type="button" className="btn btn-primary btn-fw btn-block" onClick={addClose}>
-                  Invite by KakaoTalk
-                </button>
-              </Modal.Body>
-            </Modal>
-
             <Modal show={addFriend} onHide={friendClose} centered>
               <Modal.Header closeButton>
                 <Modal.Title>Enter your friend's ID</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div className="form-group">
-                  <input type="email" className="form-control form-control-lg" id="exampleInputEmail1" placeholder="ID" />
-                </div>
+                <Form className="pt-3">
+                  <div className="form-group">
+                    <input type="text" className="form-control form-control-lg" placeholder="ID" onChange={onChange}/>
+                  </div>
+                </Form>
               </Modal.Body>
               <Modal.Footer>
-                <button type="button" className="btn btn-primary btn-sm" onClick={friendClose}>
+                <button type="button" className="btn btn-primary btn-sm" onClick={onCreate}>
                   OK
                 </button>
                 <button type="button" className="btn btn-secondary btn-sm" onClick={friendClose}>
@@ -57,30 +101,10 @@ function FriendsPage() {
             <div className="card">
               <div className="card-body">
                 <div className="table-responsive">
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Jacob</td>
-                      </tr>
-                      <tr>
-                        <td>Messsy</td>
-                      </tr>
-                      <tr>
-                        <td>John</td>
-                      </tr>
-                      <tr>
-                        <td>Peter</td>
-                      </tr>
-                      <tr>
-                        <td>Dave</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <FriendsTable 
+                    headers={headers}
+                    items={items}
+                  />
                 </div>
               </div>
             </div>
