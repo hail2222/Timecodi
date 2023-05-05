@@ -8,6 +8,7 @@ from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, Group, Member, GroupEvent
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema
+from ..googlecal.cal_func import get_event
 
 hash_password = HashPassword()
 
@@ -102,3 +103,34 @@ async def member_register(gid: int, member: str, user: str, db: Session):
     db.commit()
     db.refresh(db_member)
     return {"msg": "member added successfully."}
+
+async def google_event_register(user: str, db: Session):
+    google=get_event()
+    # print(google)
+    for event in google:
+        sdt=event[0]
+        edt=event[1]
+        cn=event[2]
+        vsb=event[3]
+        if vsb=="default" or vsb=="public":
+            vsb=True
+        else:
+            vsb=False
+        
+        event_exist = db.query(Event).filter(Event.uid == user,
+        or_(
+            and_((Event.sdatetime <= sdt), (sdt < Event.edatetime)),
+            and_((Event.sdatetime < edt), (edt <= Event.edatetime)),
+            and_((sdt <= Event.sdatetime), (Event.sdatetime < edt)),
+            and_((sdt< Event.edatetime), (Event.edatetime <= edt))
+            )
+        ).all()
+        
+        if event_exist:
+            continue
+        else:
+            db_event = Event(uid=user, cname=cn, visibility=vsb, sdatetime=sdt, edatetime=edt)
+            db.add(db_event)
+            db.commit()
+            db.refresh(db_event)
+    return {"msg": "google calendar events added successfully."}

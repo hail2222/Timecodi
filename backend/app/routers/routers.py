@@ -7,8 +7,9 @@ import datetime
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema
-from ..cruds.cruds import get_login, signin, signup, get_all_events, event_register, event_remove, get_all_friends, friend_register, group_register, member_register
-
+from ..cruds.cruds import get_login, signin, signup, get_all_events,\
+    event_register, event_remove, get_all_friends, \
+    friend_register, group_register, member_register, google_event_register
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -66,4 +67,9 @@ async def add_group(gname: str, user: str = Depends(authenticate), db: Session =
 @router.post("/member")
 async def add_member(gid: int, member: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await member_register(gid, member, user, db)
+    return register_success
+
+@router.post("/google")
+async def add_google_events(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await google_event_register(user, db)
     return register_success
