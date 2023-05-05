@@ -1,28 +1,71 @@
-import React, {useState, useEffect} from "react";
-import {useHistory} from "react-router-dom";
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { Button, Form, Modal } from "react-bootstrap";
 
 function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
-  axios.get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+  let [myGroupList, setMyGroupList] = useState([
+    { groupName: "my Sample Group 1" },
+  ]);
+  let [invitedGroupList, setInvitedGroupList] = useState([
+    { groupName: "invited Sample Group 1" },
+  ]);
+
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+
+  let [gname, setGname] = useState("default");
+  let handleAddGroup = () => {
+    let data = {
+      gname: gname,
+    };
+    console.log(data);
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success == true) {
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+    handleClose();
+  };
+
+  axios
+    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
       headers: {
-          "Authorization": localStorage.getItem("token")
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      if (response.data.success == true) {
+        // alert("good");
       }
-  }).then((response) => {
-      if(response.data.success == true){
-          // alert("good");
-      }
-  }).catch((err) => {
+    })
+    .catch((err) => {
       setOO(true);
-  });
+    });
 
   useEffect(() => {
-      if(oo){
-          history.push("/user-pages/login-1");
-          // alert("please login");
-      }
+    if (oo) {
+      history.push("/user-pages/login-1");
+      // alert("please login");
+    }
   }, [oo]);
 
   return (
@@ -46,8 +89,49 @@ function MyGroup(props) {
         <div className="col-md-6 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
-              <h4 className="card-title">I'm in</h4>
-              <p className="card-description">My group list</p>
+              <div className="d-flex justify-content-between align-items-baseline mb-2">
+                <div>
+                  <h4 className="card-title">I'm in</h4>
+                  <p className="card-description">My group list</p>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-gradient-primary btn-icon-text"
+                  onClick={handleShow}
+                >
+                  <i className="mdi mdi-plus-circle"></i> Create New Group
+                </button>
+                <Modal show={showModal} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Create New Group</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Label>Group Name</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={gname}
+                          onChange={(e) => setGname(e.target.value)}
+                          readOnly={false}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Back
+                    </Button>
+                    <Button variant="primary" onClick={handleAddGroup}>
+                      Create
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </div>
+              <div className="d-flex justify-content-between align-items-baseline mb-2"></div>
               <div className="table-responsive">
                 <table className="table table-hover">
                   <thead>
@@ -58,78 +142,28 @@ function MyGroup(props) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>밴드동아리</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Go
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Leave
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>박근영과 누나들</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Go
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Leave
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>캡스톤 B조</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Go
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Leave
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                      <td>SKKU</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Go
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Leave
-                        </button>
-                      </td>
-                    </tr>
+                    {myGroupList.map(function (item, index) {
+                      return (
+                        <tr>
+                          <td>{index + 1}</td>
+                          <td>{item.groupName}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                            >
+                              Go
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                            >
+                              Leave
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -140,9 +174,9 @@ function MyGroup(props) {
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">Invited</h4>
-              <p className="card-description">
+              {/* <p className="card-description">
                 Click the group name and see the details.
-              </p>
+              </p> */}
               <div className="table-responsive">
                 <table className="table table-hover">
                   <thead>
@@ -153,78 +187,28 @@ function MyGroup(props) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>밴드동아리</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Decline
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Flash</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Decline
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>Premier</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Decline
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                      <td>After effects</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                        >
-                          Decline
-                        </button>
-                      </td>
-                    </tr>
+                    {invitedGroupList.map(function (item, index) {
+                      return (
+                        <tr>
+                          <td>{index + 1}</td>
+                          <td>{item.groupName}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                            >
+                              Accept
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                            >
+                              Decline
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
