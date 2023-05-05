@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+import datetime
 
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
@@ -33,8 +34,8 @@ async def signup_user(user: UserSchema, db: Session = Depends(get_db)):
     return register_success
 
 @router.get("/event")    
-async def get_event(user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    event_list = await get_all_events(user, db)
+async def get_event(date: datetime.date, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    event_list = await get_all_events(date, user, db)
     return event_list
 
 @router.post("/event")
