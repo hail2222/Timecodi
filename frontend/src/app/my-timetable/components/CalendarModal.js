@@ -1,36 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
+import axios from "axios";
 
 function CalendarModal({ elm, month, year, openModal, setOpenModal }) {
-  /* DB에서 특정 날짜 일정만 가져오는 기능 추가할것 */
-  let [scheduleList, setScheduleList] = useState([
-    {
-      cid: 0,
-      cname: "캡스톤프로젝트 수업",
-      startTime: "12:00",
-      endTime: "14:45",
-      description: "설명을 길게길게길게길게길게길게길게길게",
-    },
-    {
-      cid: 1,
-      cname: "동아리",
-      startTime: "16:00",
-      endTime: "17:00",
-      description: "동아리 모임",
-    },
-    {
-      cid: 2,
-      cname: "저녁 약속",
-      startTime: "19:00",
-      endTime: "23:00",
-      description: "친구랑",
-    },
-  ]);
+  let [date, setDate] = useState(`${year}-${month}-${elm}`);
+  let [scheduleList, setScheduleList] = useState([]);
+
+  // get schedule list from DB when the modal is opened
+  useEffect(() => {
+    console.log(date);
+    axios
+      .get(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?date=${date}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        let arr = [];
+        arr.push(res.data);
+        setScheduleList(arr[0]);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }, []);
+
   return (
     <Form className="card" style={{ width: "fit-content" }}>
       <Header>
-        {year}.{month}.{elm}
+        {date}
         <button
           type="button"
           className="btn btn-gradient-primary btn-sm"
@@ -44,19 +46,24 @@ function CalendarModal({ elm, month, year, openModal, setOpenModal }) {
       <Container className="table-responsive">
         <Table className="table">
           <thead>
-            <th>Title</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Description</th>
+            <tr>
+              <th>Title</th>
+              <th>Start</th>
+              <th>End</th>
+            </tr>
           </thead>
           <tbody>
             {scheduleList.map(function (s, i) {
               return (
                 <Schedule
-                  cname={scheduleList[i].cname}
-                  startTime={scheduleList[i].startTime}
-                  endTime={scheduleList[i].endTime}
-                  description={scheduleList[i].description}
+                  key={s.cid}
+                  cname={
+                    s.visibility === false || s.visibility === "private"
+                      ? "비공개"
+                      : s.cname
+                  }
+                  sdatetime={s.sdatetime}
+                  edatetime={s.edatetime}
                 />
               );
             })}
@@ -67,13 +74,12 @@ function CalendarModal({ elm, month, year, openModal, setOpenModal }) {
   );
 }
 
-function Schedule({ cname, startTime, endTime, description }) {
+function Schedule({ cname, sdatetime, edatetime }) {
   return (
     <tr>
       <td>{cname}</td>
-      <td>{startTime}</td>
-      <td>{endTime}</td>
-      <td>{description}</td>
+      <td>{sdatetime}</td>
+      <td>{edatetime}</td>
     </tr>
   );
 }
@@ -89,7 +95,7 @@ const Table = styled.table`
 const Form = styled.div`
   position: absolute;
   width: fit-content;
-  max-width: 25vw;
+  max-width: 40vw;
   height: fit-content;
   max-height: 20vw;
   border-radius: 10px;

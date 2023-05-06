@@ -14,19 +14,22 @@ function Dates({
 }) {
   const [evtList, setEvtList] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  let dateKey = `${month}` + `${elm}`;
-  const registEvent = (value) => {
-    setEvtList([...evtList, value]);
+  const handleOpen = () => {
+    setOpenModal(true);
+  };
+  const handleClose = () => {
     setOpenModal(false);
   };
 
+  let dateKey = `${month}` + `${elm}`;
+  //   const registEvent = (value) => {
+  //     setEvtList([...evtList, value]);
+  //     setOpenModal(false);
+  //   };
+
   return (
     <>
-      <Form
-        onDoubleClick={() => {
-          setOpenModal(true);
-        }}
-      >
+      <Form onDoubleClick={handleOpen}>
         <TodayCSS findToday={findToday}>{elm}</TodayCSS>
         {openModal && (
           <CalendarModal
@@ -59,12 +62,7 @@ function Dates({
               {evtList.map((list, index) => {
                 return (
                   list.slice(0, list.indexOf("_")) === dateKey && (
-                    <List
-                      key={index}
-                      onClick={() => {
-                        setOpenModal(true);
-                      }}
-                    >
+                    <List key={index} onClick={handleOpen}>
                       {list.slice(list.indexOf("_") + 1, list.length)}
                     </List>
                   )
