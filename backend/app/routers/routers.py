@@ -6,10 +6,12 @@ import datetime
 
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
-    friend_register, group_register, member_register, google_event_register
+    friend_register, group_register, group_update, member_register, \
+    meeting_register, meeting_remove, meeting_update, get_all_meetings, \
+    google_event_register
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -70,11 +72,39 @@ async def add_group(gname: str, user: str = Depends(authenticate), db: Session =
     register_success = await group_register(gname, user, db)
     return register_success
 
+@router.put("/group")
+async def update_group(gid: int, group: GroupSchema, db: Session = Depends(get_db)):
+    update_success = await group_update(gid, group, db)
+    return update_success
+
+
 @router.post("/member")
 async def add_member(gid: int, member: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await member_register(gid, member, user, db)
     return register_success
 
+
+@router.get("/meeting")    
+async def get_meeting(gid: int, db: Session = Depends(get_db)):
+    meeting_list = await get_all_meetings(gid, db)
+    return meeting_list
+
+@router.post("/meeting")
+async def add_meeting(gid: int, db: Session = Depends(get_db)):
+    register_success = await meeting_register(gid, db)
+    return register_success
+
+@router.put("/meeting")
+async def update_event(meetid: int, meeting: MeetingSchema, db: Session = Depends(get_db)):
+    update_success = await meeting_update(meetid, meeting, db)
+    return update_success
+
+@router.delete("/meeting")    
+async def del_meeting(meetid: int, db: Session = Depends(get_db)):
+    remove_success = await meeting_remove(meetid, db)
+    return remove_success
+
+# google calendar 연동
 @router.post("/google")
 async def add_google_events(user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await google_event_register(user, db)

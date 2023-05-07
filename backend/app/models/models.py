@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Date
 
 Base = declarative_base()
 
@@ -19,6 +19,8 @@ class Event(Base):
     visibility = Column(Boolean)
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
+    weekly = Column(Integer)
+    enddate = Column(Date)
 
 class Friend(Base):
     __tablename__ = "friends"
@@ -31,6 +33,17 @@ class Group(Base):
 
     gid = Column(Integer, primary_key=True)
     gname = Column(String)
+    
+class Meeting(Base):
+    __tablename__ = "meeting"
+
+    meetid = Column(Integer, primary_key=True)
+    gid = Column(Integer)
+    title = Column(String)
+    sdatetime = Column(DateTime)
+    edatetime = Column(DateTime)
+    location = Column(String)
+    memo = Column(String)
 
 class Member(Base):
     __tablename__ = "members"
@@ -48,5 +61,3 @@ class GroupEvent(Base):
     visibility = Column(Boolean)
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
-    location = Column(String)
-    memo = Column(String)
