@@ -12,7 +12,6 @@ class UserSchema(BaseModel):
     name: str
 
 class EventSchema(BaseModel):
-    cid: int
     cname: str
     visibility: bool
     sdatetime: datetime

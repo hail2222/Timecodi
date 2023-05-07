@@ -57,17 +57,18 @@ async def event_register(event: EventSchema, user: str, db: Session):
     
     # enddate가 null이 아니면 enddate까지 일주일마다 반복
     if event.enddate:
-        while event.edatetime.date()<=event.enddate:
-            print(event.edatetime)
-            db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, \
-                sdatetime=event.sdatetime, edatetime=event.edatetime, weekly=event.weekly, enddate=event.enddate)
-            db.add(db_event)
-            db.commit()
-            db.refresh(db_event)
-            # print(db_event.cid)
-            event.sdatetime+=timedelta(weeks=1)
-            event.edatetime+=timedelta(weeks=1)
-        return {"msg": "event added successfully."}
+        if event.edatetime.date() > event.enddate:
+            return {"msg": "invalid event."}
+        else:
+            while event.edatetime.date()<=event.enddate:
+                db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, \
+                    sdatetime=event.sdatetime, edatetime=event.edatetime, weekly=event.weekly, enddate=event.enddate)
+                db.add(db_event)
+                db.commit()
+                db.refresh(db_event)
+                event.sdatetime+=timedelta(weeks=1)
+                event.edatetime+=timedelta(weeks=1)
+            return {"msg": "event added successfully."}
    
     # enddate가 null이면 반복 x
     else:
