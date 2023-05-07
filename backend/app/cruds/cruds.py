@@ -68,6 +68,19 @@ async def event_remove(cid: int, user: str, db: Session):
     db.commit()
     return {"msg": "event deleted successfully."}
 
+async def event_update(cid: int, event: EventSchema, user: str, db: Session):
+    db_event = db.query(Event).filter(Event.uid == user, Event.cid == cid).first()
+    if not db_event:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event doesn't exist")
+    db_event.cname=event.cname
+    db_event.visibility=event.visibility
+    db_event.sdatetime=event.sdatetime
+    db_event.edatetime=event.edatetime
+    db.add(db_event)
+    db.commit()
+    return {"msg": "event updated successfully."}
+
+
 async def get_all_friends(user: str, db: Session):
     return db.query(Friend).filter(Friend.uid == user).all()
 

@@ -7,7 +7,7 @@ from ..auth.authenticate import authenticate
 from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
-    event_register, event_remove, get_all_friends, \
+    event_register, event_remove, event_update, get_all_friends, \
     friend_register, group_register, member_register, google_event_register
 router = APIRouter()
 
@@ -47,6 +47,12 @@ async def add_event(event: EventSchema, user: str = Depends(authenticate), db: S
 async def del_event(cid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     remove_success = await event_remove(cid, user, db)
     return remove_success
+
+@router.put("/event")
+async def update_event(cid: int, event: EventSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    update_success = await event_update(cid, event, user, db)
+    return update_success
+
 
 @router.get("/friend")
 async def get_friend(user: str = Depends(authenticate), db: Session = Depends(get_db)):
