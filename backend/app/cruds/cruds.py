@@ -2,6 +2,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from sqlalchemy import func, or_, and_
+import datetime
 
 from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, Group, Member, GroupEvent
@@ -37,11 +38,12 @@ async def signup(user: UserSchema, db: Session):
     db.refresh(db_user)
     return {"msg": "User created successfully."}
 
-async def get_all_events(user: str, db: Session):
-    # return db.query(Event).filter(Event.uid == user, func.date(Event.sdatetime) == "2023-04-04").all()
-    return db.query(Event).filter(Event.uid == user).all()
+async def get_all_events(date: datetime.date, user: str, db: Session):
+    return db.query(Event).filter(Event.uid == user, func.date(Event.sdatetime) <= date, date <= func.date(Event.edatetime)).all()
 
 async def event_register(event: EventSchema, user: str, db: Session):
+    if event.edatetime <= event.sdatetime:
+        return {"msg": "invalid event."}
     event_exist = db.query(Event).filter(Event.uid == user,
     or_(
         and_((Event.sdatetime <= event.sdatetime), (event.sdatetime < Event.edatetime)),
