@@ -1,6 +1,64 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CalendarModal from "./CalendarModal";
+import axios from "axios";
+
+const sampleEvtList = [
+  {
+    cid: 1010101,
+    cname: "My sample event",
+    visibility: true,
+    sdatetime: "2023-05-04T14:00:00",
+    edatetime: "2023-05-04T15:00:00",
+    weekly: 0,
+    enddate: null,
+  },
+  {
+    cid: 2020202,
+    cname: "샘플이벤트2",
+    visibility: false,
+    sdatetime: "2023-05-04T16:00:00",
+    edatetime: "2023-05-05T15:00:00",
+    weekly: 0,
+    enddate: null,
+  },
+  {
+    cid: 20202023,
+    cname: "샘플이벤트3",
+    visibility: false,
+    sdatetime: "2023-05-04T16:00:00",
+    edatetime: "2023-05-05T15:00:00",
+    weekly: 0,
+    enddate: null,
+  },
+  {
+    cid: 20202024,
+    cname: "샘플이벤트4",
+    visibility: false,
+    sdatetime: "2023-05-04T16:00:00",
+    edatetime: "2023-05-05T15:00:00",
+    weekly: 0,
+    enddate: null,
+  },
+  {
+    cid: 20202025,
+    cname: "샘플이벤트5",
+    visibility: false,
+    sdatetime: "2023-05-04T16:00:00",
+    edatetime: "2023-05-05T15:00:00",
+    weekly: 0,
+    enddate: null,
+  },
+  {
+    cid: 20202026,
+    cname: "샘플이벤트6",
+    visibility: false,
+    sdatetime: "2023-05-04T16:00:00",
+    edatetime: "2023-05-05T15:00:00",
+    weekly: 0,
+    enddate: null,
+  },
+];
 
 function Dates({
   lastDate,
@@ -12,7 +70,39 @@ function Dates({
   idx,
   holiday,
 }) {
-  const [evtList, setEvtList] = useState([]);
+  let date = `${year}-${month}-${elm}`;
+  const [evtList, setEvtList] = useState(sampleEvtList);
+  /*   {
+      cid: elm.cid,
+      cname: elm.cname,
+      visibility: elm.visibility,
+      sdatetime: elm.sdatetime,
+      edatetime: elm.edatetime,
+      weekly: elm.weekly,
+      enddate: elm.enddate,
+    } */
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?date=${date}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        let newEvtList = [];
+        newEvtList.push(res.data);
+        setEvtList(newEvtList[0]);
+        setOpenModal(false);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }, []);
+
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => {
     setOpenModal(true);
@@ -21,60 +111,37 @@ function Dates({
     setOpenModal(false);
   };
 
-  let dateKey = `${month}` + `${elm}`;
-  //   const registEvent = (value) => {
-  //     setEvtList([...evtList, value]);
-  //     setOpenModal(false);
-  //   };
-
   return (
     <>
       <Form onDoubleClick={handleOpen}>
         <TodayCSS findToday={findToday}>{elm}</TodayCSS>
+        <ScrollDiv>
+          <Lists className="list-ticked">
+            {evtList !== undefined &&
+              evtList.map((evt, index) => {
+                return (
+                  <List key={evt.cid}>
+                    {evt.visibility === false || evt.visibility === "private"
+                      ? "비공개"
+                      : evt.cname}
+                  </List>
+                );
+              })}
+          </Lists>
+        </ScrollDiv>
         {openModal && (
           <CalendarModal
-            elm={elm}
-            month={month}
-            year={year}
+            date={date}
             setOpenModal={setOpenModal}
             openModal={true}
+            evtList={evtList}
           />
-        )}
-        {holiday !== undefined && (
-          <Holidays>
-            {holiday !== undefined &&
-              holiday.map((evt, index) => {
-                let key =
-                  elm.length < 2
-                    ? `${year}` + `${month}` + `${elm}`
-                    : `${year}` + `${month}` + "0" + `${elm}`;
-                return (
-                  Number(key) === evt.locdate && (
-                    <Holiday key={index}>{evt.dateName}</Holiday>
-                  )
-                );
-              })}
-          </Holidays>
-        )}
-        {Boolean(evtList[0]) && (
-          <ScrollDiv>
-            <Lists>
-              {evtList.map((list, index) => {
-                return (
-                  list.slice(0, list.indexOf("_")) === dateKey && (
-                    <List key={index} onClick={handleOpen}>
-                      {list.slice(list.indexOf("_") + 1, list.length)}
-                    </List>
-                  )
-                );
-              })}
-            </Lists>
-          </ScrollDiv>
         )}
       </Form>
     </>
   );
 }
+
 const Form = styled.li`
   position: relative;
   padding: 0 0vw 0 0.7vw;
@@ -119,17 +186,12 @@ const ScrollDiv = styled.div`
     border-radius: 6px;
   }
 `;
-const Lists = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  padding: 0 0.5vw 0 0vw;
+const Lists = styled.ul`
+  padding: 0;
 `;
-const List = styled.span`
-  margin-top: 0.3vw;
-  padding: 0 0.4vw 0 0.4vw;
-  background-color: #ffe5ea;
-  border-radius: 2px;
+const List = styled.li`
+  margin-top: 0.2vw;
+  padding: 0;
   font-size: 0.7vw;
 `;
 const Holidays = styled.div`
