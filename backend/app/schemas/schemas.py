@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, date
+from typing import Optional
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -15,3 +16,15 @@ class EventSchema(BaseModel):
     visibility: bool
     sdatetime: datetime
     edatetime: datetime
+    weekly: int
+    enddate: Optional[date]
+    
+class GroupSchema(BaseModel):
+    gname: str
+    
+class MeetingSchema(BaseModel):
+    title: str
+    sdatetime: datetime
+    edatetime: datetime
+    location: str
+    memo: str

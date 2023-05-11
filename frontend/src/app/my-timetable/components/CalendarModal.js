@@ -3,31 +3,25 @@ import styled from "styled-components";
 import { Container } from "react-bootstrap";
 import axios from "axios";
 
-function CalendarModal({ elm, month, year, openModal, setOpenModal }) {
-  let [date, setDate] = useState(`${year}-${month}-${elm}`);
-  let [scheduleList, setScheduleList] = useState([]);
-
+function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   // get schedule list from DB when the modal is opened
-  useEffect(() => {
-    console.log(date);
-    axios
-      .get(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?date=${date}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        let arr = [];
-        arr.push(res.data);
-        setScheduleList(arr[0]);
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  }, []);
+  //   useEffect(() => {
+  //     axios
+  //       .get(`http://127.0.0.1:8000/event?date=${date}`, {
+  //         headers: {
+  //           Authorization: localStorage.getItem("token"),
+  //         },
+  //       })
+  //       .then((res) => {
+  //         let arr = [];
+  //         arr.push(res.data);
+  //         console.log(res.data);
+  //         setScheduleList(arr[0]);
+  //       })
+  //       .catch((err) => {
+  //         alert(err);
+  //       });
+  //   }, []);
 
   return (
     <Form className="card" style={{ width: "fit-content" }}>
@@ -53,17 +47,17 @@ function CalendarModal({ elm, month, year, openModal, setOpenModal }) {
             </tr>
           </thead>
           <tbody>
-            {scheduleList.map(function (s, i) {
+            {evtList.map(function (evt, i) {
               return (
                 <Schedule
-                  key={s.cid}
+                  key={evt.cid}
                   cname={
-                    s.visibility === false || s.visibility === "private"
+                    evt.visibility === false || evt.visibility === "private"
                       ? "비공개"
-                      : s.cname
+                      : evt.cname
                   }
-                  sdatetime={s.sdatetime}
-                  edatetime={s.edatetime}
+                  sdatetime={evt.sdatetime}
+                  edatetime={evt.edatetime}
                 />
               );
             })}
