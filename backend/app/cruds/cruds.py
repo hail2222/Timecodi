@@ -121,8 +121,8 @@ async def friend_register(fid: str, user: str, db: Session):
     db.refresh(db_friendship_2)
     return {"msg": "friend added successfully."}
 
-async def group_register(gname: str, user: str, db: Session):
-    db_group = Group(gname=gname)
+async def group_register(group: GroupSchema, user: str, db: Session):
+    db_group = Group(gname=group.gname)
     db.add(db_group)
     db.commit()
     db.refresh(db_group)

@@ -68,8 +68,8 @@ async def add_friend(fid: str, user: str = Depends(authenticate), db: Session = 
     return register_success
 
 @router.post("/group")
-async def add_group(gname: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await group_register(gname, user, db)
+async def add_group(group: GroupSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await group_register(group, user, db)
     return register_success
 
 @router.put("/group")
