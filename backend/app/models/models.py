@@ -56,6 +56,7 @@ class GroupEvent(Base):
     __tablename__ = "group calendars"
 
     cid = Column(Integer, primary_key=True)
+    ccid = Column(Integer)
     gid = Column(Integer)
     cname = Column(String)
     visibility = Column(Boolean)

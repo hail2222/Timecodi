@@ -5,10 +5,11 @@ from sqlalchemy import func, or_, and_
 from datetime import datetime, timedelta
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend, Group, Member, Meeting
+from ..models.models import User, Event, Friend, Group, Member, Meeting, GroupEvent
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema
 from ..googlecal.cal_func import get_event
+import random
 
 hash_password = HashPassword()
 
@@ -41,6 +42,14 @@ async def signup(user: UserSchema, db: Session):
 async def get_all_events(date: datetime.date, user: str, db: Session):
     return db.query(Event).filter(Event.uid == user, func.date(Event.sdatetime) <= date, date <= func.date(Event.edatetime)).all()
 
+def genPass():
+    alphabet="abcdefghijklmnopqrstuvwxyz0123456789"
+    weekly_word=""
+    for i in range(6):
+        index=random.randrange(len(alphabet))
+        weekly_word=weekly_word+alphabet[index]
+    return weekly_word
+
 async def event_register(event: EventSchema, user: str, db: Session):
     if event.edatetime <= event.sdatetime:
         return {"msg": "invalid event."}
@@ -57,37 +66,48 @@ async def event_register(event: EventSchema, user: str, db: Session):
     
     # enddate가 null이 아니면 enddate까지 일주일마다 반복
     if event.enddate:
+        
         if event.edatetime.date() > event.enddate:
             return {"msg": "invalid event."}
         else:
+            weekly_id=genPass()
             while event.edatetime.date()<=event.enddate:
                 db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, \
-                    sdatetime=event.sdatetime, edatetime=event.edatetime, weekly=event.weekly, enddate=event.enddate)
+                    sdatetime=event.sdatetime, edatetime=event.edatetime, weekly=weekly_id, enddate=event.enddate)
                 db.add(db_event)
                 db.commit()
                 db.refresh(db_event)
                 event.sdatetime+=timedelta(weeks=1)
                 event.edatetime+=timedelta(weeks=1)
-            return {"msg": "event added successfully."}
    
     # enddate가 null이면 반복 x
-    else:
-        event.weekly=event.cid        
+    else:       
         db_event = Event(uid=user, cname=event.cname, visibility=event.visibility, \
             sdatetime=event.sdatetime, edatetime=event.edatetime, weekly=event.weekly, enddate=event.enddate)
         db.add(db_event)
         db.commit()
         db.refresh(db_event)
-        return {"msg": "event added successfully."}
+    calendar_success = await groupcal_register(db_event.cid, user, db)
+    return {"msg": "event added successfully."}
         
 
-async def event_remove(cid: int, user: str, db: Session):
+async def event_remove(cid: int, deleteall: bool, user: str, db: Session):
     db_event = db.query(Event).filter(Event.uid == user, Event.cid == cid).first()
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event doesn't exist")
     db.delete(db_event)
     db.commit()
-    return {"msg": "event deleted successfully."}
+    weekly_id=db_event.weekly
+    
+    if deleteall==True and weekly_id!="0":        
+        while True:
+            db_event = db.query(Event).filter(Event.uid == user, Event.weekly == weekly_id).first()
+            if not db_event:
+                break
+            db.delete(db_event)
+            db.commit()
+    calendar_success = await groupcal_remove(cid, db)
+    return {"msg": "event deleted successfully."}    
 
 async def event_update(cid: int, event: EventSchema, user: str, db: Session):
     db_event = db.query(Event).filter(Event.uid == user, Event.cid == cid).first()
@@ -99,6 +119,7 @@ async def event_update(cid: int, event: EventSchema, user: str, db: Session):
     db_event.edatetime = event.edatetime
     db.add(db_event)
     db.commit()
+    calendar_success = await groupcal_update(cid, event, db)
     return {"msg": "event updated successfully."}
 
 
@@ -171,11 +192,55 @@ async def meeting_remove(meetid: int, db: Session):
     return {"msg": "meeting deleted successfully."}
 
 async def member_register(gid: int, member: str, user: str, db: Session):
+    db_user = db.query(User).filter(User.id == member).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+    already_member = db.query(Member).filter(Member.gid == gid, Member.uid == member).first()
+    if already_member:
+        raise HTTPException(status_code=401, detail="already member")
     db_member = Member(gid=gid, uid=member)
     db.add(db_member)
     db.commit()
     db.refresh(db_member)
+    calendar_success = await groupcal_register(gid, member, db)
     return {"msg": "member added successfully."}
+
+async def groupcal_register(ccid: int, member: str, db: Session):
+    db_member = db.query(Member).filter(Member.uid == member).all()
+    for x in db_member:
+        db_exist = db.query(Event).filter(Event.uid == member, Event.cid == ccid).first()
+        if not db_exist:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event doesn't exist") 
+        db_event = GroupEvent(gid=x.gid, ccid=db_exist.cid, cname=db_exist.cname, \
+            sdatetime=db_exist.sdatetime, edatetime=db_exist.edatetime, visibility=db_exist.visibility)
+        db.add(db_event)
+        db.commit()
+    return {"msg": "group calendar added successfully."}
+
+async def groupcal_update(ccid: int, event: EventSchema, db: Session):
+    db_event = db.query(GroupEvent).filter(GroupEvent.ccid == ccid).all()
+    if not db_event:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting doesn't exist")
+    for x in db_event:
+        x.cname = event.cname
+        x.sdatetime = event.sdatetime
+        x.edatetime = event.edatetime
+        x.visibility = event.visibility
+        db.add(x)
+        db.commit()
+    return {"msg": "meeting info updated successfully."}
+
+async def groupcal_remove(ccid: int, db: Session):
+    db_event = db.query(GroupEvent).filter(GroupEvent.ccid == ccid).all()
+    if not db_event:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting doesn't exist")
+    for x in db_event:
+        db.delete(x)
+        db.commit()
+    return {"msg": "meeting deleted successfully."}
+
+async def get_all_groupcal(gid: int, user: str, db: Session):
+    return db.query(GroupEvent).filter(GroupEvent.gid == gid).all()
 
 async def google_event_register(user: str, db: Session):
     google=get_event()
@@ -189,7 +254,6 @@ async def google_event_register(user: str, db: Session):
             vsb=True
         else:
             vsb=False
-        
         event_exist = db.query(Event).filter(Event.uid == user,
         or_(
             and_((Event.sdatetime <= sdt), (sdt < Event.edatetime)),
@@ -198,11 +262,10 @@ async def google_event_register(user: str, db: Session):
             and_((sdt< Event.edatetime), (Event.edatetime <= edt))
             )
         ).all()
-        
         if event_exist:
             continue
         else:
-            db_event = Event(uid=user, cname=cn, visibility=vsb, sdatetime=sdt, edatetime=edt)
+            db_event = Event(uid=user, cname=cn, visibility=vsb, sdatetime=sdt, edatetime=edt, weekly="0", enddate=None)
             db.add(db_event)
             db.commit()
             db.refresh(db_event)

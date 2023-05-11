@@ -11,7 +11,7 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, group_register, group_update, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
-    google_event_register
+    google_event_register, get_all_groupcal
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -47,8 +47,8 @@ async def add_event(event: EventSchema, user: str = Depends(authenticate), db: S
     return register_success
 
 @router.delete("/event")    
-async def del_event(cid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    remove_success = await event_remove(cid, user, db)
+async def del_event(cid: int, deleteall: bool, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await event_remove(cid, deleteall, user, db)
     return remove_success
 
 @router.put("/event")
@@ -103,6 +103,12 @@ async def update_event(meetid: int, meeting: MeetingSchema, db: Session = Depend
 async def del_meeting(meetid: int, db: Session = Depends(get_db)):
     remove_success = await meeting_remove(meetid, db)
     return remove_success
+
+@router.get("/group_cal")
+async def add_group(gid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await get_all_groupcal(gid, user, db)
+    return register_success
+
 
 # google calendar 연동
 @router.post("/google")

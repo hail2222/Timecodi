@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react'
 import { Modal } from "react-bootstrap";
 import { Form } from 'react-bootstrap';
 import FriendsTable from './FriendsTable';
-import ActionButtons from './ActionButtons';
 
 function FriendsPage() {
   const [addFriend, setFriend] = useState(false);
@@ -20,25 +19,21 @@ function FriendsPage() {
   ]
 
   const [items, setItems] = useState([
-    { id : 1, name : 'Jacob',
-      actions : <ActionButtons /> },
-    { id : 2, name : 'John',
-      actions : <ActionButtons/> },
-    { id : 3, name : 'Messy',
-      actions : <ActionButtons/>},
-    { id : 4, name : 'Peter',
-      actions : <ActionButtons/>},
-    { id : 5, name : 'Dave',
-      actions : <ActionButtons/>}
+    { id : 1, name : 'Jacob' },
+    { id : 2, name : 'John' },
+    { id : 3, name : 'Messy' },
+    { id : 4, name : 'Peter' },
+    { id : 5, name : 'Dave' }
   ])
 
   const [input, setInput] = useState({
     name : ''
   })
 
-  const {name} = input;
+  const { name } = input;
+
   const onChange = e => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setInput({
       ...input,
       [name]: value
@@ -50,9 +45,9 @@ function FriendsPage() {
   const onCreate = () => {
     const friend = {
       id: nextId.current,
-      name,
-      actions : <ActionButtons/>
+      name
     }
+
     setItems([...items, friend])
     setInput({
       name: ''
@@ -60,7 +55,7 @@ function FriendsPage() {
     nextId.current += 1;
   }
 
-  const onRemove = id => {
+  const onDel = id => {
     setItems(items.filter(friend => friend.id !== id));
   }
 
@@ -81,7 +76,7 @@ function FriendsPage() {
               <Modal.Body>
                 <Form className="pt-3">
                   <div className="form-group">
-                    <input type="text" className="form-control form-control-lg" placeholder="ID" onChange={onChange}/>
+                    <input type="text" className="form-control form-control-lg" placeholder="ID" onChange={onChange} name="name" value={name}/>
                   </div>
                 </Form>
               </Modal.Body>
@@ -102,8 +97,7 @@ function FriendsPage() {
               <div className="card-body">
                 <div className="table-responsive">
                   <FriendsTable 
-                    headers={headers}
-                    items={items}
+                    friends={items} onDel={onDel}
                   />
                 </div>
               </div>
