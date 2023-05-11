@@ -26,7 +26,7 @@ async def login(user: str = Depends(authenticate)):
     login_success = await get_login(user)
     return login_success
 
-@router.post("/signin", response_model=TokenResponse)
+@router.post("/signin")
 async def signin_user(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     get_token = await signin(user, db)
     return get_token

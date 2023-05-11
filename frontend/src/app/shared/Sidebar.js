@@ -73,7 +73,7 @@ class Sidebar extends Component {
               </div>
               <div className="nav-profile-text">
                 <span className="font-weight-bold mb-2">
-                  <Trans>Username</Trans>
+                  <Trans>{localStorage.getItem("username")}</Trans>
                 </span>
                 <span className="text-secondary text-small">
                   <Trans>Project Manager</Trans>
