@@ -13,7 +13,7 @@ class UserSchema(BaseModel):
 
 class EventSchema(BaseModel):
     cname: str
-    visibility: bool
+    visibility: str
     sdatetime: datetime
     edatetime: datetime
     weekly: int

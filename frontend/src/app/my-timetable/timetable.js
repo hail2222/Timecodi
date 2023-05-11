@@ -50,7 +50,7 @@ export function Dashboard() {
   //   }
   // }
   const [name, setName] = useState("");
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState("");
   const [sdate, setSdate] = useState("");
   const [edate, setEdate] = useState("");
 
@@ -60,6 +60,8 @@ export function Dashboard() {
       visibility: visible,
       sdatetime: sdate,
       edatetime: edate,
+      weekly: 0,
+      enddate: edate.split("T")[0]
     };
     axios
       .post(
@@ -128,9 +130,9 @@ export function Dashboard() {
                     value={visible}
                     onChange={(e) => setVisible(e.target.value)}
                   >
-                    <option value="true">default</option>
-                    <option value="true">public</option>
-                    <option value="false">private</option>
+                    <option value="default">default</option>
+                    <option value="public">public</option>
+                    <option value="private">private</option>
                   </select>{" "}
                   <br></br>
                   <label>Start Date: </label>
