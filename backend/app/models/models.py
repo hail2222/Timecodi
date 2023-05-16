@@ -16,7 +16,7 @@ class Event(Base):
     cid = Column(Integer, primary_key=True)
     uid = Column(String)
     cname = Column(String)
-    visibility = Column(Boolean)
+    visibility = Column(String)
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
     weekly = Column(Integer)
