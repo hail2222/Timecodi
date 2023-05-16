@@ -109,7 +109,7 @@ const ViewWeek = styled.button`
   list-style: none;
   background:#ffe5ea;
   cursor: pointer;
-  }
+
 `;
 
 export default Body;
