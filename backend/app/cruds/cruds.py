@@ -246,15 +246,15 @@ async def get_all_groupcal(gid: int, user: str, db: Session):
 async def google_event_register(user: str, db: Session):
     google=get_event()
     # print(google)
+    if google==None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Google event doesn't exist")
+
     for event in google:
         sdt=event[0]
         edt=event[1]
         cn=event[2]
         vsb=event[3]
-        if vsb=="default" or vsb=="public":
-            vsb=True
-        else:
-            vsb=False
+        
         event_exist = db.query(Event).filter(Event.uid == user,
         or_(
             and_((Event.sdatetime <= sdt), (sdt < Event.edatetime)),
@@ -263,6 +263,7 @@ async def google_event_register(user: str, db: Session):
             and_((sdt< Event.edatetime), (Event.edatetime <= edt))
             )
         ).all()
+        
         if event_exist:
             continue
         else:
