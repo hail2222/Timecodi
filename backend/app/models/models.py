@@ -59,6 +59,6 @@ class GroupEvent(Base):
     ccid = Column(Integer)
     gid = Column(Integer)
     cname = Column(String)
-    visibility = Column(Boolean)
+    visibility = Column(String)
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)

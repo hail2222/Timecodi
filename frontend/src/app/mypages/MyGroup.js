@@ -18,20 +18,17 @@ function MyGroup(props) {
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
-  let [gname, setGname] = useState("default");
+  const [gname, setGname] = useState("default");
   let handleAddGroup = () => {
-    let data = {
-      gname: gname,
+    const data = {
+      "gname": gname,
     };
     console.log(data);
-    axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
-        data,
+    axios.post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group", data,
         {
           headers: {
-            Authorization: localStorage.getItem("token"),
-          },
+            "Authorization": localStorage.getItem("token")
+          }
         }
       )
       .then((res) => {

@@ -26,7 +26,7 @@ async def login(user: str = Depends(authenticate)):
     login_success = await get_login(user)
     return login_success
 
-@router.post("/signin", response_model=TokenResponse)
+@router.post("/signin")
 async def signin_user(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     get_token = await signin(user, db)
     return get_token
@@ -68,8 +68,8 @@ async def add_friend(fid: str, user: str = Depends(authenticate), db: Session = 
     return register_success
 
 @router.post("/group")
-async def add_group(gname: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await group_register(gname, user, db)
+async def add_group(group: GroupSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await group_register(group, user, db)
     return register_success
 
 @router.put("/group")
