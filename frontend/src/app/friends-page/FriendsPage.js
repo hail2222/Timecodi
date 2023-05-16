@@ -1,11 +1,58 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Modal } from "react-bootstrap";
 import { Form } from 'react-bootstrap';
 import FriendsTable from './FriendsTable';
 
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+
 function FriendsPage() {
+  const [oo, setOO] = useState(false);
+  const history = useHistory();
+
+  axios
+    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      if (response.data.success == true) {
+        // alert("good");
+      }
+    })
+    .catch((err) => {
+      setOO(true);
+    });
+
+  useEffect(() => {
+    if (oo) {
+      history.push("/user-pages/login-1");
+      // alert("please login");
+    }
+  }, [oo]);
+
   const [addFriend, setFriend] = useState(false);
-  const friendClose = () => setFriend(!addFriend);
+  // const friendClose = () => setFriend(!addFriend);
+
+  const friendClose = () => {
+    setFriend(!addFriend);
+    // const data = {"fid": "haha"};
+    // axios
+    // .post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", data, {
+    //   headers: {
+    //     Authorization: localStorage.getItem("token"),
+    //   },
+    // })
+    // .then((response) => {
+    //   if (response.data.success == true) {
+    //     // alert("good");
+    //   }
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
+  };
 
   const headers = [
     {
@@ -18,13 +65,25 @@ function FriendsPage() {
     }
   ]
 
-  const [items, setItems] = useState([
-    { id : 1, name : 'Jacob' },
-    { id : 2, name : 'John' },
-    { id : 3, name : 'Messy' },
-    { id : 4, name : 'Peter' },
-    { id : 5, name : 'Dave' }
-  ])
+  const [items, setItems] = useState([]);
+
+  axios
+    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      let friendList = [];
+      response.data.forEach((rel, index)=>{
+        const friends = {id: index+1, name: rel.fid};
+        friendList.push(friends);
+      });
+      setItems(friendList);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   const [input, setInput] = useState({
     name : ''

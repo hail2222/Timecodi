@@ -28,3 +28,6 @@ class MeetingSchema(BaseModel):
     edatetime: datetime
     location: str
     memo: str
+
+class FriendSchema(BaseModel):
+    fid: str

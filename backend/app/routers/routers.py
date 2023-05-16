@@ -6,7 +6,7 @@ import datetime
 
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, group_register, group_update, member_register, \
@@ -63,8 +63,8 @@ async def get_friend(user: str = Depends(authenticate), db: Session = Depends(ge
     return friend_list
 
 @router.post("/friend")
-async def add_friend(fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await friend_register(fid, user, db)
+async def add_friend(friend: FriendSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await friend_register(friend, user, db)
     return register_success
 
 @router.post("/group")

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, Group, Member, Meeting, GroupEvent
 from ..auth.hash_password import HashPassword
-from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema
+from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
 import random
 
@@ -127,15 +127,15 @@ async def event_update(cid: int, event: EventSchema, user: str, db: Session):
 async def get_all_friends(user: str, db: Session):
     return db.query(Friend).filter(Friend.uid == user).all()
 
-async def friend_register(fid: str, user: str, db: Session):
-    friend_user_exist = db.query(User).filter(User.id == fid).first()
+async def friend_register(friend: FriendSchema, user: str, db: Session):
+    friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
     if not friend_user_exist:
         raise HTTPException(status_code=404, detail="There is no user")
-    already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == fid).first()
+    already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
     if already_friend:
         raise HTTPException(status_code=401, detail="already friend")
-    db_friendship_1 = Friend(uid=user, fid=fid)
-    db_friendship_2 = Friend(uid=fid, fid=user)
+    db_friendship_1 = Friend(uid=user, fid=friend.fid)
+    db_friendship_2 = Friend(uid=friend.fid, fid=user)
     db.add(db_friendship_1)
     db.add(db_friendship_2)
     db.commit()
