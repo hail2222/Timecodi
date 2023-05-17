@@ -33,26 +33,7 @@ function FriendsPage() {
   }, [oo]);
 
   const [addFriend, setFriend] = useState(false);
-  // const friendClose = () => setFriend(!addFriend);
-
-  const friendClose = () => {
-    setFriend(!addFriend);
-    // const data = {"fid": "haha"};
-    // axios
-    // .post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", data, {
-    //   headers: {
-    //     Authorization: localStorage.getItem("token"),
-    //   },
-    // })
-    // .then((response) => {
-    //   if (response.data.success == true) {
-    //     // alert("good");
-    //   }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
-  };
+  const friendClose = () => setFriend(!addFriend);
 
   const headers = [
     {
@@ -67,7 +48,8 @@ function FriendsPage() {
 
   const [items, setItems] = useState([]);
 
-  axios
+  const getFriends = () => {
+    axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", {
       headers: {
         Authorization: localStorage.getItem("token"),
@@ -84,38 +66,86 @@ function FriendsPage() {
     .catch((err) => {
       console.log(err);
     });
-
-  const [input, setInput] = useState({
-    name : ''
-  })
-
-  const { name } = input;
-
-  const onChange = e => {
-    const { name, value } = e.target;
-    setInput({
-      ...input,
-      [name]: value
-    })
   }
 
-  const nextId = useRef(6);
+  useEffect(() => {
+    getFriends();
+  }, []);
+
+  const [name, setName] = useState("");
+
+  const onChange = (e) => {
+    setName(e.target.value);
+  }
+
+  // const [input, setInput] = useState({
+  //   name : ''
+  // })
+
+  // const { name } = input;
+
+  // const onChange = e => {
+  //   const { name, value } = e.target;
+  //   setInput({
+  //     ...input,
+  //     [name]: value
+  //   })
+  // }
+
+  // const nextId = useRef(6);
+
+  // const onCreate = () => {
+  //   const friend = {
+  //     id: nextId.current,
+  //     name
+  //   }
+
+  //   setItems([...items, friend])
+  //   setInput({
+  //     name: ''
+  //   })
+  //   nextId.current += 1;
+  // }
 
   const onCreate = () => {
-    const friend = {
-      id: nextId.current,
-      name
-    }
-
-    setItems([...items, friend])
-    setInput({
-      name: ''
+    const data = {"fid": name};
+    axios
+    .post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", data, {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
     })
-    nextId.current += 1;
+    .then((response) => {
+      console.log(response.data.msg);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    getFriends();
   }
 
-  const onDel = id => {
-    setItems(items.filter(friend => friend.id !== id));
+  // const onDel = id => {
+  //   setItems(items.filter(friend => friend.id !== id));
+  // }
+
+  const onDel = (id) => {
+    const data = {"fid": items.filter(friend => friend.id == id)[0].name};
+    axios
+    .delete("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", {
+      data: data,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      console.log(response.data.msg);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    getFriends();
   }
 
     return (

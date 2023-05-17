@@ -143,6 +143,16 @@ async def friend_register(friend: FriendSchema, user: str, db: Session):
     db.refresh(db_friendship_2)
     return {"msg": "friend added successfully."}
 
+async def friend_remove(friend: FriendSchema, user: str, db: Session):
+    db_friendship1 = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
+    if not db_friendship1:
+        raise HTTPException(status_code=404, detail="There is no friend")
+    db_friendship2 = db.query(Friend).filter(Friend.uid == friend.fid, Friend.fid == user).first()
+    db.delete(db_friendship1)
+    db.delete(db_friendship2)
+    db.commit()
+    return {"msg": "friend deleted successfully."}
+
 async def group_register(group: GroupSchema, user: str, db: Session):
     db_group = Group(gname=group.gname)
     db.add(db_group)

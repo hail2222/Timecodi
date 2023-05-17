@@ -9,7 +9,7 @@ from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
-    friend_register, group_register, group_update, member_register, \
+    friend_register, friend_remove, group_register, group_update, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal
 router = APIRouter()
@@ -66,6 +66,11 @@ async def get_friend(user: str = Depends(authenticate), db: Session = Depends(ge
 async def add_friend(friend: FriendSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await friend_register(friend, user, db)
     return register_success
+
+@router.delete("/friend")
+async def del_friend(friend: FriendSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await friend_remove(friend, user, db)
+    return remove_success
 
 @router.post("/group")
 async def add_group(group: GroupSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
