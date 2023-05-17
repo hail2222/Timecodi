@@ -77,11 +77,6 @@ function Body (props) {
           ></Dates>)}
           </div>
 
-          
-
-          
-
-
 
         );
       })}
@@ -109,6 +104,7 @@ const ViewWeek = styled.button`
   list-style: none;
   background:#ffe5ea;
   cursor: pointer;
+  z-index: 999;
 
 `;
 

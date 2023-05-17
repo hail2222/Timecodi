@@ -523,7 +523,6 @@ function Group() {
                 </button>
               </Modal.Footer>
             </Modal>
-
             <AdminBox/>
 
 
