@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Dates from './Dates';
 import axios from 'axios';
 
-function Body (props) {
+function Body(props) {
   const { totalDate, today, month, year } = props;
   const lastDate = totalDate.indexOf(1);
   const firstDate = totalDate.indexOf(1, 7);
@@ -25,6 +25,11 @@ function Body (props) {
       console.log(e);
     }
   };
+  let viewButtons5 = [1, 2, 3, 4, 5];
+  let viewButtons6 = [1, 2, 3, 4, 5,6];
+
+  const [viewWeekActive, setViewWeekActive] = useState("unactive");
+
 
   const requestOptions = {
     method: 'GET',
@@ -41,59 +46,93 @@ function Body (props) {
   }, [month]);
 
   return (
-    <Form>
-      {totalDate.map((elm, idx) => {
+    <>
+      <Form>
+        {totalDate.map((elm, idx) => {
 
-        return (
+          return (
 
-          <div>
-            {idx%7==6 ? (
-            <div className="row" style={{margin:"0 0 0 0"}}>
-              <Dates
-            key={idx}
-            idx={idx}
-            lastDate={lastDate}
-            firstDate={firstDate}
-            elm={elm}
-            findToday={findToday === idx && month === getMonth && findToday}
-            month={month}
-            year={year}
-            holiday={holiday.item}
-          ></Dates>
-          <ViewWeek class="btn-inverse-{Danger}"></ViewWeek>
-          
-          </div>
-          
-          ):(<Dates
-            key={idx}
-            idx={idx}
-            lastDate={lastDate}
-            firstDate={firstDate}
-            elm={elm}
-            findToday={findToday === idx && month === getMonth && findToday}
-            month={month}
-            year={year}
-            holiday={holiday.item}
-          ></Dates>)}
-          </div>
+            <div>
+              {idx % 7 == 6 ? (
+                <div className="row" style={{ margin: "0 0 0 0" }}>
+                  <Dates
+                    key={idx}
+                    idx={idx}
+                    lastDate={lastDate}
+                    firstDate={firstDate}
+                    elm={elm}
+                    findToday={findToday === idx && month === getMonth && findToday}
+                    month={month}
+                    year={year}
+                    holiday={holiday.item}
+                  ></Dates>
 
-          
+                </div>
 
-          
+              ) : (<Dates
+                key={idx}
+                idx={idx}
+                lastDate={lastDate}
+                firstDate={firstDate}
+                elm={elm}
+                findToday={findToday === idx && month === getMonth && findToday}
+                month={month}
+                year={year}
+                holiday={holiday.item}
+              ></Dates>)}
+            </div>
 
 
 
-        );
-      })}
-    </Form>
+          );
+        })}
+
+      </Form>
+      <Form2>
+        <>
+          {
+            Math.ceil(totalDate.length/7)===5
+            ? viewButtons5.map((item, idx) => {
+              return (
+                <>
+                  <ViewWeek value={idx} className={idx == viewWeekActive ? "active" : "unactive"} onClick={e => setViewWeekActive(e.target.value)}></ViewWeek>
+                </>
+              );
+            })
+            :(
+              viewButtons6.map((item, idx) => {
+                return (
+                  <>
+                    <ViewWeek value={idx} className={idx == viewWeekActive ? "active" : "unactive"} onClick={e => setViewWeekActive(e.target.value)}></ViewWeek>
+                  </>
+                );
+              })
+
+            )
+          }
+
+
+        </>
+      </Form2>
+    </>
   );
 };
 
 const Form = styled.div`
+  position:absolute;
+
   display: flex;
   flex-flow: row wrap;
   margin: 0 10px 0px 20px;
   width: 38vw;
+
+`;
+const Form2 = styled.div`
+  position:absolute;
+  display: flex;
+  flex-flow: row wrap;;
+  width: 0.9vw;
+  margin-left: 36.4vw;
 
 `;
 
@@ -105,11 +144,20 @@ const ViewWeek = styled.button`
   text-align: left;
   border: 2px solid #fcd4ec;
   border-radius: 2px;
-
   list-style: none;
   background:#ffe5ea;
+  z-index: 800;
   cursor: pointer;
 
+  &:hover{
+    background: #fea3b6;
+    border: 2px solid #fea3b6;
+  }
+  &.active{
+    background: #fea3b6;
+    border: 2px solid #fea3b6;
+
+  }
 `;
 
 export default Body;
