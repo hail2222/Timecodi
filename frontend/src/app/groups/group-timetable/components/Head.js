@@ -18,9 +18,6 @@ const Head = (props) => {
           <BtnBox>
             <div className="row">
 
-            </div>
-            <div className="row">
-
               <Btn onClick={() => setMonth(month - 1)} >&lt;</Btn>
               <Btn width="4vw" onClick={() => goToday()}>TODAY</Btn>
               <Btn onClick={() => setMonth(month + 1)}>&gt;</Btn>
@@ -45,7 +42,7 @@ const Form = styled.section`
   height: 7vw;
   border: 2px solid #e4e3e6;
   border-radius: 2px;
-  margin: 20px 20px 0 20px;
+  margin: 10px 20px 0 20px;
 `;
 const Nav = styled.section`
   margin:.7vw;
@@ -65,12 +62,12 @@ const Year = styled.div`
   top: 1.5vw;
 `;
 const BtnBox = styled.div`
-  margin: 0 1vw 0 0;
-  width: 30vw;
-  position: absolute;
+  margin: 1.5vw 1vw 0 0;
+  width: 10vw;
+  position: relative;
   right: 0vw;
-  left: 30vw;
-  top: 7.5vw;
+  left: 20vw;
+
 
 `;
 const Btn = styled.li`
@@ -91,7 +88,7 @@ const Btn = styled.li`
 
 const Days = styled.div`
   display: flex;
-  margin: 1.5vw 0 0.3vw 0vw;
+  margin: 1.0vw 0 0.3vw 0vw;
 `;
 const Day = styled.li`
 

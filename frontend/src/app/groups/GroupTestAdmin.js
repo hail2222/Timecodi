@@ -5,6 +5,7 @@ import Main from './group-timetable/Main';
 import { Form } from 'react-bootstrap';
 import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
+import AdminBox from "./group-timetable/components/AdminBox";
 import {Bar, Doughnut} from 'react-chartjs-2';
 
 
@@ -252,7 +253,7 @@ function Group() {
               }}
             >
               <h4 className="card-title">
-                <i className="mdi mdi-poll"></i> Vote
+                <i className="mdi mdi-clipboard-text"></i> Vote
               </h4>
               <p className="card-description">
                 Check the box to vote and submit.
@@ -322,6 +323,7 @@ function Group() {
               
             >
               <h4 className="card-title">
+              <i className="mdi mdi-poll"></i> 
               Vote Result
               </h4>
               <p className="card-description">
@@ -401,9 +403,10 @@ function Group() {
                   <h4 className="card-title">
                     <i className="mdi mdi-calendar-multiple-check"></i> Group Calender</h4>
                   <p className="card-description">Click the <span style={{"color":'#fe7c96'}}>pink box</span> to see available time of the week.</p>
+                  <div style={{  "margin-top": '3vw'}}>
                   <Main style={{ flexDirection: 'column' }} />
                   <br></br><br></br>
-                  
+                  </div>
                 </div>
                 <div className="col-md-6">
                 <p className="card-description" style={{"margin-left":'3.5vw',"text-align":'center'}}>Your group members are available at..</p>
@@ -520,6 +523,9 @@ function Group() {
                 </button>
               </Modal.Footer>
             </Modal>
+
+            <AdminBox/>
+
 
     </div>
   );
