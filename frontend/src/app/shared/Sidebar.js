@@ -177,6 +177,19 @@ class Sidebar extends Component {
                     <Trans>Group Test Page</Trans>
                   </Link>
                 </li>
+                <li className="nav-item">
+                  {" "}
+                  <Link
+                    className={
+                      this.isPathActive("/groups/groupTestAdmin")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/groups/groupTestAdmin"
+                  >
+                    <Trans>Group Test Page Admin</Trans>
+                  </Link>
+                </li>
               </ul>
             </Collapse>
           </li>
