@@ -244,6 +244,101 @@ function Group() {
 
       </div>
       <div className="row">
+        <div className="col-12 grid-margin">
+          <div className="card">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-6">
+                  <h4 className="card-title">
+                    <i className="mdi mdi-calendar-multiple-check"></i> Group Calender</h4>
+                  <p className="card-description">Click the <span style={{"color":'#fe7c96'}}>pink box</span> to see available time of the week.</p>
+                  <div style={{  "margin-top": '3vw'}}>
+                  <Main style={{ flexDirection: 'column' }} />
+                  <br></br><br></br>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                <p className="card-description" style={{"margin-left":'3.5vw',"text-align":'center'}}>Your group members are available at..</p>
+
+                {/* <h2 style={{"margin":"20vw 0 0 7vw"}}>timetable</h2> */}
+
+                <div id="visit-sale-chart-legend" className="rounded-legend legend-horizontal" style={{"margin-left":'13vw'}}>
+                    <ul>
+                      <li>
+                        <span className="legend-dots bg-primary">
+                        </span>1st
+                      </li>
+                      <li>
+                        <span className="legend-dots" style={{ 'background-color': '#cc9fff' }}>
+
+                        </span>2nd
+                      </li>
+                      <li>
+                      <span className="legend-dots" style={{ 'background-color': '#e0c5ff' }}>
+                        </span>3rd
+                      </li>
+                    </ul>
+                  </div>
+
+
+                <TimeTable></TimeTable>
+                <div className="row" style={{"margin":'1.5vw 0 0 7vw'}}>
+                <p className="card-description" style={{"margin":'0.2vw 1vw 0 0',"text-align":'center'}}>How long will it take?</p>
+                <select className="form-control form-control-sm" id="meeting-hour" style={{"position":'relative',"width":'4vw',"height":'2vw'}}>
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                  </select> 
+                  <p className="card-description" style={{"margin":'0.2vw 0.5vw',"text-align":'center'}}>hours &nbsp;</p>
+                  <select className="form-control form-control-sm" id="meeting-min" style={{"position":'relative',"width":'4vw',"height":'2vw'}}>
+                    <option>00</option>
+                    <option>30</option>
+                  </select>
+                  <p className="card-description" style={{"margin":'0.2vw 0.5vw',"text-align":'center'}}>minutes</p>
+
+                  </div>
+                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0 0 15vw' }}>
+                    <i className="mdi mdi-calendar-plus"></i>
+                    <span style={{"font-size":'15px', "font-weight":'500'}}>&nbsp; Generate Vote</span>
+                  </button>
+                
+                </div>
+                {/* <button type="button" className="btn btn-primary btn-lg" style={{ "margin-left": '3vw' }}>
+                    <i className="mdi mdi-calendar-plus"></i>
+                    Edit Meeting Info
+                  </button>
+                  <button type="button" className="btn btn-secondary btn-lg">
+                    <i className="mdi mdi-calendar-plus"></i>
+                    Create New Meeting
+                  </button> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
       <div className="col-6 grid-margin stretch-card">
           <div className="card">
             <div
@@ -394,101 +489,7 @@ function Group() {
 
 
       </div>
-      <div className="row">
-        <div className="col-12 grid-margin">
-          <div className="card">
-            <div className="card-body">
-              <div className="row">
-                <div className="col-md-6">
-                  <h4 className="card-title">
-                    <i className="mdi mdi-calendar-multiple-check"></i> Group Calender</h4>
-                  <p className="card-description">Click the <span style={{"color":'#fe7c96'}}>pink box</span> to see available time of the week.</p>
-                  <div style={{  "margin-top": '3vw'}}>
-                  <Main style={{ flexDirection: 'column' }} />
-                  <br></br><br></br>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                <p className="card-description" style={{"margin-left":'3.5vw',"text-align":'center'}}>Your group members are available at..</p>
 
-                {/* <h2 style={{"margin":"20vw 0 0 7vw"}}>timetable</h2> */}
-
-                <div id="visit-sale-chart-legend" className="rounded-legend legend-horizontal" style={{"margin-left":'13vw'}}>
-                    <ul>
-                      <li>
-                        <span className="legend-dots bg-primary">
-                        </span>1st
-                      </li>
-                      <li>
-                        <span className="legend-dots" style={{ 'background-color': '#cc9fff' }}>
-
-                        </span>2nd
-                      </li>
-                      <li>
-                      <span className="legend-dots" style={{ 'background-color': '#e0c5ff' }}>
-                        </span>3rd
-                      </li>
-                    </ul>
-                  </div>
-
-
-                <TimeTable></TimeTable>
-                <div className="row" style={{"margin":'1.5vw 0 0 7vw'}}>
-                <p className="card-description" style={{"margin":'0.2vw 1vw 0 0',"text-align":'center'}}>How long will it take?</p>
-                <select className="form-control form-control-sm" id="meeting-hour" style={{"position":'relative',"width":'4vw',"height":'2vw'}}>
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
-                    <option>14</option>
-                    <option>15</option>
-                    <option>16</option>
-                    <option>17</option>
-                    <option>18</option>
-                    <option>19</option>
-                    <option>20</option>
-                    <option>21</option>
-                    <option>22</option>
-                    <option>23</option>
-                    <option>24</option>
-                  </select> 
-                  <p className="card-description" style={{"margin":'0.2vw 0.5vw',"text-align":'center'}}>hours &nbsp;</p>
-                  <select className="form-control form-control-sm" id="meeting-min" style={{"position":'relative',"width":'4vw',"height":'2vw'}}>
-                    <option>00</option>
-                    <option>30</option>
-                  </select>
-                  <p className="card-description" style={{"margin":'0.2vw 0.5vw',"text-align":'center'}}>minutes</p>
-
-                  </div>
-                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0 0 15vw' }}>
-                    <i className="mdi mdi-calendar-plus"></i>
-                    <span style={{"font-size":'15px', "font-weight":'500'}}>&nbsp; Generate Vote</span>
-                  </button>
-                
-                </div>
-                {/* <button type="button" className="btn btn-primary btn-lg" style={{ "margin-left": '3vw' }}>
-                    <i className="mdi mdi-calendar-plus"></i>
-                    Edit Meeting Info
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-lg">
-                    <i className="mdi mdi-calendar-plus"></i>
-                    Create New Meeting
-                  </button> */}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <Modal show={addShow} onHide={addClose} centered>
               <Modal.Header closeButton>
                 <Modal.Title > <span style={{"font-weight":'400',"margin":'0 5vw'}}>Are you the Admin of this Group?</span></Modal.Title>
