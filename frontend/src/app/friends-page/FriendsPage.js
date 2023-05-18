@@ -117,12 +117,11 @@ function FriendsPage() {
     })
     .then((response) => {
       console.log(response.data.msg);
+      getFriends();
     })
     .catch((err) => {
       console.log(err);
     });
-
-    getFriends();
   }
 
   // const onDel = id => {
@@ -140,12 +139,11 @@ function FriendsPage() {
     })
     .then((response) => {
       console.log(response.data.msg);
+      getFriends();
     })
     .catch((err) => {
       console.log(err);
     });
-
-    getFriends();
   }
 
     return (
