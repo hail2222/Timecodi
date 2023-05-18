@@ -11,7 +11,7 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, group_register, group_update, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
-    google_event_register, get_all_groupcal
+    google_event_register, get_all_groupcal, get_my_group
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -125,3 +125,9 @@ async def add_group(gid: str, user: str = Depends(authenticate), db: Session = D
 async def add_google_events(user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await google_event_register(user, db)
     return register_success
+
+# get my group list
+@router.get("/mygrouplist")
+async def get_mygrouplist(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    group_list = await get_my_group(user, db)
+    return group_list
