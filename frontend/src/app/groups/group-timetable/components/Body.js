@@ -123,30 +123,30 @@ const Form = styled.div`
 
   display: flex;
   flex-flow: row wrap;
-  margin: 0 10px 0px 20px;
-  width: 38vw;
+  margin: 0 0px 0px 7px;
+  width: 547px;
 
 `;
 const Form2 = styled.div`
   position:absolute;
   display: flex;
   flex-flow: row wrap;;
-  width: 0.9vw;
-  margin-left: 36.4vw;
+  width: 13px;
+  margin-left: 505px;
 
 `;
 
 const ViewWeek = styled.button`
   position: relative;
-  padding: 0 0.0vw 0 0.7vw;
-  width: 0.5vw;
-  height: 5.0vw;
+  padding: 0 0px 0 10px;
+  width: 7px;
+  height: 72px;
   text-align: left;
   border: 2px solid #fcd4ec;
   border-radius: 2px;
   list-style: none;
   background:#ffe5ea;
-  z-index: 800;
+  z-index: 999;
   cursor: pointer;
 
   &:hover{

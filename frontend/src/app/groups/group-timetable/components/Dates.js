@@ -89,9 +89,9 @@ const Dates = (props) => {
 };
 const Form = styled.li`
   position: relative;
-  padding: 0 0.0vw 0 0.7vw;
-  width: 5.0vw;
-  height: 5.0vw;
+  padding: 0 0px 0 10px;
+  width: 72px;
+  height: 72px;
   text-align: left;
   border-bottom: 1px solid #e4e3e6;
   border-left: 1px solid #e4e3e6;
@@ -105,8 +105,8 @@ const Form = styled.li`
 `;
 
 const DateNum = styled.div`
-  padding: 1vw 0.9vw 0 0;
-  font-size: 1.1vw;
+  padding: 14px 13px 0 0;
+  font-size: 16px;
 
   ${(props) => props.idx < props.lastDate && `color: #969696;`};
 
@@ -127,9 +127,9 @@ const TodayCSS = styled.span`
     props.idx >=props.lastDate &&
     props.idx <= props.firstDate&&
     ` position: relative;
-    padding: .5vw;
+    padding: 7px;
     // border-radius: 50%;
-    font-size: 0.8vw;
+    font-size: 12px;
     font-weight: 700;
     color: #fe7c96;
     // background-color:#fe7c96;
@@ -155,14 +155,14 @@ const Lists = styled.div`
   display: flex;
   flex-direction: column;
   text-align: left;
-  padding : 0 0.5vw 0 0.0vw;
+  padding : 0 7px 0 0px;
 `;
 const List = styled.span`
-  margin-top: 0.3vw;
-  padding : 0 0.4vw 0 0.4vw;
+  margin-top: 4px;
+  padding : 0 6px 0 6px;
   background-color: #ffe5ea;
   border-radius: 2px;
-  font-size: 0.7vw;
+  font-size: 10px;
 `;
 const Holidays = styled.div`
   display: flex;
@@ -170,8 +170,8 @@ const Holidays = styled.div`
   text-align: left;
 `;
 const Holiday = styled.div`
-  margin-top: 0.3vw;
-  padding-left: 0.5vw;
+  margin-top: 4px;
+  padding-left: 7px;
   color: red;
   font-weight: 700;
   background-color: skyblue;

@@ -63,8 +63,8 @@ const Form=styled.div`
 `;
 const Slot = styled.div`
   position: relative;
-  width: 4vw;
-  height: 0.8vw;
+  width: 58px;
+  height: 12px;
   border: 1px solid #bb7aff;
   border-bottom: 1px dotted #bb7aff;
   text-align: left;
@@ -83,8 +83,8 @@ const Slot = styled.div`
 `;
 const Slot2 = styled.div`
   position: relative;
-  width: 4vw;
-  height: 0.8vw;
+  width: 58px;
+  height: 12px;
   border: 1px solid #bb7aff;
   border-top: none;
   text-align: left;
@@ -103,8 +103,8 @@ const Slot2 = styled.div`
 `;
 const EmptySlot = styled.div`
   position: relative;
-  width: 3vw;
-  height: 1.0vw;
+  width: 43px;
+  height: 14px;
   z-index: 999;
 `;
 

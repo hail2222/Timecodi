@@ -47,16 +47,16 @@ const Form=styled.div`
 `;
 const Slot = styled.div`
   position: relative;
-  width: 3vw;
-  height: 0.4vw;
+  width: 43px;
+  height: 6px;
   z-index: 999;
 `;
 const Header = styled.div`
   position: relative;
-  width: 6vw;
-  height: 1.6vw;
-  font-size: 0.9vw;
-  padding-right:0.3vw;
+  width: 86px;
+  height: 23px;
+  font-size: 13px;
+  padding-right:4px;
   text-align: right;
   color: gray;
   z-index: 999;

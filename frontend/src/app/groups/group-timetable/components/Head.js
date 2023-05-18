@@ -38,42 +38,42 @@ const Head = (props) => {
 const Form = styled.section`
   display: flex;
   flex-direction: column;
-  width: 36.0vw;
-  height: 7vw;
+  width: 511px;
+  height: 101px;
   border: 2px solid #e4e3e6;
   border-radius: 2px;
-  margin: 10px 20px 0 20px;
+  margin: 10px 0px 0 7px;
 `;
 const Nav = styled.section`
-  margin:.7vw;
+  margin:10px;
 `;
 const Month = styled.div`
   font-size: 2rem;
   font-weight: 700;
   position: relative;
-  left: 4vw;
-  top: 0.8vw;
+  left: 58px;
+  top: 12px;
 `;
 const Year = styled.div`
   font-size: 1.0rem;
   font-weight: 200;
   position: relative;
-  left: 5vw;
-  top: 1.5vw;
+  left: 72px;
+  top: 22px;
 `;
 const BtnBox = styled.div`
-  margin: 1.5vw 1vw 0 0;
-  width: 10vw;
+  margin: 22px 14px 0 0;
+  width: 144px;
   position: relative;
-  right: 0vw;
-  left: 20vw;
+  right: 0px;
+  left: 288px;
 
 
 `;
 const Btn = styled.li`
-  padding: 0.2vw 0.2vw 0.2vw;
+  padding: 3px 3px 3px;
   width: ${(props) => {
-    return props.width || '1.5vw';
+    return props.width || '22px';
   }};
   border: 0.5px solid #e4e3e6;
   border-radius: 5px;
@@ -81,20 +81,22 @@ const Btn = styled.li`
   font-size: 0.8rem;
   cursor: pointer;
   position: relative;
-  right: 0vw;
+  right: 0px;
   list-style: none;
 
 `;
 
 const Days = styled.div`
   display: flex;
-  margin: 1.0vw 0 0.3vw 0vw;
+  margin: 0.8em 0 4px 0px;
+  position: relative;
 `;
 const Day = styled.li`
 
-  width: 5.0vw;
+  width: 72px;
   text-align: center;
   list-style: none;
+  position: relative;
 
   :nth-child(7n + 1),
   :nth-child(7n) {
