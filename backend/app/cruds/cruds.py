@@ -128,7 +128,11 @@ async def event_update(cid: int, event: EventSchema, user: str, db: Session):
 
 
 async def get_all_friends(user: str, db: Session):
-    return db.query(Friend).filter(Friend.uid == user).all()
+    select = db.query(User).join(Friend, Friend.fid == User.id).filter(Friend.uid == user).all()
+    friendList = []
+    for i in select:
+        friendList.append({"id": i.id, "name": i.name})
+    return friendList
 
 async def friend_register(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()

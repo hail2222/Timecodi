@@ -58,7 +58,7 @@ function FriendsPage() {
     .then((response) => {
       let friendList = [];
       response.data.forEach((rel, index)=>{
-        const friends = {id: index+1, name: rel.fid};
+        const friends = {id: index+1, name: rel.name, userId: rel.id};
         friendList.push(friends);
       });
       setItems(friendList);
@@ -120,7 +120,7 @@ function FriendsPage() {
       getFriends();
     })
     .catch((err) => {
-      console.log(err);
+      alert(err.response.data.detail);
     });
   }
 
@@ -129,7 +129,7 @@ function FriendsPage() {
   // }
 
   const onDel = (id) => {
-    const data = {"fid": items.filter(friend => friend.id == id)[0].name};
+    const data = {"fid": items.filter(friend => friend.id == id)[0].userId};
     axios
     .delete("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend", {
       data: data,
@@ -142,7 +142,7 @@ function FriendsPage() {
       getFriends();
     })
     .catch((err) => {
-      console.log(err);
+      alert(err.response.data.detail);
     });
   }
 
