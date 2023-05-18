@@ -157,7 +157,7 @@ async def friend_remove(friend: FriendSchema, user: str, db: Session):
     return {"msg": "friend deleted successfully."}
 
 async def group_register(group: GroupSchema, user: str, db: Session):
-    db_group = Group(gname=group.gname)
+    db_group = Group(gname=group.gname, admin=user)
     db.add(db_group)
     db.commit()
     db.refresh(db_group)
@@ -172,6 +172,7 @@ async def group_update(gid: int, group: GroupSchema, db: Session):
     db_group.gname = group.gname
     db.add(db_group)
     db.commit()
+    db.refresh(db_group)
     return {"msg": "group name updated successfully."}
 
 async def get_all_meetings(gid: int, db: Session):

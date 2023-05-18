@@ -33,6 +33,7 @@ class Group(Base):
 
     gid = Column(Integer, primary_key=True)
     gname = Column(String)
+    admin = Column(String)
     
 class Meeting(Base):
     __tablename__ = "meeting"
