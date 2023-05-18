@@ -40,8 +40,11 @@ async def signup(user: UserSchema, db: Session):
     db.refresh(db_user)
     return {"msg": "User created successfully."}
 
-async def get_all_events(date: datetime.date, user: str, db: Session):
-    return db.query(Event).filter(Event.uid == user, func.date(Event.sdatetime) <= date, date <= func.date(Event.edatetime)).all()
+# async def get_all_events(date: datetime.date, user: str, db: Session):
+#     return db.query(Event).filter(Event.uid == user, func.date(Event.sdatetime) <= date, date <= func.date(Event.edatetime)).all()
+
+async def get_all_events(user: str, db: Session):
+    return db.query(Event).filter(Event.uid == user).all()
 
 def genPass():
     alphabet="abcdefghijklmnopqrstuvwxyz0123456789"

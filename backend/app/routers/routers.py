@@ -36,9 +36,14 @@ async def signup_user(user: UserSchema, db: Session = Depends(get_db)):
     register_success = await signup(user, db)
     return register_success
 
+# @router.get("/event")    
+# async def get_event(date: datetime.date, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+#     event_list = await get_all_events(date, user, db)
+#     return event_list
+
 @router.get("/event")    
-async def get_event(date: datetime.date, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    event_list = await get_all_events(date, user, db)
+async def get_event(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    event_list = await get_all_events(user, db)
     return event_list
 
 @router.post("/event")
