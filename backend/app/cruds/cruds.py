@@ -5,7 +5,7 @@ from sqlalchemy import func, or_, and_
 from datetime import datetime, timedelta
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend, Group, Member, Meeting, GroupEvent
+from ..models.models import User, Event, Friend, Group, Member, Meeting, GroupEvent, Invited
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
@@ -174,6 +174,40 @@ async def group_update(gid: int, group: GroupSchema, db: Session):
     db.commit()
     return {"msg": "group name updated successfully."}
 
+async def group_leave(gid: int, user: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    db_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if not db_member:
+        raise HTTPException(status_code=401, detail="Not group member")
+    db.delete(db_member)
+    db.commit()
+    
+    # db_event = db.query(GroupEvent).filter(GroupEvent.ccid == ccid).all()
+    # if not db_event:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting doesn't exist")
+    # for x in db_event:
+    #     db.delete(x)
+    #     db.commit()
+    return {"msg": "group deleted successfully."}
+
+async def invited_register(gid: int, uid: str, user: str, db: Session):
+    db_user = db.query(User).filter(User.id == uid).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+    already_invited = db.query(Invited).filter(Invited.uid == uid, Invited.gid == gid).first()
+    if already_invited:
+        raise HTTPException(status_code=401, detail="already invited")
+    already_member = db.query(Member).filter(Member.gid == gid, Member.uid == uid).first()
+    if already_member:
+        raise HTTPException(status_code=401, detail="already member")
+    db_group = Invited(gid=gid, uid=uid)
+    db.add(db_group)
+    db.commit()
+    db.refresh(db_group)
+    return {"msg": "invited added successfully."}
+
 async def get_all_meetings(gid: int, db: Session):
     return db.query(Meeting).filter(Meeting.gid == gid).all()
 
@@ -219,6 +253,8 @@ async def member_register(gid: int, member: str, user: str, db: Session):
     calendar_success = await groupcal_register(gid, member, db)
     return {"msg": "member added successfully."}
 
+
+
 async def groupcal_register(ccid: int, member: str, db: Session):
     db_member = db.query(Member).filter(Member.uid == member).all()
     for x in db_member:
@@ -261,13 +297,11 @@ async def google_event_register(user: str, db: Session):
     # print(google)
     if google==None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Google event doesn't exist")
-
     for event in google:
         sdt=event[0]
         edt=event[1]
         cn=event[2]
         vsb=event[3]
-        
         event_exist = db.query(Event).filter(Event.uid == user,
         or_(
             and_((Event.sdatetime <= sdt), (sdt < Event.edatetime)),

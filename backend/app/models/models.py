@@ -34,6 +34,13 @@ class Group(Base):
     gid = Column(Integer, primary_key=True)
     gname = Column(String)
     
+class Invited(Base):
+    __tablename__ = "invited"
+    
+    iid = Column(Integer, primary_key=True)
+    gid = Column(Integer)
+    uid = Column(String)
+    
 class Meeting(Base):
     __tablename__ = "meeting"
 

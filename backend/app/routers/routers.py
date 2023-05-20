@@ -9,7 +9,8 @@ from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
-    friend_register, friend_remove, group_register, group_update, member_register, \
+    friend_register, friend_remove, group_register, group_update, group_leave, \
+    invited_register, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group
 router = APIRouter()
@@ -86,6 +87,16 @@ async def add_group(group: GroupSchema, user: str = Depends(authenticate), db: S
 async def update_group(gid: int, group: GroupSchema, db: Session = Depends(get_db)):
     update_success = await group_update(gid, group, db)
     return update_success
+
+@router.delete("/group")
+async def delete_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await group_leave(gid, user, db)
+    return remove_success
+
+@router.post("/invited")
+async def add_group(gid: int, uid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await invited_register(gid, uid, user, db)
+    return register_success
 
 
 @router.post("/member")
