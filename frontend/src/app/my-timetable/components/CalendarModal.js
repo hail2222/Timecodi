@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
-import axios from "axios";
 
 function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   // get schedule list from DB when the modal is opened

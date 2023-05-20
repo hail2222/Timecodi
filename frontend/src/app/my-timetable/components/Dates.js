@@ -1,64 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CalendarModal from "./CalendarModal";
-import axios from "axios";
-
-const sampleEvtList = [
-  {
-    cid: 1010101,
-    cname: "My sample event",
-    visibility: true,
-    sdatetime: "2023-05-04T14:00:00",
-    edatetime: "2023-05-04T15:00:00",
-    weekly: 0,
-    enddate: null,
-  },
-  {
-    cid: 2020202,
-    cname: "샘플이벤트2",
-    visibility: false,
-    sdatetime: "2023-05-04T16:00:00",
-    edatetime: "2023-05-05T15:00:00",
-    weekly: 0,
-    enddate: null,
-  },
-  {
-    cid: 20202023,
-    cname: "샘플이벤트3",
-    visibility: false,
-    sdatetime: "2023-05-04T16:00:00",
-    edatetime: "2023-05-05T15:00:00",
-    weekly: 0,
-    enddate: null,
-  },
-  {
-    cid: 20202024,
-    cname: "샘플이벤트4",
-    visibility: false,
-    sdatetime: "2023-05-04T16:00:00",
-    edatetime: "2023-05-05T15:00:00",
-    weekly: 0,
-    enddate: null,
-  },
-  {
-    cid: 20202025,
-    cname: "샘플이벤트5",
-    visibility: false,
-    sdatetime: "2023-05-04T16:00:00",
-    edatetime: "2023-05-05T15:00:00",
-    weekly: 0,
-    enddate: null,
-  },
-  {
-    cid: 20202026,
-    cname: "샘플이벤트6",
-    visibility: false,
-    sdatetime: "2023-05-04T16:00:00",
-    edatetime: "2023-05-05T15:00:00",
-    weekly: 0,
-    enddate: null,
-  },
-];
 
 function Dates({
   lastDate,
@@ -69,40 +11,10 @@ function Dates({
   year,
   idx,
   holiday,
+  evtList,
 }) {
   let date = `${year}-${month}-${elm}`;
-  const [evtList, setEvtList] = useState(sampleEvtList);
-  /*   {
-      cid: elm.cid,
-      cname: elm.cname,
-      visibility: elm.visibility,
-      sdatetime: elm.sdatetime,
-      edatetime: elm.edatetime,
-      weekly: elm.weekly,
-      enddate: elm.enddate,
-    } */
-
-  useEffect(() => {
-    axios
-      .get(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?date=${date}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        let newEvtList = [];
-        newEvtList.push(res.data);
-        setEvtList(newEvtList[0]);
-        setOpenModal(false);
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  }, []);
-
+  //   console.log(evtList);
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => {
     setOpenModal(true);
@@ -110,7 +22,6 @@ function Dates({
   const handleClose = () => {
     setOpenModal(false);
   };
-
   return (
     <>
       <Form onDoubleClick={handleOpen}>

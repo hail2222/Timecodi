@@ -16,7 +16,7 @@ const ChartJs = lazy(() => import("./charts/ChartJs"));
 const Login = lazy(() => import("./user-pages/Login"));
 const Register = lazy(() => import("./user-pages/Register"));
 const BlankPage = lazy(() => import("./general-pages/BlankPage"));
-const StartPage = lazy(() => import("./StartPage"));
+const StartPage = lazy(() => import("./start-page/StartPage"));
 const FriendsPage = lazy(() => import('./friends-page/FriendsPage'));
 const MyTimetablePage = lazy(() => import('./my-timetable/timetable'));
 
