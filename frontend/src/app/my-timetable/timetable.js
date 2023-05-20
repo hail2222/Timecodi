@@ -61,7 +61,7 @@ export function Dashboard() {
       sdatetime: sdate,
       edatetime: edate,
       weekly: 0,
-      enddate: edate.split("T")[0]
+      enddate: edate.split("T")[0],
     };
     axios
       .post(
@@ -75,6 +75,7 @@ export function Dashboard() {
       )
       .then((res) => {
         alert(res.data.msg);
+        window.location.reload();
       })
       .catch((err) => {
         alert("add event failed");
@@ -84,6 +85,29 @@ export function Dashboard() {
   const [repeatOption, setRepeatOption] = useState("none");
   const handleShowRepeat = (e) => {
     setRepeatOption(e.target.value);
+  };
+
+  const handleGoogleCalendar = () => {
+    console.log("google calendar clicked");
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/google",
+        {},
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        alert(res.data.msg);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+      });
   };
 
   return (
@@ -193,6 +217,7 @@ export function Dashboard() {
                     <button
                       type="button"
                       className="btn btn-gradient-danger btn-fw"
+                      onClick={handleGoogleCalendar}
                     >
                       <i className="mdi mdi-upload btn-icon-prepend"></i>
                       {/* <i className="mdi mdi-google"></i> */}

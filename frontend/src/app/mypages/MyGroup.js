@@ -3,16 +3,46 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 
+const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
+const localURL = "https://127.0.0.1:8000";
+const url = realURL;
+
 function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
   let [myGroupList, setMyGroupList] = useState([
-    { groupName: "my Sample Group 1" },
+    { gid: 1, gname: "my Sample Group 1" },
   ]);
+  const getMyGroupList = () => {
+    console.log("get my group list");
+    axios
+      .get(`${url}/mygrouplist`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newMyGroupList = [];
+        newMyGroupList.push(res.data);
+        setMyGroupList(newMyGroupList[0]);
+      })
+      .catch((err) => {
+        console.log("getMyGroupList");
+        console.log(err);
+      });
+  };
   let [invitedGroupList, setInvitedGroupList] = useState([
     { groupName: "invited Sample Group 1" },
   ]);
+  const getInvitedGroupList = () => {
+    console.log("get invited group list");
+  };
+
+  useEffect(() => {
+    getMyGroupList();
+    getInvitedGroupList();
+  }, []);
 
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
@@ -21,19 +51,24 @@ function MyGroup(props) {
   const [gname, setGname] = useState("default");
   let handleAddGroup = () => {
     const data = {
-      "gname": gname,
+      gname: gname,
     };
     console.log(data);
-    axios.post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group", data,
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
+        data,
         {
           headers: {
-            "Authorization": localStorage.getItem("token")
-          }
+            Authorization: localStorage.getItem("token"),
+          },
         }
       )
       .then((res) => {
         if (res.data.success == true) {
-          alert(res.data.msg);
+          console.log("handleAddGroup");
+          console.log(res.data.msg);
+          window.location.reload();
         }
       })
       .catch((err) => {
@@ -133,7 +168,7 @@ function MyGroup(props) {
                 <table className="table table-hover">
                   <thead>
                     <tr>
-                      <th>Index</th>
+                      <th>Group ID</th>
                       <th>Group Name</th>
                       <th>Edit</th>
                     </tr>
@@ -142,8 +177,8 @@ function MyGroup(props) {
                     {myGroupList.map(function (item, index) {
                       return (
                         <tr>
-                          <td>{index + 1}</td>
-                          <td>{item.groupName}</td>
+                          <td>{item.gid}</td>
+                          <td>{item.gname}</td>
                           <td>
                             <button
                               type="button"
