@@ -244,25 +244,28 @@ function Group() {
 
       </div>
       <div className="row">
-        <div className="col-12 grid-margin">
-          <div className="card">
+
+        <div className="col grid-margin"  style={{  "height": '800px', "width":'650px'}}>
+          <div className="card"  style={{  "height": '750px', "width":'600px'}}>
             <div className="card-body">
-              <div className="row">
-                <div className="col-md-6">
                   <h4 className="card-title">
                     <i className="mdi mdi-calendar-multiple-check"></i> Group Calender</h4>
                   <p className="card-description">Click the <span style={{"color":'#fe7c96'}}>pink box</span> to see available time of the week.</p>
-                  <div style={{  "margin-top": '3vw'}}>
+                  <div style={{  "margin-top": '4vw'}}>
                   <Main style={{ flexDirection: 'column' }} />
                   <br></br><br></br>
                   </div>
-                </div>
-                <div className="col-md-6">
-                <p className="card-description" style={{"margin-left":'3.5vw',"text-align":'center'}}>Your group members are available at..</p>
+              </div>
+          </div>
+        </div>
 
-                {/* <h2 style={{"margin":"20vw 0 0 7vw"}}>timetable</h2> */}
+        <div className="col grid-margin" style={{  "height": '800px', "width":'540px'}}>
+          <div className="card" style={{  "height": '750px', "width":'540px'}}>
+            <div className="card-body">
+              <div className="row">
+                <p className="card-description" style={{"margin-left":'8em'}}>Your group members are available at..</p>
 
-                <div id="visit-sale-chart-legend" className="rounded-legend legend-horizontal" style={{"margin-left":'13vw'}}>
+                <div id="visit-sale-chart-legend" className="rounded-legend legend-horizontal" style={{"margin-left":'9em'}}>
                     <ul>
                       <li>
                         <span className="legend-dots bg-primary">
@@ -282,7 +285,7 @@ function Group() {
 
 
                 <TimeTable></TimeTable>
-                <div className="row" style={{"margin":'1.5vw 0 0 7vw'}}>
+                <div className="row" style={{"margin":'1.5vw 0 0 3vw'}}>
                 <p className="card-description" style={{"margin":'0.2vw 1vw 0 0',"text-align":'center'}}>How long will it take?</p>
                 <select className="form-control form-control-sm" id="meeting-hour" style={{"position":'relative',"width":'4vw',"height":'2vw'}}>
                     <option>0</option>
@@ -319,24 +322,16 @@ function Group() {
                   <p className="card-description" style={{"margin":'0.2vw 0.5vw',"text-align":'center'}}>minutes</p>
 
                   </div>
-                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0 0 15vw' }}>
+                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0 0 12vw' }}>
                     <i className="mdi mdi-calendar-plus"></i>
                     <span style={{"font-size":'15px', "font-weight":'500'}}>&nbsp; Generate Vote</span>
                   </button>
-                
                 </div>
-                {/* <button type="button" className="btn btn-primary btn-lg" style={{ "margin-left": '3vw' }}>
-                    <i className="mdi mdi-calendar-plus"></i>
-                    Edit Meeting Info
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-lg">
-                    <i className="mdi mdi-calendar-plus"></i>
-                    Create New Meeting
-                  </button> */}
-              </div>
+
             </div>
           </div>
         </div>
+
       </div>
       <div className="row">
       <div className="col-6 grid-margin stretch-card">
@@ -413,10 +408,7 @@ function Group() {
         </div>
         <div className="col-md-6 grid-margin stretch-card">
         <div className="card">
-            <div
-              className="card-body"
-              
-            >
+            <div className="card-body">
               <h4 className="card-title">
               <i className="mdi mdi-poll"></i> 
               Vote Result

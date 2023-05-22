@@ -43,33 +43,33 @@ const Form = styled.li`
   flex-direction:row;
   position: relative;
   list-style: none;
-  height: 30vw;
+  height: 432px;
   border-radius: 10px;
   text-align: left;
   color: black;
-  z-index: 999;
+  z-index: 990;
 `;
 const HeaderForm = styled.li`
   display:flex;
   flex-direction:row;
-  margin-top:1vw;
-  padding: 0vw 0 0vw 6vw ;
+  margin-top:14px;
+  padding: 0px 0 0px 67px ;
   position: relative;
   list-style: none;
-  height: 1vw;
+  height: 14px;
   text-align: center;
 
-  z-index: 999;
+  z-index: 990;
 `;
 
 const Header = styled.div`
   position: relative;
-  width: 4vw;
-  height: 1.0vw;
+  width: 58px;
+  height: 14px;
 
   text-align: center;
   color: black;
-  z-index: 999;
+  z-index: 990;
 `;
 
 
