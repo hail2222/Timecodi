@@ -53,7 +53,7 @@ const HeaderForm = styled.li`
   display:flex;
   flex-direction:row;
   margin-top:14px;
-  padding: 0px 0 0px 86px ;
+  padding: 0px 0 0px 67px ;
   position: relative;
   list-style: none;
   height: 14px;

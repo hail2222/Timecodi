@@ -41,8 +41,9 @@ const TimetableHeader = (props) => {
   );
 };
 const Form=styled.div`
-    display:flex;
+  display:flex;
   flex-direction:column;
+  height: 448px;
 
 `;
 const Slot = styled.div`
@@ -53,8 +54,8 @@ const Slot = styled.div`
 `;
 const Header = styled.div`
   position: relative;
-  width: 86px;
-  height: 23px;
+  width: 65px;
+  height: 40px;
   font-size: 13px;
   padding-right:4px;
   text-align: right;

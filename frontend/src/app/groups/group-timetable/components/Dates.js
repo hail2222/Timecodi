@@ -45,22 +45,6 @@ const Dates = (props) => {
             setUserInput={setUserInput}
           />
         )}
-        {holiday !== undefined && (
-          <Holidays>
-            {holiday !== undefined &&
-              holiday.map((evt, index) => {
-                let key =
-                  elm.length < 2
-                    ? `${year}` + `${month}` + `${elm}`
-                    : `${year}` + `${month}` + '0' + `${elm}`;
-                return (
-                  Number(key) === evt.locdate && (
-                    <Holiday key={index}>{evt.dateName}</Holiday>
-                  )
-                );
-              })}
-          </Holidays>
-        )}
         {Boolean(evtList[0]) && (
             <ScrollDiv>
           <Lists>
@@ -89,9 +73,9 @@ const Dates = (props) => {
 };
 const Form = styled.li`
   position: relative;
-  padding: 0 0px 0 10px;
-  width: 72px;
-  height: 72px;
+  padding: 0 0px 0 0.6em;
+  width: 4.1em;
+  height: 4.1em;
   text-align: left;
   border-bottom: 1px solid #e4e3e6;
   border-left: 1px solid #e4e3e6;
@@ -105,8 +89,8 @@ const Form = styled.li`
 `;
 
 const DateNum = styled.div`
-  padding: 14px 13px 0 0;
-  font-size: 16px;
+  padding: 0.5em 0.6em 0 0;
+  font-size: 1em;
 
   ${(props) => props.idx < props.lastDate && `color: #969696;`};
 
@@ -139,43 +123,32 @@ const TodayCSS = styled.span`
 `;
 const ScrollDiv = styled.div`
 overflow: auto;
-height: 70px;
+height: 7.2em;
 &::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  border-radius: 6px;
+  width: 0.48em;
+  height: 0.48em;
+  border-radius: 0.3em;
   background: rgba(255, 255, 255, 0.4);
 }
 &::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
+  border-radius: 0.3em;
 }
 `;
 const Lists = styled.div`
   display: flex;
   flex-direction: column;
   text-align: left;
-  padding : 0 7px 0 0px;
+  padding : 0 0.42em 0 0;
 `;
 const List = styled.span`
   margin-top: 4px;
-  padding : 0 6px 0 6px;
+  padding : 0 0.36em 0 36em;
   background-color: #ffe5ea;
-  border-radius: 2px;
-  font-size: 10px;
+  border-radius: 0.12em;
+  font-size: 0.6em;
 `;
-const Holidays = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-`;
-const Holiday = styled.div`
-  margin-top: 4px;
-  padding-left: 7px;
-  color: red;
-  font-weight: 700;
-  background-color: skyblue;
-  border-radius: 5px;
-`;
+
+
 
 export default Dates;

@@ -123,16 +123,16 @@ const Form = styled.div`
 
   display: flex;
   flex-flow: row wrap;
-  margin: 0 0px 0px 7px;
-  width: 547px;
+  margin: 0 0 0 0.4em;
+  width: 32em;
 
 `;
 const Form2 = styled.div`
   position:absolute;
   display: flex;
   flex-flow: row wrap;;
-  width: 13px;
-  margin-left: 505px;
+  width: 1em;
+  margin-left: 31.5em;
 
 `;
 

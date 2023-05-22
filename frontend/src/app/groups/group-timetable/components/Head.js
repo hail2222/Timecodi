@@ -9,10 +9,10 @@ const Head = (props) => {
       <Nav>
         <div className="row">
           <Month>
-            {MONTHS[month - 1]}
+            {MONTHS[(12000+month - 1)%12]}
           </Month>
           <Year>
-            {month} / {year} 
+            {(month+12000-1)%12+1} / {parseInt((year*12+month-1)/12)} 
           </Year>
 
           <BtnBox>
@@ -38,35 +38,33 @@ const Head = (props) => {
 const Form = styled.section`
   display: flex;
   flex-direction: column;
-  width: 511px;
-  height: 101px;
-  border: 2px solid #e4e3e6;
-  border-radius: 2px;
-  margin: 10px 0px 0 7px;
+  width: 32em;
+  height: 6.5em;
+  border: 0.1em solid #e4e3e6;
+  border-radius: 0.2em;
+  margin: 0.5em 0 0 0.4em;
 `;
 const Nav = styled.section`
-  margin:10px;
+  margin:0.65em;
 `;
 const Month = styled.div`
   font-size: 2rem;
   font-weight: 700;
   position: relative;
-  left: 58px;
-  top: 12px;
+  left: 1.8em;
+  top: 0.4em;
 `;
 const Year = styled.div`
   font-size: 1.0rem;
   font-weight: 200;
   position: relative;
-  left: 72px;
-  top: 22px;
+  left: 4em;
+  top: 1.5em;
 `;
 const BtnBox = styled.div`
-  margin: 22px 14px 0 0;
-  width: 144px;
-  position: relative;
-  right: 0px;
-  left: 288px;
+  margin: 1.5em 0 0 0.5em;
+  position: absolute;
+  right: 5em;
 
 
 `;
@@ -88,12 +86,12 @@ const Btn = styled.li`
 
 const Days = styled.div`
   display: flex;
-  margin: 0.8em 0 4px 0px;
+  margin: 1em 0 0.2em ;
   position: relative;
 `;
 const Day = styled.li`
 
-  width: 72px;
+  width: 4.5em;
   text-align: center;
   list-style: none;
   position: relative;
