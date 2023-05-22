@@ -9,7 +9,7 @@ from ..db.connection import get_db
 from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
-    friend_register, friend_remove, get_all_requests, friend_request, friend_accept, group_register, group_update, group_leave, \
+    friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
     invited_register, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal
@@ -88,10 +88,20 @@ async def request_friend(friend: FriendSchema, user: str = Depends(authenticate)
     request_success = await friend_request(friend, user, db)
     return request_success
 
+@router.delete("/request")
+async def delete_request(friend: FriendSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await request_remove(friend, user, db)
+    return remove_success
+
 @router.post("/accept")
 async def accept_friend(friend: FriendSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     accept_success = await friend_accept(friend, user, db)
     return accept_success
+
+@router.delete("/accept")
+async def delete_accept(friend: FriendSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await accept_remove(friend, user, db)
+    return remove_success
 
 @router.post("/group")
 async def add_group(group: GroupSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):

@@ -163,7 +163,6 @@ async def friend_remove(friend: FriendSchema, user: str, db: Session):
 async def get_all_requests(user: str, db: Session):
     return db.query(FriendRequest).filter(or_(FriendRequest.uid == user, FriendRequest.fid == user)).all()
 
-
 async def friend_request(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
     if not friend_user_exist:
@@ -182,6 +181,15 @@ async def friend_request(friend: FriendSchema, user: str, db: Session):
     db.refresh(db_friendrequest)
     return {"msg": "send friend request successfully."}
 
+async def request_remove(friend: FriendSchema, user: str, db: Session):
+    friend_request_exist = db.query(FriendRequest).filter(FriendRequest.uid == user, FriendRequest.fid == friend.fid).first()
+    if not friend_request_exist:
+        raise HTTPException(status_code=404, detail="There is no request")
+
+    db.delete(friend_request_exist)
+    db.commit()
+    return {"msg": "delete friend request successfully."}
+
 async def friend_accept(friend: FriendSchema, user: str, db: Session):
     friend_request_exist = db.query(FriendRequest).filter(FriendRequest.uid == friend.fid, FriendRequest.fid == user).first()
     if not friend_request_exist:
@@ -196,6 +204,15 @@ async def friend_accept(friend: FriendSchema, user: str, db: Session):
     db.refresh(db_friendship_1)
     db.refresh(db_friendship_2)
     return {"msg": "friend added successfully."}
+
+async def accept_remove(friend: FriendSchema, user: str, db: Session):
+    friend_request_exist = db.query(FriendRequest).filter(FriendRequest.uid == friend.fid, FriendRequest.fid == user).first()
+    if not friend_request_exist:
+        raise HTTPException(status_code=404, detail="There is no accept")
+
+    db.delete(friend_request_exist)
+    db.commit()
+    return {"msg": "reject accept successfully."}
 
 async def group_register(group: GroupSchema, user: str, db: Session):
     db_group = Group(gname=group.gname, admin=user)
