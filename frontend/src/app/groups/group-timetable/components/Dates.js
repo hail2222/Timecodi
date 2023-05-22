@@ -91,6 +91,7 @@ const Form = styled.li`
 const DateNum = styled.div`
   padding: 0.5em 0.6em 0 0;
   font-size: 1em;
+  color: black;
 
   ${(props) => props.idx < props.lastDate && `color: #969696;`};
 
