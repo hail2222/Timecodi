@@ -28,6 +28,12 @@ class Friend(Base):
     uid = Column(String, primary_key=True)
     fid = Column(String, primary_key=True)
 
+class FriendRequest(Base):
+    __tablename__ = "friend requests"
+
+    uid = Column(String, primary_key=True)
+    fid = Column(String, primary_key=True)
+
 class Group(Base):
     __tablename__ = "groups"
 

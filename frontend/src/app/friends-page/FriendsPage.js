@@ -106,6 +106,21 @@ function FriendsPage() {
   //   })
   //   nextId.current += 1;
   // }
+  const requestFriend = () => {
+    const data = {"fid": name};
+    axios
+    .post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/request", data, {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      alert(response.data.msg);
+    })
+    .catch((err) => {
+      alert(err.response.data.detail);
+    });
+  }
 
   const onCreate = () => {
     const data = {"fid": name};

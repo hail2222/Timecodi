@@ -5,7 +5,7 @@ from sqlalchemy import func, or_, and_
 from datetime import datetime, timedelta
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend, Group, Member, Meeting, GroupEvent, Invited
+from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
@@ -159,6 +159,43 @@ async def friend_remove(friend: FriendSchema, user: str, db: Session):
     db.delete(db_friendship2)
     db.commit()
     return {"msg": "friend deleted successfully."}
+
+async def get_all_requests(user: str, db: Session):
+    return db.query(FriendRequest).filter(or_(FriendRequest.uid == user, FriendRequest.fid == user)).all()
+
+
+async def friend_request(friend: FriendSchema, user: str, db: Session):
+    friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
+    if not friend_user_exist:
+        raise HTTPException(status_code=404, detail="There is no user")
+    already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
+    if already_friend:
+        raise HTTPException(status_code=401, detail="already friend")
+
+    friend_request_exist = db.query(FriendRequest).filter(or_(FriendRequest.uid == user, FriendRequest.fid == user)).all()
+    if friend_request_exist:
+        raise HTTPException(status_code=401, detail="already request")
+
+    db_friendrequest = FriendRequest(uid=user, fid=friend.fid)
+    db.add(db_friendrequest)
+    db.commit()
+    db.refresh(db_friendrequest)
+    return {"msg": "send friend request successfully."}
+
+async def friend_accept(friend: FriendSchema, user: str, db: Session):
+    friend_request_exist = db.query(FriendRequest).filter(FriendRequest.uid == friend.fid, FriendRequest.fid == user).first()
+    if not friend_request_exist:
+        raise HTTPException(status_code=404, detail="There is no request")
+
+    db_friendship_1 = Friend(uid=user, fid=friend.fid)
+    db_friendship_2 = Friend(uid=friend.fid, fid=user)
+    db.add(db_friendship_1)
+    db.add(db_friendship_2)
+    db.delete(friend_request_exist)
+    db.commit()
+    db.refresh(db_friendship_1)
+    db.refresh(db_friendship_2)
+    return {"msg": "friend added successfully."}
 
 async def group_register(group: GroupSchema, user: str, db: Session):
     db_group = Group(gname=group.gname, admin=user)
