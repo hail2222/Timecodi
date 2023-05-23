@@ -25,16 +25,25 @@ function Dates({
   return (
     <>
       <Form onDoubleClick={handleOpen}>
+      <DateNum
+          idx={idx}
+          lastDate={lastDate}
+          firstDate={firstDate}
+          findToday={findToday}
+        >
         <TodayCSS findToday={findToday}>{elm}</TodayCSS>
-        <ScrollDiv>
-          <Lists className="list-ticked">
+        </DateNum>
+        <ScrollDiv idx={idx}
+          lastDate={lastDate}
+          firstDate={firstDate}>
+          <Lists className="list-ticked" >
             {evtList !== undefined &&
               evtList.map((evt, index) => {
                 return (
-                  <List key={evt.cid}>
+                  <List key={evt.cid} >
                     {evt.visibility === false || evt.visibility === "private"
                       ? "비공개"
-                      : evt.cname}
+                      : evt.cname+"_"+evt.cid}
                   </List>
                 );
               })}
@@ -80,12 +89,34 @@ const TodayCSS = styled.span`
     font-size: 1.2vw;
     font-weight: 700;
     color: #fe7c96;
-    // background-color:#fe7c96;
  `}
+`;
+const DateNum = styled.div`
+  padding: 0.5em 0.6em 0 0;
+  font-size: 1em;
+  color: black;
+
+  ${(props) => props.idx < props.lastDate && `color: #969696;`};
+  ${(props) =>
+    props.firstDate > 0 &&
+    props.idx > props.firstDate - 1 &&
+    `
+    color: #969696;
+  `};
+  
 `;
 const ScrollDiv = styled.div`
   overflow: auto;
   height: 70px;
+  color: black;
+
+  ${(props) => props.idx < props.lastDate && `opacity: 0;`};
+  ${(props) =>
+    props.firstDate > 0 &&
+    props.idx > props.firstDate - 1 &&
+    `
+    opacity: 0;
+  `};
   &::-webkit-scrollbar {
     width: 8px;
     height: 8px;
