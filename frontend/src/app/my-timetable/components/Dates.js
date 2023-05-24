@@ -25,25 +25,23 @@ function Dates({
   return (
     <>
       <Form onDoubleClick={handleOpen}>
-      <DateNum
+        <DateNum
           idx={idx}
           lastDate={lastDate}
           firstDate={firstDate}
           findToday={findToday}
         >
-        <TodayCSS findToday={findToday}>{elm}</TodayCSS>
+          <TodayCSS findToday={findToday}>{elm}</TodayCSS>
         </DateNum>
-        <ScrollDiv idx={idx}
-          lastDate={lastDate}
-          firstDate={firstDate}>
-          <Lists className="list-ticked" >
+        <ScrollDiv idx={idx} lastDate={lastDate} firstDate={firstDate}>
+          <Lists className="list-ticked">
             {evtList !== undefined &&
               evtList.map((evt, index) => {
                 return (
-                  <List key={evt.cid} >
+                  <List key={evt.cid}>
                     {evt.visibility === false || evt.visibility === "private"
                       ? "비공개"
-                      : evt.cname+"_"+evt.cid}
+                      : evt.cname}
                   </List>
                 );
               })}
@@ -103,7 +101,6 @@ const DateNum = styled.div`
     `
     color: #969696;
   `};
-  
 `;
 const ScrollDiv = styled.div`
   overflow: auto;
