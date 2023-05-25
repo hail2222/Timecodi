@@ -1,0 +1,11 @@
+.border-radius-none {
+  border-radius: 0rem;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
