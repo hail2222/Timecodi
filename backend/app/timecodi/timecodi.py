@@ -80,6 +80,8 @@ def data_to_table(output, members):
         table[time][weekday] -= 1
     return table
 
+# print(data_to_table(date_to_halfhour(sample_evt_list), 5))
+
 # for test
 def print_available_table(available_table):
     days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
