@@ -6,6 +6,7 @@ import { Form } from 'react-bootstrap';
 import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
+import NonAdminBox from "./group-timetable/components/NonAdminBox";
 import {Bar, Doughnut} from 'react-chartjs-2';
 
 
@@ -247,7 +248,7 @@ function Group() {
 
         <div className="col grid-margin"  style={{  "height": '800px', "width":'650px'}}>
           <div className="card"  style={{  "height": '750px', "width":'600px'}}>
-            <div className="card-body">
+            <div className="card-body" >
                   <h4 className="card-title">
                     <i className="mdi mdi-calendar-multiple-check"></i> Group Calender</h4>
                   <p className="card-description">Click the <span style={{"color":'#fe7c96'}}>pink box</span> to see available time of the week.</p>
@@ -322,7 +323,7 @@ function Group() {
                   <p className="card-description" style={{"margin":'0.2vw 0.5vw',"text-align":'center'}}>minutes</p>
 
                   </div>
-                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0 0 12vw' }}>
+                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1vw 0 0vw 12vw' }}>
                     <i className="mdi mdi-calendar-plus"></i>
                     <span style={{"font-size":'15px', "font-weight":'500'}}>&nbsp; Generate Vote</span>
                   </button>
@@ -517,6 +518,7 @@ function Group() {
               </Modal.Footer>
             </Modal>
             <AdminBox/>
+            <NonAdminBox/>
 
 
     </div>
