@@ -27,8 +27,8 @@ function StartPage() {
             </div>
           </div>
 
-          <div className="col-lg-12 stretch-card mx-0 px-0 justify-content-center">
-            <div className="p-4 col-4 d-flex align-items-center">
+          <div className="row justify-content-center">
+            <div className="p-4 col-3 d-flex align-items-center">
               <div className="card-body">
                 <h2 className="card-title">
                   Set Personal Timetable
@@ -46,13 +46,13 @@ function StartPage() {
             </div>
           </div>
 
-          <div className="col-lg-12 stretch-card mx-0 px-0 justify-content-center bg-white">
+          <div className="row justify-content-center bg-white">
             <div className="p-4 col-5">
               <div className="card-body">
                 <img src="img/personal_calendar.png" alt="" className="col-12"></img>
               </div>
             </div>
-            <div className="p-4 col-4 d-flex align-items-center">
+            <div className="p-4 col-3 d-flex align-items-center">
               <div className="card-body">
                 <h2 className="card-title">
                   Make Group Meeting
@@ -66,8 +66,8 @@ function StartPage() {
             </div>
           </div>
 
-          <div className="col-lg-12 stretch-card mx-0 px-0 justify-content-center">
-            <div className="p-4 col-4 d-flex align-items-center">
+          <div className="row justify-content-center">
+            <div className="p-4 col-3 d-flex align-items-center">
               <div className="card-body">
                 <h2 className="card-title">
                   Find Your Friends
