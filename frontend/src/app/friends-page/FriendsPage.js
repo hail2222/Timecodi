@@ -316,13 +316,10 @@ function FriendsPage() {
         <div className="col-lg-12 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
-              <div className="d-flex justify-content-between align-friends-baseline mb-2">
-                <div>
-                  <h4 className="card-title">Requested</h4>
-                  <p className="card-description">
-                    They want to be friends with me!
-                  </p>
-                </div>
+                <h4 className="card-title">Requested</h4>
+                <p className="card-description">
+                  They want to be friends with me!
+                </p>
                 <div className="table-responsive">
                   <table className="table table-hover">
                     <thead>
@@ -358,7 +355,6 @@ function FriendsPage() {
                     </tbody>
                   </table>
                 </div>
-              </div>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ export default function FriendsTable({ friends, onDel }) {
       <thead>
         <tr>
           <th>Name</th>
+          <th>ID</th>
           <th>Timetable</th>
           <th>Delete</th>
         </tr>
@@ -21,7 +22,7 @@ export default function FriendsTable({ friends, onDel }) {
 }
 
 const FriendItem = ({ friend, onDel }) => {
-  const { id, name } = friend;
+  const { id, name, userId } = friend;
 
   const [deleteFriend, setDelete] = useState(false);
   const deleteClose = () => setDelete(!deleteFriend);
@@ -29,6 +30,7 @@ const FriendItem = ({ friend, onDel }) => {
   return (
     <tr>
       <td>{name}</td>
+      <td>{userId}</td>
       <td>
         <button type="button" className="btn btn-inverse-info btn-sm">
           <i className="mdi mdi-calendar"></i>
