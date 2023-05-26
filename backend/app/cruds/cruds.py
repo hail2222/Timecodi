@@ -394,3 +394,10 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
     return db_event
+
+# get group info by gid
+async def get_groupinfo(gid: int, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    return db_group
