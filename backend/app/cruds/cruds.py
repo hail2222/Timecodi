@@ -421,6 +421,7 @@ async def get_my_group(user: str, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     return db_group
 
+<<<<<<< HEAD
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -436,3 +437,21 @@ async def send_kakao(req: Request, gid: int, user: str, db: Session):
                                        "gid": gid,
                                        "username": user})
     # return RedirectResponse("/", status_code=302)
+=======
+async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime, db: Session):
+    db_event = db.query(GroupEvent).filter(
+        GroupEvent.gid == gid, 
+        GroupEvent.sdatetime <= end_date + timedelta(days=1),
+        GroupEvent.edatetime >= start_date
+    ).all()
+    if not db_event:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
+    return db_event
+
+# get group info by gid
+async def get_groupinfo(gid: int, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    return db_group
+>>>>>>> 2110b8dde4b28804c5f32e347b492a2720cfaf6e

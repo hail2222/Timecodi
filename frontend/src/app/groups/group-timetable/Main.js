@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from './components/Head';
 import Body from './components/Body';
-
+import styled from 'styled-components';
 const Main = () => {
   let DATE = new Date();
   const YEAR = DATE.getFullYear();
@@ -67,5 +67,7 @@ const Main = () => {
     </div>
   );
 };
+
+
 
 export default Main;

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import Group from "../groups/Group";
 
 const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
 const localURL = "https://127.0.0.1:8000";
@@ -15,7 +17,6 @@ function MyGroup(props) {
     { gid: 1, gname: "my Sample Group 1" },
   ]);
   const getMyGroupList = () => {
-    console.log("get my group list");
     axios
       .get(`${url}/mygrouplist`, {
         headers: {
@@ -170,13 +171,13 @@ function MyGroup(props) {
                     <tr>
                       <th>Group ID</th>
                       <th>Group Name</th>
-                      <th>Edit</th>
+                      <th>Edit Menu</th>
                     </tr>
                   </thead>
                   <tbody>
                     {myGroupList.map(function (item, index) {
                       return (
-                        <tr>
+                        <tr key={index}>
                           <td>{item.gid}</td>
                           <td>{item.gname}</td>
                           <td>
@@ -184,13 +185,27 @@ function MyGroup(props) {
                               type="button"
                               className="btn btn-primary btn-sm"
                             >
-                              Go
+                              <Link
+                                to={`/groups/group/${item.gid}`}
+                                style={{
+                                  color: "white",
+                                  textDecoration: "none",
+                                }}
+                              >
+                                Go
+                              </Link>
                             </button>
                             <button
                               type="button"
                               className="btn btn-secondary btn-sm"
                             >
                               Leave
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-warning btn-sm"
+                            >
+                              <i className="mdi mdi-star"></i>
                             </button>
                           </td>
                         </tr>
