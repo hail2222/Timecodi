@@ -10,15 +10,12 @@ from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchem
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
-<<<<<<< HEAD
     invited_register, invited_delete, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
-    google_event_register, get_all_groupcal, get_my_group, send_kakao
-=======
+    google_event_register, get_all_groupcal, get_my_group, send_kakao, \
     invited_register, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo
->>>>>>> 2110b8dde4b28804c5f32e347b492a2720cfaf6e
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -180,7 +177,6 @@ async def get_mygrouplist(user: str = Depends(authenticate), db: Session = Depen
 
 # SELECT * FROM 'test'.'group calenders' WHERE gid=[input_gid] and sdatetime>=[input_start_date] and edatetime<=[input_end_date]
 # get weekly group calendar
-<<<<<<< HEAD
 # @router.get("/weeklygroupcal")
 # async def get_weekly_group_cal(gid: int, start_date: datetime.date, end_date: datetime.date, db: Session = Depends(get_db)):
 #     group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
@@ -207,7 +203,8 @@ templates=Jinja2Templates(directory='./app/googlemap')
 @router.get("/googlemap")
 async def get_map(req: Request):
     return templates.TemplateResponse('map.html',{"request":req})
-=======
+
+
 @router.get("/weeklygroupcal")
 async def get_weekly_group_cal(gid: int, start_date: datetime.date, end_date: datetime.date, db: Session = Depends(get_db)):
     group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
@@ -218,4 +215,3 @@ async def get_weekly_group_cal(gid: int, start_date: datetime.date, end_date: da
 async def get_group_info(gid: int, db: Session = Depends(get_db)):
     group_info = await get_groupinfo(gid, db)
     return group_info
->>>>>>> 2110b8dde4b28804c5f32e347b492a2720cfaf6e
