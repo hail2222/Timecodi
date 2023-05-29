@@ -421,6 +421,13 @@ async def get_my_group(user: str, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     return db_group
 
+async def get_my_invited(user: str, db: Session):
+    db_invited = db.query(Invited).filter(Invited.uid == user).all()
+    if not db_invited:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invited list doesn't exist")
+    return db_invited
+
+
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
