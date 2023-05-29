@@ -5,7 +5,7 @@ from sqlalchemy import func, or_, and_
 from datetime import datetime, timedelta
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited
+from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
@@ -240,6 +240,12 @@ async def group_leave(gid: int, user: str, db: Session):
     db.delete(db_member)
     db.commit()
     
+    db_favorite = db.query(Favorite).filter(Favorite.gid == gid, Favorite.uid == user).first()
+    if not db_favorite:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
+    db.delete(db_favorite)
+    db.commit()
+    
     db_event = db.query(Event).filter(Event.uid == user).all()
     for x in db_event:
         db_delete = db.query(GroupEvent).filter(GroupEvent.gid == gid, GroupEvent.ccid == x.cid).first()
@@ -460,3 +466,32 @@ async def get_groupinfo(gid: int, db: Session):
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     return db_group
+
+
+async def favorite_group_register(gid: int, user: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=401, detail="group doesn't exist")
+    db_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if not db_member:
+        raise HTTPException(status_code=401, detail="not group member")
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    db_favorite = Favorite(uid=user, gid=gid, gname=db_group.gname)
+    db.add(db_favorite)
+    db.commit()
+    db.refresh(db_favorite)
+    return {"msg": "favorite group added successfully."}
+
+async def favorite_group_get(user: str, db: Session):
+    db_favorite = db.query(Favorite).filter(Favorite.uid == user).all()
+    if not db_favorite:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite list doesn't exist")
+    return db_favorite
+
+async def favorite_group_delete(gid: int, user: str, db: Session):
+    db_favorite = db.query(Favorite).filter(Favorite.gid == gid, Favorite.uid == user).first()
+    if not db_favorite:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
+    db.delete(db_favorite)
+    db.commit()
+    return {"msg": "favorite deleted successfully."}

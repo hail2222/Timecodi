@@ -15,7 +15,8 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     google_event_register, get_all_groupcal, get_my_group, send_kakao, \
     invited_register, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
-    google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited
+    google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
+    favorite_group_register, favorite_group_get, favorite_group_delete
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -116,10 +117,6 @@ async def update_group(gid: int, group: GroupSchema, db: Session = Depends(get_d
     update_success = await group_update(gid, group, db)
     return update_success
 
-@router.delete("/group")
-async def delete_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    remove_success = await group_leave(gid, user, db)
-    return remove_success
 
 @router.post("/invited")
 async def add_group(gid: int, uid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
@@ -136,6 +133,10 @@ async def add_member(gid: int, user: str = Depends(authenticate), db: Session = 
     register_success = await member_register(gid, user, db)
     return register_success
 
+@router.delete("/member")
+async def delete_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await group_leave(gid, user, db)
+    return remove_success
 
 @router.get("/meeting")    
 async def get_meeting(gid: int, db: Session = Depends(get_db)):
@@ -179,6 +180,23 @@ async def get_mygrouplist(user: str = Depends(authenticate), db: Session = Depen
 async def get_myinvitedlist(user: str = Depends(authenticate), db: Session = Depends(get_db)):
     invited_list = await get_my_invited(user, db)
     return invited_list
+
+
+@router.get("/favorite")
+async def del_favorite_group(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await favorite_group_get(user, db)
+    return register_success
+
+@router.post("/favorite")
+async def add_favorite_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await favorite_group_register(gid, user, db)
+    return register_success
+
+@router.delete("/favorite")
+async def add_favorite_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await favorite_group_delete(gid, user, db)
+    return register_success
+
 
 # SELECT * FROM 'test'.'group calenders' WHERE gid=[input_gid] and sdatetime>=[input_start_date] and edatetime<=[input_end_date]
 # get weekly group calendar

@@ -76,3 +76,13 @@ class GroupEvent(Base):
     visibility = Column(String)
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
+    
+    
+class Favorite(Base):
+    __tablename__ = "favorites"
+
+    fgid = Column(Integer, primary_key=True)
+    uid = Column(String)
+    gid = Column(Integer)
+    gname = Column(String)
+    
