@@ -34,12 +34,25 @@ function MyGroup(props) {
       });
   };
   let [invitedGroupList, setInvitedGroupList] = useState([
-    { groupName: "invited Sample Group 1" },
+    { gid: 1, gname: "my Sample Group 1" },
   ]);
   const getInvitedGroupList = () => {
-    console.log("get invited group list");
+    axios
+      .get(`${url}/myinvitedlist`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newMyInvitedList = [];
+        newMyInvitedList.push(res.data);
+        setInvitedGroupList(newMyInvitedList[0]);
+      })
+      .catch((err) => {
+        console.log("getMyInvitedList");
+        console.log(err);
+      });
   };
-
   useEffect(() => {
     getMyGroupList();
     getInvitedGroupList();
@@ -236,9 +249,9 @@ function MyGroup(props) {
                   <tbody>
                     {invitedGroupList.map(function (item, index) {
                       return (
-                        <tr>
-                          <td>{index + 1}</td>
-                          <td>{item.groupName}</td>
+                        <tr key={index}>
+                          <td>{item.gid}</td>
+                          <td>{item.gname}</td>
                           <td>
                             <button
                               type="button"
