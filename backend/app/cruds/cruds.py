@@ -9,6 +9,7 @@ from ..models.models import User, Event, Friend, FriendRequest, Group, Member, M
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
+from ..timecodi.timecodi import data_to_table
 import random
 
 hash_password = HashPassword()
@@ -456,9 +457,24 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
         GroupEvent.sdatetime <= end_date + timedelta(days=1),
         GroupEvent.edatetime >= start_date
     ).all()
+
+    # Convert db_event objects to dictionaries
+    event_list = []
+    for event in db_event:
+        event_dict = {
+            "cname": event.cname,
+            "cid": event.cid,
+            "sdatetime": event.sdatetime.isoformat(),
+            "visibility": event.visibility,
+            "ccid": event.ccid,
+            "gid": event.gid,
+            "edatetime": event.edatetime.isoformat()
+        }
+        event_list.append(event_dict)
+
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
-    return db_event
+    return data_to_table(event_list, 5) # 5는 그룹의 총 멤버 수. 변경 필요
 
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):

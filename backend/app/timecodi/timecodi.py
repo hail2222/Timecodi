@@ -1,6 +1,6 @@
 # 타임코디 그룹캘린더 기능
 from datetime import datetime, timedelta, date
-from sample_evt_list import sample_evt_list 
+# from weekly_groupcal import event_list 
 
 # 그룹캘린더 일정을 30분 단위로 쪼개기
 def date_to_halfhour(evt_list):
@@ -80,7 +80,7 @@ def data_to_table(output, members):
         table[time][weekday] -= 1
     return table
 
-# print(data_to_table(date_to_halfhour(sample_evt_list), 5))
+# print(data_to_table(date_to_halfhour(event_list), 5))
 
 # for test
 def print_available_table(available_table):
@@ -99,7 +99,7 @@ def print_available_table(available_table):
         print()
 
 """
-print_available_table(data_to_table(date_to_halfhour(sample_evt_list), 5))
+print_available_table(data_to_table(date_to_halfhour(event_list), 5))
            Sun     Mon     Tue     Wed     Thu     Fri     Sat
 08:00        5       5       5       5       5       5       5
 08:30        5       5       5       5       5       5       5
