@@ -10,7 +10,7 @@ from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchem
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
-    invited_register, invited_delete, member_register, \
+    invited_register, invited_delete, get_all_members, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, send_kakao, \
     invited_register, member_register, \
@@ -127,6 +127,11 @@ async def add_group(gid: int, uid: str, user: str = Depends(authenticate), db: S
 async def delete_invited(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     remove_success = await invited_delete(gid, user, db)
     return remove_success
+
+@router.get("/member")
+async def get_member(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    member_list = await get_all_members(gid, user, db)
+    return member_list
 
 @router.post("/member")
 async def add_member(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):

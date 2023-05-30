@@ -186,7 +186,7 @@ function MyGroup(props) {
                               className="btn btn-primary btn-sm"
                             >
                               <Link
-                                to={`/groups/group/${item.gid}`}
+                                to={`/groups/groupTestAdmin/${item.gid}`}
                                 style={{
                                   color: "white",
                                   textDecoration: "none",

@@ -21,6 +21,30 @@ function Group() {
   const [addFriend, setFriend] = useState(false);
   const friendClose = () => setFriend(!addFriend);
 
+  // const [members, setMembers] = useState([]);
+
+  // const getMembers = () => {
+  //   axios
+  //     .get(
+  //       "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend",
+  //       {
+  //         headers: {
+  //           Authorization: localStorage.getItem("token"),
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       let friendList = [];
+  //       response.data.forEach((rel, index) => {
+  //         const friends = { id: index + 1, name: rel.name, userId: rel.id };
+  //         friendList.push(friends);
+  //       });
+  //       setFriends(friendList);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
   let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
   let [memberList] = useState(members);
 
