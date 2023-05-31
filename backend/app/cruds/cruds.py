@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite
 from ..auth.hash_password import HashPassword
-from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
 from ..timecodi.timecodi import data_to_table
 import random
@@ -231,17 +231,17 @@ async def group_update(gid: int, group: GroupSchema, db: Session):
     db.refresh(db_group)
     return {"msg": "group name updated successfully."}
 
-async def group_leave(gid: int, user: str, db: Session):
-    db_group = db.query(Group).filter(Group.gid == gid).first()
+async def group_leave(group: MemberSchema, user: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid == group.gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
-    db_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    db_member = db.query(Member).filter(Member.gid == group.gid, Member.uid == user).first()
     if not db_member:
         raise HTTPException(status_code=401, detail="Not group member")
     db.delete(db_member)
     db.commit()
     
-    db_favorite = db.query(Favorite).filter(Favorite.gid == gid, Favorite.uid == user).first()
+    db_favorite = db.query(Favorite).filter(Favorite.gid == group.gid, Favorite.uid == user).first()
     if not db_favorite:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
     db.delete(db_favorite)
@@ -249,29 +249,29 @@ async def group_leave(gid: int, user: str, db: Session):
     
     db_event = db.query(Event).filter(Event.uid == user).all()
     for x in db_event:
-        db_delete = db.query(GroupEvent).filter(GroupEvent.gid == gid, GroupEvent.ccid == x.cid).first()
+        db_delete = db.query(GroupEvent).filter(GroupEvent.gid == group.gid, GroupEvent.ccid == x.cid).first()
         db.delete(db_delete)
         db.commit()
     return {"msg": "group member deleted successfully."}
 
-async def invited_register(gid: int, uid: str, user: str, db: Session):
-    db_user = db.query(User).filter(User.id == uid).first()
+async def invited_register(invite: InviteSchema, user: str, db: Session):
+    db_user = db.query(User).filter(User.id == invite.uid).first()
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
-    already_invited = db.query(Invited).filter(Invited.uid == uid, Invited.gid == gid).first()
+    already_invited = db.query(Invited).filter(Invited.uid == invite.uid, Invited.gid == invite.gid).first()
     if already_invited:
         raise HTTPException(status_code=401, detail="already invited")
-    already_member = db.query(Member).filter(Member.gid == gid, Member.uid == uid).first()
+    already_member = db.query(Member).filter(Member.gid == invite.gid, Member.uid == invite.uid).first()
     if already_member:
         raise HTTPException(status_code=401, detail="already member")
-    db_group = Invited(gid=gid, uid=uid)
+    db_group = Invited(gid=invite.gid, uid=invite.uid)
     db.add(db_group)
     db.commit()
     db.refresh(db_group)
     return {"msg": "invited added successfully."}
 
-async def invited_delete(gid: int, user: str, db: Session):
-    already_invited = db.query(Invited).filter(Invited.uid == user, Invited.gid == gid).first()
+async def invited_delete(group: MemberSchema, user: str, db: Session):
+    already_invited = db.query(Invited).filter(Invited.uid == user, Invited.gid == group.gid).first()
     if not already_invited:
         raise HTTPException(status_code=401, detail="not already invited")
     
@@ -311,22 +311,29 @@ async def meeting_remove(meetid: int, db: Session):
     db.commit()
     return {"msg": "meeting deleted successfully."}
 
-async def member_register(gid: int, user: str, db: Session):
+async def get_all_members(gid: int, user: str, db: Session):
+    select = db.query(User).join(Member, Member.uid == User.id).filter(Member.gid == gid).all()
+    memberList = []
+    for i in select:
+        memberList.append({"id": i.id, "name": i.name})
+    return memberList
+
+async def member_register(group: MemberSchema, user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
-    already_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    already_member = db.query(Member).filter(Member.gid == group.gid, Member.uid == user).first()
     if already_member:
         raise HTTPException(status_code=401, detail="already member")
-    already_invited = db.query(Invited).filter(Invited.uid == user, Invited.gid == gid).first()
+    already_invited = db.query(Invited).filter(Invited.uid == user, Invited.gid == group.gid).first()
     if not already_invited:
         raise HTTPException(status_code=401, detail="not already invited")
-    db_member = Member(gid=gid, uid=user)
+    db_member = Member(gid=group.gid, uid=user)
     db.add(db_member)
     db.delete(already_invited)
     db.commit()
     db.refresh(db_member)
-    calendar_success = await groupcal_register2(gid, user, db)
+    calendar_success = await groupcal_register2(group.gid, user, db)
     return {"msg": "member added successfully."}
 
 async def member_register2(gid: int, member: str, user: str, db: Session):
@@ -424,14 +431,14 @@ async def google_event_register(user: str, db: Session):
 
 async def get_my_group(user: str, db: Session):
     db_group = db.query(Group).filter(Group.gid == Member.gid, Member.uid == user).all()
-    if not db_group:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    # if not db_group:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     return db_group
 
 async def get_my_invited(user: str, db: Session):
-    db_invited = db.query(Invited).filter(Invited.uid == user).all()
-    if not db_invited:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invited list doesn't exist")
+    db_invited = db.query(Group).join(Invited, Invited.gid == Group.gid).filter(Invited.uid == user).all()
+    # if not db_invited:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invited list doesn't exist")
     return db_invited
 
 
