@@ -312,7 +312,11 @@ async def meeting_remove(meetid: int, db: Session):
     return {"msg": "meeting deleted successfully."}
 
 async def get_all_members(gid: int, user: str, db: Session):
-    return db.query(Member.uid).filter(Member.gid == gid).all()
+    select = db.query(User).join(Member, Member.uid == User.id).filter(Member.gid == gid).all()
+    memberList = []
+    for i in select:
+        memberList.append({"id": i.id, "name": i.name})
+    return memberList
 
 async def member_register(gid: int, user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()

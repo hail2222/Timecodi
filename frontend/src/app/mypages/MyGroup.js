@@ -79,10 +79,11 @@ function MyGroup(props) {
         }
       )
       .then((res) => {
-        if (res.data.success == true) {
-          console.log("handleAddGroup");
-          console.log(res.data.msg);
-          window.location.reload();
+        if (res.data) {
+          // console.log("handleAddGroup");
+          // console.log(res.data.msg);
+          // window.location.reload();
+          getMyGroupList();
         }
       })
       .catch((err) => {

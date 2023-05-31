@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRef, useEffect } from 'react';
+import {useParams, useHistory} from 'react-router-dom';
 import { Modal } from "react-bootstrap";
 import Main from './group-timetable/Main';
 import { Form } from 'react-bootstrap';
@@ -8,9 +9,36 @@ import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
 import {Bar, Doughnut} from 'react-chartjs-2';
-
+import axios from 'axios';
 
 function Group() {
+
+  const [oo, setOO] = useState(false);
+  const history = useHistory();
+
+  axios
+    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      if (response.data.success == true) {
+        // alert("good");
+      }
+    })
+    .catch((err) => {
+      setOO(true);
+    });
+
+  useEffect(() => {
+    if (oo) {
+      history.push("/user-pages/login-1");
+      // alert("please login");
+    }
+  }, [oo]);
+
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -21,32 +49,40 @@ function Group() {
   const [addFriend, setFriend] = useState(false);
   const friendClose = () => setFriend(!addFriend);
 
-  // const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState([]);
 
-  // const getMembers = () => {
-  //   axios
-  //     .get(
-  //       "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend",
-  //       {
-  //         headers: {
-  //           Authorization: localStorage.getItem("token"),
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       let friendList = [];
-  //       response.data.forEach((rel, index) => {
-  //         const friends = { id: index + 1, name: rel.name, userId: rel.id };
-  //         friendList.push(friends);
-  //       });
-  //       setFriends(friendList);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-  let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
-  let [memberList] = useState(members);
+  const { gid } = useParams();
+
+  const getMembers = () => {
+    axios
+      .get(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+          },
+        }
+      )
+      .then((response) => {
+        let memberList = [];
+        response.data.forEach((rel, index) => {
+          memberList.push(rel.name);
+        });
+        setMembers(memberList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getMembers();
+  }, []);
+  // let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
+  // let [memberList] = useState(members);
 
   let [isVoteActive] = useState(true);
   let [options, setOptions] = useState([
@@ -224,7 +260,7 @@ function Group() {
                     
                   </thead>
                   <tbody>
-                    {memberList.map(function (el, idx) {
+                    {members.map(function (el, idx) {
                       return (
                         <tr>
                           <td
