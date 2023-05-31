@@ -6,7 +6,7 @@ import datetime
 from fastapi.responses import FileResponse
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
@@ -119,13 +119,13 @@ async def update_group(gid: int, group: GroupSchema, db: Session = Depends(get_d
 
 
 @router.post("/invited")
-async def add_group(gid: int, uid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await invited_register(gid, uid, user, db)
+async def add_group(invite: InviteSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await invited_register(invite, user, db)
     return register_success
 
 @router.delete("/invited")
-async def delete_invited(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    remove_success = await invited_delete(gid, user, db)
+async def delete_invited(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await invited_delete(group, user, db)
     return remove_success
 
 @router.get("/member")
@@ -134,13 +134,13 @@ async def get_member(gid: int, user: str = Depends(authenticate), db: Session = 
     return member_list
 
 @router.post("/member")
-async def add_member(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await member_register(gid, user, db)
+async def add_member(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await member_register(group, user, db)
     return register_success
 
 @router.delete("/member")
-async def delete_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    remove_success = await group_leave(gid, user, db)
+async def delete_group(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await group_leave(group, user, db)
     return remove_success
 
 @router.get("/meeting")    

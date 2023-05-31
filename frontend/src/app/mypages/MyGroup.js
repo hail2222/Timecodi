@@ -13,9 +13,32 @@ function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
-  let [myGroupList, setMyGroupList] = useState([
-    { gid: 1, gname: "my Sample Group 1" },
-  ]);
+  axios
+    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      if (response.data.success == true) {
+        // alert("good");
+      }
+    })
+    .catch((err) => {
+      setOO(true);
+    });
+
+  useEffect(() => {
+    if (oo) {
+      history.push("/user-pages/login-1");
+      // alert("please login");
+    }
+  }, [oo]);
+
+  // let [myGroupList, setMyGroupList] = useState([
+  //   { gid: 1, gname: "my Sample Group 1" },
+  // ]);
+  let [myGroupList, setMyGroupList] = useState([]);
   const getMyGroupList = () => {
     axios
       .get(`${url}/mygrouplist`, {
@@ -33,9 +56,10 @@ function MyGroup(props) {
         console.log(err);
       });
   };
-  let [invitedGroupList, setInvitedGroupList] = useState([
-    { gid: 1, gname: "my Sample Group 1" },
-  ]);
+  // let [invitedGroupList, setInvitedGroupList] = useState([
+  //   { gid: 1, gname: "my Sample Group 1" },
+  // ]);
+  let [invitedGroupList, setInvitedGroupList] = useState([]);
   const getInvitedGroupList = () => {
     axios
       .get(`${url}/myinvitedlist`, {
@@ -93,27 +117,52 @@ function MyGroup(props) {
     handleClose();
   };
 
-  axios
-    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    })
-    .then((response) => {
-      if (response.data.success == true) {
-        // alert("good");
-      }
-    })
-    .catch((err) => {
-      setOO(true);
-    });
+  const acceptInvite = (gid) => {
+    const data = {gid: gid};
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          getMyGroupList();
+          getInvitedGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+  }
 
-  useEffect(() => {
-    if (oo) {
-      history.push("/user-pages/login-1");
-      // alert("please login");
-    }
-  }, [oo]);
+  const declineInvite = (gid) => {
+    const data = {gid: gid};
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          data: data,
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          getInvitedGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+  }
 
   return (
     <>
@@ -257,12 +306,14 @@ function MyGroup(props) {
                             <button
                               type="button"
                               className="btn btn-primary btn-sm"
+                              onClick={() => acceptInvite(item.gid)}
                             >
                               Accept
                             </button>
                             <button
                               type="button"
                               className="btn btn-secondary btn-sm"
+                              onClick={() => declineInvite(item.gid)}
                             >
                               Decline
                             </button>
