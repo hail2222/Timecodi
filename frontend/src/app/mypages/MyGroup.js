@@ -114,6 +114,33 @@ function MyGroup(props) {
     }
   }, [oo]);
 
+  const [groupStatus, setGroupStatus] = useState([
+    {
+      gid: 52,
+      favoriteStatus: false
+    }
+  ]);
+  const changeFavoriteStatus = (gid) => {
+    setGroupStatus(
+      groupStatus.map((group) => 
+        group.gid === gid ? {...group, favoriteStatus: !group.favoriteStatus} : group ));
+    console.log(groupStatus);
+  };
+
+  const [favoriteList, setFavoriteList] = useState([]);
+  const addFavorite = (gid) => {
+    const addGroup = {
+      gid
+    };
+    setFavoriteList([addGroup, ...favoriteList])
+    console.log(favoriteList);
+  };
+  
+  const deleteFavorite = (gid) => {
+    setFavoriteList(favoriteList.filter((group) => group.gid !== gid));
+    console.log(favoriteList);
+  };
+
   return (
     <>
       <div className="page-header">
@@ -216,7 +243,11 @@ function MyGroup(props) {
                             </button>
                             <button
                               type="button"
-                              className="btn btn-warning btn-sm"
+                              className = {["btn btn-sm", (groupStatus[index].favoriteStatus ? "btn-warning" : "btn-inverse-warning")].join(" ")}
+                              onClick={ () => {
+                                changeFavoriteStatus(item.gid);
+                                groupStatus[index].favoriteStatus ? addFavorite(item.gid) : deleteFavorite(item.gid);
+                              }}
                             >
                               <i className="mdi mdi-star"></i>
                             </button>
