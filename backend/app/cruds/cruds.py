@@ -464,6 +464,7 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
         GroupEvent.sdatetime <= end_date + timedelta(days=1),
         GroupEvent.edatetime >= start_date
     ).all()
+    db_num_member = db.query(Member).filter(Member.gid == gid).count()
 
     # Convert db_event objects to dictionaries
     event_list = []
@@ -481,7 +482,7 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
 
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
-    return data_to_table(event_list, 5) # 5는 그룹의 총 멤버 수. 변경 필요
+    return data_to_table(event_list, db_num_member) 
 
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):
