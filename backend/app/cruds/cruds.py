@@ -26,6 +26,7 @@ async def signin(user: OAuth2PasswordRequestForm, db: Session):
         return {
             "access_token": access_token,
             "token_type": "Bearer",
+            "userid": user_exist.id,
             "username": user_exist.name
         }
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid details passed")
@@ -349,6 +350,48 @@ async def member_register2(gid: int, member: str, user: str, db: Session):
     db.refresh(db_member)
     calendar_success = await groupcal_register2(gid, member, db)
     return {"msg": "member added successfully."}
+
+async def get_is_admin(gid: int, user: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid==gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    return user == db_group.admin
+
+async def transfer_admin(who: InviteSchema, user: str, db: Session):
+    if get_is_admin(who.gid, user, db):
+        db_group = db.query(Group).filter(Group.gid==who.gid).first()
+        db_group.admin = who.uid
+        group = {"gid": who.gid}
+        group_leave(group, user, db)
+        db.commit()
+        db.refresh(db_group)
+        return {"success": True}
+    else:
+        return {"success": False}
+async def kick_member(who: InviteSchema, user: str, db: Session):
+    if get_is_admin(who.gid, user, db):
+        db_group = db.query(Group).filter(Group.gid == who.gid).first()
+        if not db_group:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+        db_member = db.query(Member).filter(Member.gid == who.gid, Member.uid == who.uid).first()
+        if not db_member:
+            raise HTTPException(status_code=401, detail="Not group member")
+        db.delete(db_member)
+        db.commit()
+        
+        db_favorite = db.query(Favorite).filter(Favorite.gid == who.gid, Favorite.uid == who.uid).first()
+        if db_favorite:
+            db.delete(db_favorite)
+            db.commit()
+        
+        db_event = db.query(Event).filter(Event.uid == who.uid).all()
+        for x in db_event:
+            db_delete = db.query(GroupEvent).filter(GroupEvent.gid == who.gid, GroupEvent.ccid == x.cid).first()
+            db.delete(db_delete)
+            db.commit()
+        return {"success": True}
+    else:
+        return {"success": False}
 
 # 멤버인 상태에서 개인 캘린더 추가하면 반영
 async def groupcal_register(ccid: int, member: str, db: Session):
