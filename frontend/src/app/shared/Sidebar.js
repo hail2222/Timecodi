@@ -66,11 +66,9 @@ class Sidebar extends Component {
             >
               <div className="nav-profile-image">
                 <img
-                  src={require("../../assets/images/faces/face1.jpg")}
+                  src={require("../../assets/images/faces/face.jpg")}
                   alt="profile"
                 />
-                <span className="login-status online"></span>{" "}
-                {/* change to offline or busy as needed */}
               </div>
               <div className="nav-profile-text">
                 <span className="font-weight-bold mb-2">
