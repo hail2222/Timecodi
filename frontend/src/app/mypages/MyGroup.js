@@ -13,6 +13,7 @@ function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
+
   axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
       headers: {
@@ -35,10 +36,8 @@ function MyGroup(props) {
     }
   }, [oo]);
 
-  // let [myGroupList, setMyGroupList] = useState([
-  //   { gid: 1, gname: "my Sample Group 1" },
-  // ]);
   let [myGroupList, setMyGroupList] = useState([]);
+
   const getMyGroupList = () => {
     axios
       .get(`${url}/mygrouplist`, {
@@ -56,9 +55,7 @@ function MyGroup(props) {
         console.log(err);
       });
   };
-  // let [invitedGroupList, setInvitedGroupList] = useState([
-  //   { gid: 1, gname: "my Sample Group 1" },
-  // ]);
+
   let [invitedGroupList, setInvitedGroupList] = useState([]);
   const getInvitedGroupList = () => {
     axios
@@ -77,9 +74,29 @@ function MyGroup(props) {
         console.log(err);
       });
   };
+  let [favoriteList, setFavoriteList] = useState([]); // [{"fgid": 8, "uid": "violet", "gid": 11, "gname": "새그룹" }]
+  const getFavoriteList = () => {
+    axios
+      .get(`${url}/favorite`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newFavoriteList = [];
+        newFavoriteList.push(res.data);
+        setFavoriteList(newFavoriteList[0]);
+      })
+      .catch((err) => {
+        console.log("getFavoriteList");
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getMyGroupList();
     getInvitedGroupList();
+    getFavoriteList();
   }, []);
 
   const [showModal, setShowModal] = useState(false);
@@ -118,7 +135,7 @@ function MyGroup(props) {
   };
 
   const acceptInvite = (gid) => {
-    const data = {gid: gid};
+    const data = { gid: gid };
     axios
       .post(
         "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
@@ -139,10 +156,10 @@ function MyGroup(props) {
         // AxiosError: Request failed with status code 422
         alert(err);
       });
-  }
+  };
 
   const declineInvite = (gid) => {
-    const data = {gid: gid};
+    const data = { gid: gid };
     axios
       .delete(
         "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
@@ -162,7 +179,26 @@ function MyGroup(props) {
         // AxiosError: Request failed with status code 422
         alert(err);
       });
-  }
+  };
+
+  const addFavorite = (gid, gname) => {
+    const addGroup = {
+      gid,
+      gname
+    };
+    setFavoriteList([addGroup, ...favoriteList])
+  };
+  
+  const deleteFavorite = (gid) => {
+    setFavoriteList(favoriteList.filter((group) => group.gid !== gid));
+  };
+
+  const isFavorite = (gid) => {
+    if(favoriteList.filter((group) => group.gid === gid).length > 0)
+      return true;
+    else
+      return false;
+  };
 
   return (
     <>
@@ -266,7 +302,10 @@ function MyGroup(props) {
                             </button>
                             <button
                               type="button"
-                              className="btn btn-warning btn-sm"
+                              className = {["btn btn-sm", (isFavorite(item.gid) ? "btn-warning" : "btn-inverse-warning")].join(" ")}
+                              onClick={ () => {
+                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid, item.gname);
+                              }}
                             >
                               <i className="mdi mdi-star"></i>
                             </button>
