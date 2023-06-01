@@ -77,9 +77,29 @@ function MyGroup(props) {
         console.log(err);
       });
   };
+  let [favoriteList, setFavoriteList] = useState([]); // [{"fgid": 8, "uid": "violet", "gid": 11, "gname": "새그룹" }]
+  const getFavoriteList = () => {
+    axios
+      .get(`${url}/favorite`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newFavoriteList = [];
+        newFavoriteList.push(res.data);
+        setFavoriteList(newFavoriteList[0]);
+      })
+      .catch((err) => {
+        console.log("getFavoriteList");
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getMyGroupList();
     getInvitedGroupList();
+    getFavoriteList();
   }, []);
 
   const [showModal, setShowModal] = useState(false);
@@ -118,7 +138,7 @@ function MyGroup(props) {
   };
 
   const acceptInvite = (gid) => {
-    const data = {gid: gid};
+    const data = { gid: gid };
     axios
       .post(
         "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
@@ -139,10 +159,10 @@ function MyGroup(props) {
         // AxiosError: Request failed with status code 422
         alert(err);
       });
-  }
+  };
 
   const declineInvite = (gid) => {
-    const data = {gid: gid};
+    const data = { gid: gid };
     axios
       .delete(
         "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
@@ -162,7 +182,7 @@ function MyGroup(props) {
         // AxiosError: Request failed with status code 422
         alert(err);
       });
-  }
+  };
 
   return (
     <>
