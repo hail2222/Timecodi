@@ -3,15 +3,41 @@ import { useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Main from "./group-timetable/Main";
-import { Form } from "react-bootstrap";
 import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
-import { Bar, Doughnut } from "react-chartjs-2";
 import axios from "axios";
 
+const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
+const localURL = "https://127.0.0.1:8000";
+const url = realURL;
+
 function Group() {
+  let location = useLocation();
+  let currentPath = location.pathname;
+  let gid = parseInt(currentPath.split("/").pop(), 10);
+  const [gname, setGname] = useState("");
+  const [admin, setAdmin] = useState("");
+
+  const getGroupInfo = () => {
+    console.log("get group info by gid");
+    axios
+      .get(`${url}/groupinfo?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setGname(res.data.gname);
+        setAdmin(res.data.admin);
+      })
+      .catch((err) => {
+        console.log("get group info by id");
+        console.log(err);
+      });
+  };
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -23,7 +49,26 @@ function Group() {
   const friendClose = () => setFriend(!addFriend);
 
   let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
-  let [memberList] = useState(members);
+  let [memberList, setMemberList] = useState(members);
+  const getMemberList = () => {
+    // 아니면 그냥 get group info에 합치는게 나을듯
+    axios
+      .get(`${url}/memberlist?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        let newMemberList = [];
+        newMemberList.push(res.data);
+        setMemberList(newMemberList[0]);
+      })
+      .catch((err) => {
+        console.log("get member list");
+        console.log(err);
+      });
+  };
 
   let [isVoteActive] = useState(true);
   let [options, setOptions] = useState([
@@ -122,40 +167,16 @@ function Group() {
     event.preventDefault();
     console.log(options);
   };
-  const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
-  const localURL = "https://127.0.0.1:8000";
-  const url = realURL;
-  let location = useLocation();
-  let currentPath = location.pathname;
-  let gid = parseInt(currentPath.split("/").pop(), 10);
-  const [gname, setGname] = useState("");
-  const [admin, setAdmin] = useState("");
-  const getGroupInfo = () => {
-    console.log("get group info by gid");
-    axios
-      .get(`${url}/groupinfo/?gid=${gid}`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setGname(res.data[0].gname);
-        setAdmin(res.data[0].admin);
-      })
-      .catch((err) => {
-        console.log("get group info by id");
-        console.log(err);
-      });
-  };
+
   useEffect(() => {
     getGroupInfo();
+    // getMemberList();
   }, []);
 
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title">그룹 이름 나와라 얍: {gname}</h3>
+        <h3 className="page-title">{gname}</h3>
         <nav aria-label="breadcrumb">
           <p>GID: {gid}</p>
           <p>Admin: {admin}</p>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { Collapse } from "react-bootstrap";
 import { Trans } from "react-i18next";
+import Withdrawal from "./Withdrawal";
 
 class Sidebar extends Component {
   state = {};
@@ -127,6 +128,10 @@ class Sidebar extends Component {
                   >
                     <Trans>My Timetable</Trans>
                   </Link>
+                </li>
+                <li className="nav-item">
+                  {" "}
+                  <Withdrawal />
                 </li>
               </ul>
 

@@ -7,6 +7,24 @@ import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import { Bar, Doughnut } from "react-chartjs-2";
+// import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  Marker,
+  withScriptjs,
+  withGoogleMap,
+} from "react-google-maps";
+import MapComponent from "./MapComponent";
+
+const mapStyles = {
+  height: "50vh",
+  width: "100%",
+};
+
+const defaultCenter = {
+  lat: 37.2934204446,
+  lng: 126.97467286,
+};
 
 function Group() {
   const [show, setShow] = useState(false);
@@ -171,6 +189,27 @@ function Group() {
             </li>
           </ol>
         </nav>
+      </div>
+      <div className="row">
+        <div className="col-6 grid-margin stretch-card">
+          <div className="card">
+            <div
+              className="card-body"
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                height: "400px",
+                width: "100%",
+                boxSizing: "border-box",
+              }}
+            >
+              <h4 className="card-title">test for google map</h4>
+              <div className="google-map-container">
+                <MapComponent />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="row">
         <div className="col-6 grid-margin">

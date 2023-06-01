@@ -324,6 +324,7 @@ function FriendsPage() {
                   <table className="table table-hover">
                     <thead>
                       <tr>
+                        <th>Name</th>
                         <th>ID</th>
                         <th>Edit</th>
                       </tr>
@@ -332,6 +333,7 @@ function FriendsPage() {
                       {requestFriends.map(function (item, index) {
                         return (
                           <tr key={index}>
+                            <td>{}</td>
                             <td>{item}</td>
                             <td>
                               <button
