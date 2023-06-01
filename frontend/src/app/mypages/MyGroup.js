@@ -14,7 +14,7 @@ function MyGroup(props) {
   const history = useHistory();
 
   let [myGroupList, setMyGroupList] = useState([
-    { gid: 1, gname: "my Sample Group 1" },
+    //{ gid: 1, gname: "my Sample Group 1" },
   ]);
   const getMyGroupList = () => {
     axios
@@ -114,18 +114,6 @@ function MyGroup(props) {
     }
   }, [oo]);
 
-  const [groupStatus, setGroupStatus] = useState([
-    {
-      gid: 52,
-      favoriteStatus: false
-    }
-  ]);
-  const changeFavoriteStatus = (gid) => {
-    setGroupStatus(
-      groupStatus.map((group) => 
-        group.gid === gid ? {...group, favoriteStatus: !group.favoriteStatus} : group ));
-    console.log(groupStatus);
-  };
 
   const [favoriteList, setFavoriteList] = useState([]);
   const addFavorite = (gid) => {
@@ -133,12 +121,17 @@ function MyGroup(props) {
       gid
     };
     setFavoriteList([addGroup, ...favoriteList])
-    console.log(favoriteList);
   };
   
   const deleteFavorite = (gid) => {
     setFavoriteList(favoriteList.filter((group) => group.gid !== gid));
-    console.log(favoriteList);
+  };
+
+  const isFavorite = (gid) => {
+    if(favoriteList.filter((group) => group.gid === gid).length > 0)
+      return true;
+    else
+      return false;
   };
 
   return (
@@ -243,10 +236,9 @@ function MyGroup(props) {
                             </button>
                             <button
                               type="button"
-                              className = {["btn btn-sm", (groupStatus[index].favoriteStatus ? "btn-warning" : "btn-inverse-warning")].join(" ")}
+                              className = {["btn btn-sm", (isFavorite(item.gid) ? "btn-warning" : "btn-inverse-warning")].join(" ")}
                               onClick={ () => {
-                                changeFavoriteStatus(item.gid);
-                                groupStatus[index].favoriteStatus ? addFavorite(item.gid) : deleteFavorite(item.gid);
+                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid);
                               }}
                             >
                               <i className="mdi mdi-star"></i>
