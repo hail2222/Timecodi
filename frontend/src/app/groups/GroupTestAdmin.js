@@ -65,6 +65,8 @@ function Group() {
     }
   }, [oo]);
 
+  // const { gid } = useParams();
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -93,7 +95,7 @@ function Group() {
       .then((response) => {
         let memberList = [];
         response.data.forEach((rel, index) => {
-          memberList.push(rel.name);
+          memberList.push({id: rel.id, name: rel.name});
         });
         setMembers(memberList);
       })
@@ -102,10 +104,55 @@ function Group() {
       });
   };
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const getAdmin = () => {
+    axios
+    .get(
+      "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/admin",
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        params: {
+          gid: gid,
+        },
+      }
+    )
+    .then((response) => {
+      setIsAdmin(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
   useEffect(() => {
     getGroupInfo();
     getMembers();
+    getAdmin();
   }, []);
+
+  const inviteMember = (userId) => {
+    const data = {gid: gid, uid: userId};
+
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited", data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        addClose();
+        alert("invite success!");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   // let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
   // let [memberList] = useState(members);
 
@@ -287,7 +334,7 @@ function Group() {
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
                           >
-                            {el}
+                            {el.name}           
                           </td>
                           <td>
                             <button

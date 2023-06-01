@@ -77,7 +77,7 @@ class Sidebar extends Component {
                   <Trans>{localStorage.getItem("username")}</Trans>
                 </span>
                 <span className="text-secondary text-small">
-                  <Trans>Project Manager</Trans>
+                  <Trans>{localStorage.getItem("userid")}</Trans>
                 </span>
               </div>
               <i className="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
