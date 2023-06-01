@@ -13,84 +13,6 @@ function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
-  let [myGroupList, setMyGroupList] = useState([
-    //{ gid: 1, gname: "my Sample Group 1" },
-  ]);
-  const getMyGroupList = () => {
-    axios
-      .get(`${url}/mygrouplist`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        let newMyGroupList = [];
-        newMyGroupList.push(res.data);
-        setMyGroupList(newMyGroupList[0]);
-      })
-      .catch((err) => {
-        console.log("getMyGroupList");
-        console.log(err);
-      });
-  };
-  let [invitedGroupList, setInvitedGroupList] = useState([
-    { gid: 1, gname: "my Sample Group 1" },
-  ]);
-  const getInvitedGroupList = () => {
-    axios
-      .get(`${url}/myinvitedlist`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        let newMyInvitedList = [];
-        newMyInvitedList.push(res.data);
-        setInvitedGroupList(newMyInvitedList[0]);
-      })
-      .catch((err) => {
-        console.log("getMyInvitedList");
-        console.log(err);
-      });
-  };
-  useEffect(() => {
-    getMyGroupList();
-    getInvitedGroupList();
-  }, []);
-
-  const [showModal, setShowModal] = useState(false);
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
-
-  const [gname, setGname] = useState("default");
-  let handleAddGroup = () => {
-    const data = {
-      gname: gname,
-    };
-    console.log(data);
-    axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        if (res.data.success == true) {
-          console.log("handleAddGroup");
-          console.log(res.data.msg);
-          window.location.reload();
-        }
-      })
-      .catch((err) => {
-        // AxiosError: Request failed with status code 422
-        alert(err);
-      });
-    handleClose();
-  };
 
   axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
@@ -114,11 +36,155 @@ function MyGroup(props) {
     }
   }, [oo]);
 
+  let [myGroupList, setMyGroupList] = useState([]);
 
-  const [favoriteList, setFavoriteList] = useState([]);
-  const addFavorite = (gid) => {
+  const getMyGroupList = () => {
+    axios
+      .get(`${url}/mygrouplist`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newMyGroupList = [];
+        newMyGroupList.push(res.data);
+        setMyGroupList(newMyGroupList[0]);
+      })
+      .catch((err) => {
+        console.log("getMyGroupList");
+        console.log(err);
+      });
+  };
+
+  let [invitedGroupList, setInvitedGroupList] = useState([]);
+  const getInvitedGroupList = () => {
+    axios
+      .get(`${url}/myinvitedlist`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newMyInvitedList = [];
+        newMyInvitedList.push(res.data);
+        setInvitedGroupList(newMyInvitedList[0]);
+      })
+      .catch((err) => {
+        console.log("getMyInvitedList");
+        console.log(err);
+      });
+  };
+  let [favoriteList, setFavoriteList] = useState([]); // [{"fgid": 8, "uid": "violet", "gid": 11, "gname": "새그룹" }]
+  const getFavoriteList = () => {
+    axios
+      .get(`${url}/favorite`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        let newFavoriteList = [];
+        newFavoriteList.push(res.data);
+        setFavoriteList(newFavoriteList[0]);
+      })
+      .catch((err) => {
+        console.log("getFavoriteList");
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getMyGroupList();
+    getInvitedGroupList();
+    getFavoriteList();
+  }, []);
+
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+
+  const [gname, setGname] = useState("default");
+  let handleAddGroup = () => {
+    const data = {
+      gname: gname,
+    };
+    console.log(data);
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          // console.log("handleAddGroup");
+          // console.log(res.data.msg);
+          // window.location.reload();
+          getMyGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+    handleClose();
+  };
+
+  const acceptInvite = (gid) => {
+    const data = { gid: gid };
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          getMyGroupList();
+          getInvitedGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+  };
+
+  const declineInvite = (gid) => {
+    const data = { gid: gid };
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          data: data,
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          getInvitedGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+  };
+
+  const addFavorite = (gid, gname) => {
     const addGroup = {
-      gid
+      gid,
+      gname
     };
     setFavoriteList([addGroup, ...favoriteList])
   };
@@ -219,7 +285,7 @@ function MyGroup(props) {
                               className="btn btn-primary btn-sm"
                             >
                               <Link
-                                to={`/groups/group/${item.gid}`}
+                                to={`/groups/groupTestAdmin/${item.gid}`}
                                 style={{
                                   color: "white",
                                   textDecoration: "none",
@@ -238,10 +304,19 @@ function MyGroup(props) {
                               type="button"
                               className = {["btn btn-sm", (isFavorite(item.gid) ? "btn-warning" : "btn-inverse-warning")].join(" ")}
                               onClick={ () => {
-                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid);
+                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid, item.gname);
                               }}
                             >
                               <i className="mdi mdi-star"></i>
+                            </button>
+                            <button
+                              type="button"
+                              className = "btn btn-sm btn-inverse-warning"
+                              onClick={ () => {
+                                console.log(favoriteList);
+                              }}
+                            >
+                              console
                             </button>
                           </td>
                         </tr>
@@ -279,12 +354,14 @@ function MyGroup(props) {
                             <button
                               type="button"
                               className="btn btn-primary btn-sm"
+                              onClick={() => acceptInvite(item.gid)}
                             >
                               Accept
                             </button>
                             <button
                               type="button"
                               className="btn btn-secondary btn-sm"
+                              onClick={() => declineInvite(item.gid)}
                             >
                               Decline
                             </button>

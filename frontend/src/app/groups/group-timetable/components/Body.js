@@ -69,7 +69,7 @@ function Body(props) {
     // get weekly group calendar
     // weeklygroupcal?gid=11&start_date=2023-04-30&end_date=2023-05-06
     // 여기에서 멤버 수도 줘야 하는데
-    /* axios
+    axios
       .get(
         `${url}/weeklygroupcal?gid=${gid}&start_date=${startdate}&end_date=${enddate}`,
         {
@@ -87,7 +87,7 @@ function Body(props) {
       .catch((err) => {
         console.log("get group weekly calender");
         console.log(err);
-      }); */
+      });
   };
 
   const requestOptions = {

@@ -25,7 +25,9 @@ grpcio-status==1.54.0
 h11==0.14.0
 httplib2==0.22.0
 idna==3.4
+Jinja2==3.1.2
 jose==1.0.0
+MarkupSafe==2.1.2
 oauthlib==3.2.2
 packaging==23.1
 passlib==1.7.4

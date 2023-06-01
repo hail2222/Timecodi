@@ -21,6 +21,13 @@ class EventSchema(BaseModel):
     
 class GroupSchema(BaseModel):
     gname: str
+
+class MemberSchema(BaseModel):
+    gid: int
+
+class InviteSchema(BaseModel):
+    uid: str
+    gid: int
     
 class MeetingSchema(BaseModel):
     title: str
