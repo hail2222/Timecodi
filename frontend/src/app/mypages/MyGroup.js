@@ -309,15 +309,6 @@ function MyGroup(props) {
                             >
                               <i className="mdi mdi-star"></i>
                             </button>
-                            <button
-                              type="button"
-                              className = "btn btn-sm btn-inverse-warning"
-                              onClick={ () => {
-                                console.log(favoriteList);
-                              }}
-                            >
-                              console
-                            </button>
                           </td>
                         </tr>
                       );
