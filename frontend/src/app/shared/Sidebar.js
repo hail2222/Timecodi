@@ -40,7 +40,7 @@ class Sidebar extends Component {
       { path: "/tables", state: "tablesMenuOpen" },
       { path: "/maps", state: "mapsMenuOpen" },
       { path: "/icons", state: "iconsMenuOpen" },
-      { path: "/mypage", state: "chartsMenuOpen" },
+      { path: "/mypage", state: "myPageMenuOpen" },
       { path: "/user-pages", state: "userPagesMenuOpen" },
       { path: "/error-pages", state: "errorPagesMenuOpen" },
       { path: "/general-pages", state: "generalPagesMenuOpen" },
@@ -93,15 +93,15 @@ class Sidebar extends Component {
             </Link>
           </li>
 
-          <li className={this.isPathActive('/charts') ? 'nav-item active' : 'nav-item'}>
-            <div className={this.state.chartsMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('chartsMenuOpen')} data-toggle="collapse">
+          <li className={this.isPathActive('/mypage') ? 'nav-item active' : 'nav-item'}>
+            <div className={this.state.myPageMenuOpen ? 'nav-link menu-expanded' : 'nav-link'} onClick={() => this.toggleMenuState('myPageMenuOpen')} data-toggle="collapse">
               <span className="menu-title">
                 <Trans>My Page</Trans>
               </span>
               <i className="menu-arrow"></i>
               <i className="mdi mdi-calendar-check menu-icon"></i>
             </div>
-            <Collapse in={this.state.chartsMenuOpen}>
+            <Collapse in={this.state.myPageMenuOpen}>
               <ul className="nav flex-column sub-menu">
                 <li className="nav-item">
                   {" "}
@@ -120,11 +120,11 @@ class Sidebar extends Component {
                   {" "}
                   <Link
                     className={
-                      this.isPathActive("/my-timetable/timetable")
+                      this.isPathActive("/mypage/timetable")
                         ? "nav-link active"
                         : "nav-link"
                     }
-                    to="/my-timetable/timetable"
+                    to="/mypage/timetable"
                   >
                     <Trans>My Timetable</Trans>
                   </Link>
