@@ -3,6 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import { Collapse } from "react-bootstrap";
 import { Trans } from "react-i18next";
 import Withdrawal from "./Withdrawal";
+import FavoriteGroup from "./FavoriteGroup";
 
 class Sidebar extends Component {
   state = {};
@@ -154,11 +155,12 @@ class Sidebar extends Component {
             </div>
             <Collapse in={this.state.groupsMenuOpen}>
               <ul className="nav flex-column sub-menu">
+              <FavoriteGroup />
               <li className="nav-item">
                   {" "}
                   <Link
                     className={
-                      this.isPathActive("/groups/group")
+                      this.isPathActive2("/groups/group")
                         ? "nav-link active"
                         : "nav-link"
                     }
@@ -171,7 +173,7 @@ class Sidebar extends Component {
                   {" "}
                   <Link
                     className={
-                      this.isPathActive("/groups/groupTest")
+                      this.isPathActive2("/groups/groupTest")
                         ? "nav-link active"
                         : "nav-link"
                     }
@@ -184,7 +186,7 @@ class Sidebar extends Component {
                   {" "}
                   <Link
                     className={
-                      this.isPathActive("/groups/groupTestAdmin")
+                      this.isPathActive2("/groups/groupTestAdmin")
                         ? "nav-link active"
                         : "nav-link"
                     }
@@ -211,6 +213,10 @@ class Sidebar extends Component {
 
   isPathActive(path) {
     return this.props.location.pathname.startsWith(path);
+  }
+
+  isPathActive2(path) {
+    return this.props.location.pathname === path;
   }
 
   componentDidMount() {
