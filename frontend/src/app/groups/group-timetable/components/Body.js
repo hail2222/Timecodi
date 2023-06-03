@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Dates from "./Dates";
 import axios from "axios";
@@ -63,8 +64,13 @@ function Body(props) {
       startdate.getDate() < 10 ? `0${startdate.getDate()}` : startdate.getDate()
     }`;
     console.log(startdate);
-    let gid = 11; // 이거 나중에 props로 받아오기
-    let members = 5; // 이것도
+    // let location = useLocation();
+    // let currentPath = location.pathname;
+    let gid = 11;
+    // gid = parseInt(currentPath.split("/").pop(), 10);
+    console.log(
+      `${url}/weeklygroupcal?gid=${gid}&start_date=${startdate}&end_date=${enddate}`
+    );
 
     // get weekly group calendar
     // weeklygroupcal?gid=11&start_date=2023-04-30&end_date=2023-05-06
