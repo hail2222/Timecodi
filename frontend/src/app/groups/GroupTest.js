@@ -191,20 +191,20 @@ function Group() {
         </nav>
       </div>
       <div className="row">
-        <div className="col-6 grid-margin stretch-card">
+        <div className="col-10 grid-margin stretch-card">
           <div className="card">
-            <div
-              className="card-body"
-              style={{
-                position: "relative",
-                overflow: "hidden",
-                height: "400px",
-                width: "100%",
-                boxSizing: "border-box",
-              }}
-            >
+            <div className="card-body">
               <h4 className="card-title">test for google map</h4>
-              <div className="google-map-container">
+              <div
+                className="google-map-container"
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  height: "400px",
+                  width: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
                 <MapComponent />
               </div>
             </div>
