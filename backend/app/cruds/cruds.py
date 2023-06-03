@@ -10,6 +10,8 @@ from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
 from ..timecodi.timecodi import calender_to_timetable
+from ..timecodi.generatevote import create_vote
+
 import random
 
 hash_password = HashPassword()
@@ -527,6 +529,11 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
     return calender_to_timetable(event_list, db_num_member)
 
+async def get_votetime(gid: int, start_date: datetime, end_date: datetime, meetingtime: str, db: Session):
+    group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
+    return create_vote(group_cal[0], meetingtime)
+    
+    
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):
     db_group = db.query(Group).filter(Group.gid == gid).first()
