@@ -5,7 +5,7 @@ from sqlalchemy import func, or_, and_
 from datetime import datetime, timedelta
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite
+from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite, GenerateVote, Vote
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
 from ..googlecal.cal_func import get_event
@@ -529,11 +529,64 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
     return calender_to_timetable(event_list, db_num_member)
 
-async def get_votetime(gid: int, start_date: datetime, end_date: datetime, meetingtime: str, db: Session):
+
+async def generate_votetime(gid: int, start_date: datetime, end_date: datetime, meetingtime: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    
+    # 기존 투표 존재 -> 제거
+    votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == gid)
+    if votetime_exist.first():
+        for i in votetime_exist.all():
+            db.delete(i)
+            db.commit()
     group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
-    return create_vote(group_cal[0], meetingtime)
+    for x in create_vote(group_cal[0], meetingtime):
+        db_votetime = GenerateVote(gid = gid, day = x[0], s_time = x[1], e_time = x[2], members = 0)
+        db.add(db_votetime)
+        db.commit()
+        db.refresh(db_votetime)
+    return {"msg": "votetime added successfully."}
+    
+async def vote_register(vid: int, user: str, db: Session):
+    votetime_exist = db.query(GenerateVote).filter(GenerateVote.vid == vid).first()
+    if not votetime_exist:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="votetime doesn't exist")
+    vote_exist= db.query(Vote).filter(Vote.vid == vid, Vote.uid == user).first()
+    if vote_exist:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="vote already exist")
+    db_votetime = db.query(GenerateVote).filter(GenerateVote.vid == vid).first()
+    gid = db_votetime.gid
+    db_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if not db_member:
+        raise HTTPException(status_code=401, detail="user not group member")
+    db_vote = Vote(vid=vid, uid=user)
+    db_votetime.members+=1
+    db.add(db_vote)
+    db.commit()
+    db.refresh(db_vote)
+    return {"msg": "user vote successfully."}
     
     
+async def vote_delete(vid: int, user: str, db: Session):
+    db_vote = db.query(Vote).filter(Vote.vid == vid, Vote.uid == user).first()
+    if not db_vote:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="vote doesn't exist")
+    db_votetime = db.query(GenerateVote).filter(GenerateVote.vid == vid).first()
+    db_votetime.members-=1
+    db.delete(db_vote)
+    db.commit()
+    return {"msg": "user delete vote successfully."}
+
+# async def get_voteresult(gid: int, db: Session):
+#     db_group = db.query(Group).filter(Group.gid == gid).first()
+#     if not db_group:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+#     db_result = db.query(GenerateVote).filter(GenerateVote.gid == gid).all()
+    
+#     return db_result[0]
+
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):
     db_group = db.query(Group).filter(Group.gid == gid).first()

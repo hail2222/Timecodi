@@ -37,9 +37,8 @@ time_mapping = {
     "01:30:00": 35,
     "02:00:00": 36,
 }
-result=[]
 def valid_time(group_cal, listname, time_count):
-    global result
+    result=[]
     num_member = list(group_cal[listname].keys())[0]
     list_time = group_cal[listname][num_member]
     if len(list_time)==0:
@@ -66,9 +65,7 @@ def valid_time(group_cal, listname, time_count):
 def create_vote(group_cal, meetingtime):
     hour = int(meetingtime[:meetingtime.index(':')])
     minute = int(meetingtime[meetingtime.index(':')+1:])
-    # print(hour,minute)
     time_count = hour*2 + (minute//30)
-    print(time_count)
     
     if valid_time(group_cal, 'first_list',time_count)!=[]  and valid_time(group_cal, 'first_list',time_count) != False:
         return valid_time(group_cal, 'first_list',time_count)
