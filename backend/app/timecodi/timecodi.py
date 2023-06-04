@@ -1,9 +1,12 @@
 # 타임코디 그룹캘린더 기능
 from datetime import datetime, timedelta
 
+
+# 주석처리 안하면 백엔드 서버 실행이 안되는 테스트 주석들
 # from weekly_groupcal import event_list 
-# 테스트용 파일입니다. 주석처리 안하시면 백엔드 서버 실행이 안됩니다.
-# 테스트 시: 이 import문이랑, 아래 함수에서 테스트하고자 하는 함수 밑에 주석처리된 print문 주석 해제하시면 됩니다.
+# # return calender_to_timetable(event_list, db_num_member, start_date)
+# start_date = "2023-04-30"
+# start_date = datetime.strptime(start_date, "%Y-%m-%d")
 
 weekday_map = {
     "Sunday": 0,
@@ -91,7 +94,8 @@ def map_halfhour_to_table(output, members):
 
 # pick top 3 
 # 실질적인 메인함수(?). return value: dictionary.  {key: weekday, value: list of top 3 times}
-def pick_top3(table):
+def pick_top3(table, start_date):
+    
     time_mapping_2 = {v: k for k, v in time_mapping.items()}
     weekday_map_2 = {v: k for k, v in weekday_map.items()}
     data_dict = {}
@@ -107,6 +111,8 @@ def pick_top3(table):
     number_of_members = [0, 0, 0]  # 0: first, 1: second, 2: third members count list
 
     for day, times in data_dict.items():
+        date = start_date + timedelta(days=weekday_map[day])
+        date = date.strftime("%Y-%m-%d")
         for time, count in times.items():
             if count == 0:
                 continue
@@ -116,21 +122,21 @@ def pick_top3(table):
                 number_of_members[1] = number_of_members[0]
                 second_list = list(first_list)
                 number_of_members[0] = count
-                first_list = [(day, time)]
+                first_list = [(date, day, time)]
             elif count == number_of_members[0]:
-                first_list.append((day, time))
+                first_list.append((date, day, time))
             elif count > number_of_members[1]:
                 number_of_members[2] = number_of_members[1]
                 third_list = list(second_list)
                 number_of_members[1] = count
-                second_list = [(day, time)]
+                second_list = [(date, day, time)]
             elif count == number_of_members[1]:
-                second_list.append((day, time))
+                second_list.append((date, day, time))
             elif count > number_of_members[2]:
                 number_of_members[2] = count
-                third_list = [(day, time)]
+                third_list = [(date, day, time)]
             elif count == number_of_members[2]:
-                third_list.append((day, time))
+                third_list.append((date, day, time))
 
     # frist_list, second_list, third_list : list to tuple
     first_list = tuple(first_list)
@@ -144,14 +150,15 @@ def pick_top3(table):
     }
 
     return result
-# print(pick_top3(map_halfhour_to_table(date_to_halfhour(event_list), 5)))
 
-# main : for sending to frontend. 단순히 pick_top3 결과값 딕셔너리를 리스트에 한 번 더 담아주는 역할. 
-def calender_to_timetable(event_list, members):
+# print(pick_top3(map_halfhour_to_table(date_to_halfhour(event_list), 5), start_date))
+
+# main : for sending to frontend. 
+def calender_to_timetable(event_list, members, start_date):
     result = []
-    result.append(pick_top3(map_halfhour_to_table(date_to_halfhour(event_list), members)))
+    result.append(pick_top3(map_halfhour_to_table(date_to_halfhour(event_list), members), start_date))
     return result
-# print(calender_to_timetable(event_list, 5))
+# print(calender_to_timetable(event_list, 5, start_date))
 
 
 

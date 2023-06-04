@@ -527,7 +527,7 @@ async def get_weekly_groupcal(gid: int, start_date: datetime, end_date: datetime
 
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group calendar doesn't exist")
-    return calender_to_timetable(event_list, db_num_member)
+    return calender_to_timetable(event_list, db_num_member, start_date)
 
 async def get_votetime(gid: int, db: Session):
     db_group = db.query(Group).filter(Group.gid == gid).first()
