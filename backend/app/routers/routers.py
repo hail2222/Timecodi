@@ -17,7 +17,7 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
     favorite_group_register, favorite_group_get, favorite_group_delete, \
-    generate_votetime, vote_register, vote_delete
+    get_votetime, generate_votetime, vote_register, vote_delete
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -260,6 +260,11 @@ async def get_group_info(gid: int, db: Session = Depends(get_db)):
     group_info = await get_groupinfo(gid, db)
     return group_info
 
+
+@router.get("/votetime")
+async def get_vote_time(gid: int, db: Session = Depends(get_db)):
+    vote_time = await get_votetime(gid, db)
+    return vote_time
 
 @router.post("/votetime")
 async def generate_vote_time(gid: int, start_date: datetime.date, end_date: datetime.date, meetingtime: str, db: Session = Depends(get_db)):
