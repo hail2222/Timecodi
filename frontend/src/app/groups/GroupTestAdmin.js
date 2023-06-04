@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { useRef, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import React, { useState, useRef, useEffect } from "react";
+import { Modal, Form } from "react-bootstrap";
 import Main from "./group-timetable/Main";
-import { Form } from "react-bootstrap";
 import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
@@ -137,6 +135,14 @@ function Group() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(options);
+  };
+
+  const [input, setInput] = useState("");
+  const inputRef = useRef();
+
+  const onChange = (e) => {
+    setInput(e.target.value);
+    inputRef.current.focus();
   };
 
   return (
@@ -904,6 +910,9 @@ function Group() {
                         id="event_content"
                         placeholder="Search the location of your meeting"
                         style={{ width: "330px", float: "left" }}
+                        value={input}
+                        ref={inputRef}
+                        onChange={onChange}
                       ></Form.Control>{" "}
                       <div className="input-group-append">
                         <button
@@ -926,13 +935,13 @@ function Group() {
                 <td>
                   <div
                     style={{
-                      width: " 650px",
-                      height: " 300px",
+                      width: "650px",
+                      height: "300px",
                       "margin-left": "2vw",
                       "background-color": " white",
                     }}
                   >
-                    <MapComponent />
+                    <MapComponent inputRef={inputRef}/>
                   </div>
                 </td>
               </tr>
