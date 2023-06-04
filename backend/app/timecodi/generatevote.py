@@ -37,35 +37,38 @@ time_mapping = {
     "01:30:00": 35,
     "02:00:00": 36,
 }
+
 def valid_time(group_cal, listname, time_count):
     result=[]
     num_member = list(group_cal[listname].keys())[0]
     list_time = group_cal[listname][num_member]
     if len(list_time)==0:
         return False
-    day = list_time[0][0]
+    day = list_time[0][1]
     for i in range(len(list_time)-time_count):
         # 요일이 같지 않으면
-        if day != list_time[i][0]:
-            day = list_time[i][0]
+        if day != list_time[i][1]:
+            day = list_time[i][1]
             continue
-        time = list_time[i][1]
+        time = list_time[i][2]
         start = time_mapping[time]
         for j in range(1, time_count+1):
-            next_day = list_time[i+j][0]
-            next_time = time_mapping[list_time[i+j][1]]
+            next_day = list_time[i+j][1]
+            next_time = time_mapping[list_time[i+j][2]]
             if next_time != start+1 or day != next_day:
                 break
             start+=1
             if j == time_count:
-                result.append([day, list_time[i][1], list_time[i+time_count][1]])
+                result.append([list_time[i][0], list_time[i][2], list_time[i+time_count][2]])
     return result
             
 
 def create_vote(group_cal, meetingtime):
     hour = int(meetingtime[:meetingtime.index(':')])
     minute = int(meetingtime[meetingtime.index(':')+1:])
+    # print(hour,minute)
     time_count = hour*2 + (minute//30)
+    # print(time_count)
     
     if valid_time(group_cal, 'first_list',time_count)!=[]  and valid_time(group_cal, 'first_list',time_count) != False:
         return valid_time(group_cal, 'first_list',time_count)

@@ -165,8 +165,8 @@ async def get_meeting(gid: int, db: Session = Depends(get_db)):
     return meeting_list
 
 @router.post("/meeting")
-async def add_meeting(gid: int, db: Session = Depends(get_db)):
-    register_success = await meeting_register(gid, db)
+async def add_meeting(gid: int, meeting: MeetingSchema, db: Session = Depends(get_db)):
+    register_success = await meeting_register(gid, meeting, db)
     return register_success
 
 @router.put("/meeting")

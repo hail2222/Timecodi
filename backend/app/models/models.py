@@ -57,6 +57,7 @@ class Meeting(Base):
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
     location = Column(String)
+    loc_detail = Column(String)
     memo = Column(String)
 
 class Member(Base):
@@ -101,4 +102,5 @@ class Vote(Base):
     
     vvid = Column(Integer, primary_key=True)
     vid = Column(Integer)
+    gid = Column(Integer)
     uid = Column(String)

@@ -286,8 +286,17 @@ async def invited_delete(group: MemberSchema, user: str, db: Session):
 async def get_all_meetings(gid: int, db: Session):
     return db.query(Meeting).filter(Meeting.gid == gid).all()
 
-async def meeting_register(gid: int, db: Session):
-    db_meeting = Meeting(gid=gid)
+async def meeting_register(gid: int, meeting: MeetingSchema, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    db_meeting = Meeting(gid=gid, 
+                         title = meeting.title,
+                         sdatetime = meeting.sdatetime,
+                         edatetime = meeting.edatetime,
+                         location = meeting.location,
+                         loc_detail = meeting.loc_detail,
+                         memo = meeting.memo)
     db.add(db_meeting)
     db.commit()
     db.refresh(db_meeting)
@@ -301,6 +310,7 @@ async def meeting_update(meetid: int, meeting: MeetingSchema, db: Session):
     db_meeting.sdatetime = meeting.sdatetime
     db_meeting.edatetime = meeting.edatetime
     db_meeting.location = meeting.location
+    db_meeting.loc_detail = meeting.loc_detail
     db_meeting.memo = meeting.memo
     db.add(db_meeting)
     db.commit()
@@ -550,6 +560,12 @@ async def generate_votetime(gid: int, start_date: datetime, end_date: datetime, 
         for i in votetime_exist.all():
             db.delete(i)
             db.commit()
+    vote_exist = db.query(Vote).filter(Vote.gid == gid)
+    if vote_exist.first():
+        for i in vote_exist.all():
+            db.delete(i)
+            db.commit()
+    
     group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
     for x in create_vote(group_cal[0], meetingtime):
         db_votetime = GenerateVote(gid = gid, day = x[0], s_time = x[1], e_time = x[2], members = 0)
@@ -570,7 +586,7 @@ async def vote_register(vid: int, user: str, db: Session):
     db_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
     if not db_member:
         raise HTTPException(status_code=401, detail="user not group member")
-    db_vote = Vote(vid=vid, uid=user)
+    db_vote = Vote(vid=vid, gid=gid, uid=user)
     db_votetime.members+=1
     db.add(db_vote)
     db.commit()
@@ -595,9 +611,22 @@ async def get_voteresult(gid: int, db: Session):
     db_result = db.query(GenerateVote).filter(GenerateVote.gid == gid).all()
     max_members=0
     # find max vote members
-    # for x in db_result:
-    #     if x.members > max:
-    #         max = x.members
+    for x in db_result:
+        if x.members > max_members:
+            max_members = x.members
+    if max_members==0:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No one voted")
+    db_max = db.query(GenerateVote).filter(GenerateVote.gid == gid, GenerateVote.members == max_members).all()
+    
+    max_members2=0
+    for x in db_result:
+        if x.members > max_members2 and x.members < max_members:
+            max_members2 = x.members
+    if max_members2!=0:
+        db_max2 = db.query(GenerateVote).filter(GenerateVote.gid == gid, GenerateVote.members == max_members2).all()
+        db_max.append(db_max2)
+
+    return db_max
 
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):
