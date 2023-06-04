@@ -203,7 +203,7 @@ async def get_myinvitedlist(user: str = Depends(authenticate), db: Session = Dep
 
 
 @router.get("/favorite")
-async def del_favorite_group(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+async def get_favorite_group(user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await favorite_group_get(user, db)
     return register_success
 
@@ -213,7 +213,7 @@ async def add_favorite_group(gid: int, user: str = Depends(authenticate), db: Se
     return register_success
 
 @router.delete("/favorite")
-async def add_favorite_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+async def del_favorite_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await favorite_group_delete(gid, user, db)
     return register_success
 

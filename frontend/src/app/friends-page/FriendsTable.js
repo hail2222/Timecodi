@@ -57,7 +57,10 @@ const FriendItem = ({ friend, onDel }) => {
           <button
             type="button"
             className="btn btn-primary btn-sm"
-            onClick={() => onDel(id)}
+            onClick={() => {
+              onDel(id);
+              deleteClose();
+            }}
           >
             YES
           </button>
