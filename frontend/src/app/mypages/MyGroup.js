@@ -74,6 +74,7 @@ function MyGroup(props) {
         console.log(err);
       });
   };
+
   let [favoriteList, setFavoriteList] = useState([]); // [{"fgid": 8, "uid": "violet", "gid": 11, "gname": "새그룹" }]
   const getFavoriteList = () => {
     axios
@@ -181,10 +182,9 @@ function MyGroup(props) {
       });
   };
 
-  const addFavorite = (gid, gname) => {
+  const addFavorite = (gid) => {
     const addGroup = {
-      gid,
-      gname
+      gid
     };
     setFavoriteList([addGroup, ...favoriteList])
   };
@@ -304,7 +304,7 @@ function MyGroup(props) {
                               type="button"
                               className = {["btn btn-sm", (isFavorite(item.gid) ? "btn-warning" : "btn-inverse-warning")].join(" ")}
                               onClick={ () => {
-                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid, item.gname);
+                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid);
                               }}
                             >
                               <i className="mdi mdi-star"></i>
