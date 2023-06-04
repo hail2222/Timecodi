@@ -588,13 +588,16 @@ async def vote_delete(vid: int, user: str, db: Session):
     db.commit()
     return {"msg": "user delete vote successfully."}
 
-# async def get_voteresult(gid: int, db: Session):
-#     db_group = db.query(Group).filter(Group.gid == gid).first()
-#     if not db_group:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
-#     db_result = db.query(GenerateVote).filter(GenerateVote.gid == gid).all()
-    
-#     return db_result[0]
+async def get_voteresult(gid: int, db: Session):
+    db_group = db.query(Group).filter(Group.gid == gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    db_result = db.query(GenerateVote).filter(GenerateVote.gid == gid).all()
+    max_members=0
+    # find max vote members
+    # for x in db_result:
+    #     if x.members > max:
+    #         max = x.members
 
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):
