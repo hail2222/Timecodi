@@ -162,7 +162,8 @@ async def friend_remove(friend: FriendSchema, user: str, db: Session):
     return {"msg": "friend deleted successfully."}
 
 async def get_all_requests(user: str, db: Session):
-    return db.query(FriendRequest).filter(FriendRequest.fid == user).all()
+    # return db.query(FriendRequest).filter(FriendRequest.fid == user).all()
+    return db.query(User).join(FriendRequest, FriendRequest.uid == User.id).filter(FriendRequest.fid == user).all()
 
 async def friend_request(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
