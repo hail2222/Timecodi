@@ -86,3 +86,19 @@ class Favorite(Base):
     gid = Column(Integer)
     gname = Column(String)
     
+class GenerateVote(Base):
+    __tablename__ = "generate votes"
+
+    vid = Column(Integer, primary_key=True)
+    gid = Column(Integer)
+    day = Column(String)
+    s_time = Column(String)
+    e_time = Column(String)
+    members = Column(Integer)
+
+class Vote(Base):
+    __tablename__ = "votes"
+    
+    vvid = Column(Integer, primary_key=True)
+    vid = Column(Integer)
+    uid = Column(String)
