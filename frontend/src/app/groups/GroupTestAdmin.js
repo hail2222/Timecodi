@@ -192,7 +192,6 @@ function Group() {
   const [addAdminCheck, setAdminCheck] = useState(false);
   const adminCheckClose = () => setAdminCheck(!addAdminCheck);
 
-
   let [isVoteActive] = useState(true);
   let [options, setOptions] = useState([
     {
@@ -259,21 +258,21 @@ function Group() {
       people: 5,
     },
     {
-      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
       content: "2023-04-25 14:00 ~ 16:00",
       checked: false,
       people: 5,
     },
     {
-      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
       content: "2023-04-25 14:00 ~ 16:00",
       checked: false,
       people: 5,
     },
     {
-      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
       content: "2023-04-25 14:00 ~ 16:00",
       checked: false,
@@ -532,7 +531,7 @@ function Group() {
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
                           >
-                            {el}
+                            {el.name}
                           </td>
                           <td>
                             <button
@@ -566,7 +565,7 @@ function Group() {
                 &nbsp;Invite New Member
               </button>
             </center>
-          
+          </div>
         </div>
       </div>
       <div className="row">
@@ -740,12 +739,12 @@ function Group() {
               }}
             >
               <h4 className="card-title">
-                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정 아닐 때)
+                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정 아닐
+                때)
               </h4>
               <p className="card-description">
                 Check the box to vote and submit.
               </p>
-
 
               <form onSubmit={handleSubmit}>
                 <div
@@ -910,7 +909,6 @@ function Group() {
                     </span>
                   </button>
                 </div>
-                
               </form>
             </div>
           </div>
@@ -1009,8 +1007,8 @@ function Group() {
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">
-              <i className="mdi mdi-poll"></i> 
-              Vote Result
+                <i className="mdi mdi-poll"></i>
+                Vote Result
               </h4>
               <p className="card-description">See the vote result!</p>
               <form onSubmit={handleSubmit}>
@@ -1183,7 +1181,7 @@ function Group() {
                       "background-color": " white",
                     }}
                   >
-                    <MapComponent inputRef={inputRef}/>
+                    <MapComponent inputRef={inputRef} />
                   </div>
                 </td>
               </tr>
@@ -1243,8 +1241,8 @@ function Group() {
           </button>
         </Modal.Footer>
       </Modal>
-      <AdminBox gid={gid} isAdmin={isAdmin} members={members}/>
-      <NonAdminBox isAdmin={isAdmin}/>
+      <AdminBox gid={gid} isAdmin={isAdmin} members={members} />
+      <NonAdminBox isAdmin={isAdmin} />
 
       {/* 친구찾기 */}
       <Modal show={addFriend} onHide={friendClose} centered>
