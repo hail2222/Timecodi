@@ -204,21 +204,21 @@ function Group() {
   ]);
   let [result, setResult] = useState([
     {
-      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
       content: "2023-04-25 14:00 ~ 16:00",
       checked: false,
       people: 5,
     },
     {
-      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
       content: "2023-04-25 14:00 ~ 16:00",
       checked: false,
       people: 5,
     },
     {
-      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
       content: "2023-04-25 14:00 ~ 16:00",
       checked: false,
@@ -273,7 +273,6 @@ function Group() {
       checked: false,
       people: 2,
     },
-
   ]);
   let handleOptions = (event) => {
     let newState = [...options];
@@ -298,6 +297,14 @@ function Group() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(options);
+  };
+
+  const [input, setInput] = useState("");
+  const inputRef = useRef();
+
+  const onChange = (e) => {
+    setInput(e.target.value);
+    inputRef.current.focus();
   };
 
   return (
@@ -346,27 +353,31 @@ function Group() {
         </div>
         <div className="col-6 grid-margin stretch-card">
           <div className="card">
-
-            <h4 className="card-title" style={{
-              "margin": '2.5vw 0 0 2.5vw',
-            }}>
+            <h4
+              className="card-title"
+              style={{
+                margin: "2.5vw 0 0 2.5vw",
+              }}
+            >
               <i className="mdi mdi-account"></i> Members (Admin 아닌계정)
             </h4>
 
-            <div className="card-body" style={{
-              height: "200px",
-              overflowY: "auto",
-              overflowX: "hidden",
-            }}>
+            <div
+              className="card-body"
+              style={{
+                height: "200px",
+                overflowY: "auto",
+                overflowX: "hidden",
+              }}
+            >
               {/* <p className="card-description">Click member's name</p> */}
-              <div className="table-responsive" >
+              <div className="table-responsive">
                 <table className="table">
                   <thead>
                     {/* <tr style={{"text-align":'center'}}>
                       <th> Name </th>
                       <th> Actions </th>
                     </tr> */}
-
                   </thead>
                   <tbody>
                     {members.map(function (el, idx) {
@@ -402,38 +413,44 @@ function Group() {
             <center>
               <button
                 type="button"
-                className="btn btn-gradient-primary btn-sm " style={{ "font-weight": '420', "margin": '2vw' }} onClick={adminCheckClose}>
-                <i className="mdi mdi-account-plus" ></i>
+                className="btn btn-gradient-primary btn-sm "
+                style={{ "font-weight": "420", margin: "2vw" }}
+                onClick={adminCheckClose}
+              >
+                <i className="mdi mdi-account-plus"></i>
                 &nbsp;Invite New Member
-              </button></center>
-
+              </button>
+            </center>
           </div>
         </div>
-        
 
         <div className="col-6 grid-margin stretch-card">
           <div className="card">
-
-            <h4 className="card-title" style={{
-              "margin": '2.5vw 0 0 2.5vw',
-            }}>
+            <h4
+              className="card-title"
+              style={{
+                margin: "2.5vw 0 0 2.5vw",
+              }}
+            >
               <i className="mdi mdi-account"></i> Members (Admin 계정)
             </h4>
 
-            <div className="card-body" style={{
-              height: "200px",
-              overflowY: "auto",
-              overflowX: "hidden",
-            }}>
+            <div
+              className="card-body"
+              style={{
+                height: "200px",
+                overflowY: "auto",
+                overflowX: "hidden",
+              }}
+            >
               {/* <p className="card-description">Click member's name</p> */}
-              <div className="table-responsive" >
+              <div className="table-responsive">
                 <table className="table">
                   <thead>
                     {/* <tr style={{"text-align":'center'}}>
                       <th> Name </th>
                       <th> Actions </th>
                     </tr> */}
-
                   </thead>
                   <tbody>
                     {members.map(function (el, idx) {
@@ -469,58 +486,97 @@ function Group() {
             <center>
               <button
                 type="button"
-                className="btn btn-gradient-primary btn-sm " style={{ "font-weight": '420', "margin": '2vw' }} onClick={friendClose}>
-                <i className="mdi mdi-account-plus" ></i>
+                className="btn btn-gradient-primary btn-sm "
+                style={{ "font-weight": "420", margin: "2vw" }}
+                onClick={friendClose}
+              >
+                <i className="mdi mdi-account-plus"></i>
                 &nbsp;Invite New Member
-              </button></center>
-
+              </button>
+            </center>
           </div>
         </div>
       </div>
       <div className="row">
-
-        <div className="col grid-margin" style={{ "height": '800px', "width": '650px' }}>
-          <div className="card" style={{ "height": '750px', "width": '600px' }}>
-            <div className="card-body" >
+        <div
+          className="col grid-margin"
+          style={{ height: "800px", width: "650px" }}
+        >
+          <div className="card" style={{ height: "750px", width: "600px" }}>
+            <div className="card-body">
               <h4 className="card-title">
-                <i className="mdi mdi-calendar-multiple-check"></i> Group Calender</h4>
-              <p className="card-description">Click the <span style={{ "color": '#fe7c96' }}>pink box</span> to see available time of the week.</p>
-              <div style={{ "margin-top": '4vw' }}>
-                <Main style={{ flexDirection: 'column' }} />
-                <br></br><br></br>
+                <i className="mdi mdi-calendar-multiple-check"></i> Group Calender
+              </h4>
+              <p className="card-description">
+                Click the <span style={{ color: "#fe7c96" }}>pink box</span> to
+                see available time of the week.
+              </p>
+              <div style={{ "margin-top": "4vw" }}>
+                <Main style={{ flexDirection: "column" }} />
+                <br></br>
+                <br></br>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col grid-margin" style={{ "height": '800px', "width": '540px' }}>
-          <div className="card" style={{ "height": '750px', "width": '540px' }}>
+        <div
+          className="col grid-margin"
+          style={{ height: "800px", width: "540px" }}
+        >
+          <div className="card" style={{ height: "750px", width: "540px" }}>
             <div className="card-body">
               <div className="row">
-                <p className="card-description" style={{ "margin-left": '8em' }}>Your group members are available at..</p>
+                <p
+                  className="card-description"
+                  style={{ "margin-left": "8em" }}
+                >
+                  Your group members are available at..
+                </p>
 
-                <div id="visit-sale-chart-legend" className="rounded-legend legend-horizontal" style={{ "margin-left": '9em' }}>
+                <div
+                  id="visit-sale-chart-legend"
+                  className="rounded-legend legend-horizontal"
+                  style={{ "margin-left": "9em" }}
+                >
                   <ul>
                     <li>
-                      <span className="legend-dots bg-primary">
-                      </span>1st
+                      <span className="legend-dots bg-primary"></span>1st
                     </li>
                     <li>
-                      <span className="legend-dots" style={{ 'background-color': '#cc9fff' }}>
-
-                      </span>2nd
+                      <span
+                        className="legend-dots"
+                        style={{ "background-color": "#cc9fff" }}
+                      ></span>
+                      2nd
                     </li>
                     <li>
-                      <span className="legend-dots" style={{ 'background-color': '#e0c5ff' }}>
-                      </span>3rd
+                      <span
+                        className="legend-dots"
+                        style={{ "background-color": "#e0c5ff" }}
+                      ></span>
+                      3rd
                     </li>
                   </ul>
                 </div>
 
                 <TimeTable></TimeTable>
-                <div className="row" style={{ "margin": '1.5vw 0 0 3vw' }}>
-                  <p className="card-description" style={{ "margin": '0.2vw 1vw 0 0', "text-align": 'center' }}>How long will it take?</p>
-                  <select className="form-control form-control-sm" id="meeting-hour" style={{ "position": 'relative', "width": '4vw', "height": '2vw' }}>
+                <div className="row" style={{ margin: "1.5vw 0 0 3vw" }}>
+                  <p
+                    className="card-description"
+                    style={{ margin: "0.2vw 1vw 0 0", "text-align": "center" }}
+                  >
+                    How long will it take?
+                  </p>
+                  <select
+                    className="form-control form-control-sm"
+                    id="meeting-hour"
+                    style={{
+                      position: "relative",
+                      width: "4vw",
+                      height: "2vw",
+                    }}
+                  >
                     <option>0</option>
                     <option>1</option>
                     <option>2</option>
@@ -547,20 +603,42 @@ function Group() {
                     <option>23</option>
                     <option>24</option>
                   </select>
-                  <p className="card-description" style={{ "margin": '0.2vw 0.5vw', "text-align": 'center' }}>hours &nbsp;</p>
-                  <select className="form-control form-control-sm" id="meeting-min" style={{ "position": 'relative', "width": '4vw', "height": '2vw' }}>
+                  <p
+                    className="card-description"
+                    style={{ margin: "0.2vw 0.5vw", "text-align": "center" }}
+                  >
+                    hours &nbsp;
+                  </p>
+                  <select
+                    className="form-control form-control-sm"
+                    id="meeting-min"
+                    style={{
+                      position: "relative",
+                      width: "4vw",
+                      height: "2vw",
+                    }}
+                  >
                     <option>00</option>
                     <option>30</option>
                   </select>
-                  <p className="card-description" style={{ "margin": '0.2vw 0.5vw', "text-align": 'center' }}>minutes</p>
-
+                  <p
+                    className="card-description"
+                    style={{ margin: "0.2vw 0.5vw", "text-align": "center" }}
+                  >
+                    minutes
+                  </p>
                 </div>
-                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1vw 0 0vw 12vw' }}>
+                <button
+                  type="button"
+                  className="btn btn-inverse-primary btn-sm"
+                  style={{ margin: "1vw 0 0vw 12vw" }}
+                >
                   <i className="mdi mdi-calendar-plus"></i>
-                  <span style={{ "font-size": '15px', "font-weight": '500' }}>&nbsp; Generate Vote</span>
+                  <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                    &nbsp; Generate Vote
+                  </span>
                 </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -575,7 +653,7 @@ function Group() {
               }}
             >
               <h4 className="card-title">
-                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정아닐 때)
+                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정 아닐 때)
               </h4>
               <p className="card-description">
                 Check the box to vote and submit.
@@ -583,16 +661,21 @@ function Group() {
 
 
               <form onSubmit={handleSubmit}>
-                <div className="card-body" style={{
-                  height: "300px",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  'padding': '0vw'
-                }}>
-                  <table className="table" >
-                    <tr style={{
-                      'text-align': "center",
-                    }}>
+                <div
+                  className="card-body"
+                  style={{
+                    height: "300px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    padding: "0vw",
+                  }}
+                >
+                  <table className="table">
+                    <tr
+                      style={{
+                        "text-align": "center",
+                      }}
+                    >
                       <th>#</th>
                       <th>Time</th>
                       <th>
@@ -601,15 +684,20 @@ function Group() {
                     </tr>
                     {options.map(function (el, idx) {
                       return (
-                        <tr style={{
-                          'text-align': "center",
-                        }}>
+                        <tr
+                          style={{
+                            "text-align": "center",
+                          }}
+                        >
                           <td>{el.id}</td>
                           <td>{el.content}</td>
                           <td>
-                            <div className="form-check" style={{
-                              'margin-left': "3.5vw",
-                            }}>
+                            <div
+                              className="form-check"
+                              style={{
+                                "margin-left": "3.5vw",
+                              }}
+                            >
                               <label className="form-check-label">
                                 <input
                                   type="checkbox"
@@ -629,10 +717,15 @@ function Group() {
                 </div>
 
                 <div className="row">
-                  <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0vw 0vw 14vw' }}>
-                    <span style={{ "font-size": '15px', "font-weight": '500' }}>&nbsp;Submit</span>
+                  <button
+                    type="button"
+                    className="btn btn-inverse-primary btn-sm"
+                    style={{ margin: "1.5vw 0vw 0vw 14vw" }}
+                  >
+                    <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                      &nbsp;Submit
+                    </span>
                   </button>
-
                 </div>
               </form>
             </div>
@@ -655,16 +748,21 @@ function Group() {
               </p>
 
               <form onSubmit={handleSubmit}>
-                <div className="card-body" style={{
-                  height: "300px",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  'padding': '0vw'
-                }}>
-                  <table className="table" >
-                    <tr style={{
-                      'text-align': "center",
-                    }}>
+                <div
+                  className="card-body"
+                  style={{
+                    height: "300px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    padding: "0vw",
+                  }}
+                >
+                  <table className="table">
+                    <tr
+                      style={{
+                        "text-align": "center",
+                      }}
+                    >
                       <th>#</th>
                       <th>Time</th>
                       <th>
@@ -673,15 +771,20 @@ function Group() {
                     </tr>
                     {options.map(function (el, idx) {
                       return (
-                        <tr style={{
-                          'text-align': "center",
-                        }}>
+                        <tr
+                          style={{
+                            "text-align": "center",
+                          }}
+                        >
                           <td>{el.id}</td>
                           <td>{el.content}</td>
                           <td>
-                            <div className="form-check" style={{
-                              'margin-left': "3.5vw",
-                            }}>
+                            <div
+                              className="form-check"
+                              style={{
+                                "margin-left": "3.5vw",
+                              }}
+                            >
                               <label className="form-check-label">
                                 <input
                                   type="checkbox"
@@ -701,11 +804,23 @@ function Group() {
                 </div>
 
                 <div className="row">
-                  <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '1.5vw 0vw 0vw 10vw' }}>
-                    <span style={{ "font-size": '15px', "font-weight": '500' }}>&nbsp;Submit</span>
+                  <button
+                    type="button"
+                    className="btn btn-inverse-primary btn-sm"
+                    style={{ margin: "1.5vw 0vw 0vw 10vw" }}
+                  >
+                    <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                      &nbsp;Submit
+                    </span>
                   </button>
-                  <button type="button" className="btn btn-inverse-danger btn-sm" style={{ "margin": '1.5vw 0vw 0vw 5vw' }}>
-                    <span style={{ "font-size": '15px', "font-weight": '500' }}>&nbsp;End vote</span>
+                  <button
+                    type="button"
+                    className="btn btn-inverse-danger btn-sm"
+                    style={{ margin: "1.5vw 0vw 0vw 5vw" }}
+                  >
+                    <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                      &nbsp;End vote
+                    </span>
                   </button>
                 </div>
                 
@@ -722,45 +837,64 @@ function Group() {
                 <i className="mdi mdi-poll"></i>
                 Vote Result (Admin 계정 아닐 때)
               </h4>
-              <p className="card-description">
-                See the vote result!
-              </p>
+              <p className="card-description">See the vote result!</p>
               <form onSubmit={handleSubmit}>
-                <div className="card-body" style={{
-                  height: "350px",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  'padding': '0vw'
-                }}>
+                <div
+                  className="card-body"
+                  style={{
+                    height: "350px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    padding: "0vw",
+                  }}
+                >
                   <table className="table">
-                    <tr style={{
-                      'text-align': "center",
-                    }}>
+                    <tr
+                      style={{
+                        "text-align": "center",
+                      }}
+                    >
                       <th>#</th>
                       <th>Time</th>
                       <th>
                         <i className="mdi mdi-account-multiple"></i>
                       </th>
-                      <th > <i className="mdi mdi-checkbox-multiple-marked-outline"></i></th>
+                      <th>
+                        {" "}
+                        <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
+                      </th>
                     </tr>
                     {result.map(function (el, idx) {
                       return (
-                        <tr style={{
-                          'text-align': "center",
-                        }}>
-                          <td >{el.place}</td>
+                        <tr
+                          style={{
+                            "text-align": "center",
+                          }}
+                        >
+                          <td>{el.place}</td>
                           <td>{el.content}</td>
                           <td>
-                            <div className="form-check" >
-                              <button type="button" className="btn btn-inverse-danger btn-sm" style={{ 'height': '1.5vw', 'padding': '0.1vw 0.4vw' }}>
-                                <i className="mdi mdi-account-outline"> </i>{el.people}
+                            <div className="form-check">
+                              <button
+                                type="button"
+                                className="btn btn-inverse-danger btn-sm"
+                                style={{
+                                  height: "1.5vw",
+                                  padding: "0.1vw 0.4vw",
+                                }}
+                              >
+                                <i className="mdi mdi-account-outline"> </i>
+                                {el.people}
                               </button>
                             </div>
                           </td>
-                          <td >
-                            <div className="form-check" style={{
-                              'margin-left': "2vw",
-                            }}>
+                          <td>
+                            <div
+                              className="form-check"
+                              style={{
+                                "margin-left": "2vw",
+                              }}
+                            >
                               <label className="form-check-label">
                                 <input
                                   type="checkbox"
@@ -769,7 +903,7 @@ function Group() {
                                   onChange={handleOptionsResult}
                                   name={el.id}
                                 />
-                                <i className="input-helper" ></i>
+                                <i className="input-helper"></i>
                               </label>
                             </div>
                           </td>
@@ -793,16 +927,21 @@ function Group() {
               </h4>
               <p className="card-description">See the vote result!</p>
               <form onSubmit={handleSubmit}>
-                <div className="card-body" style={{
-                  height: "300px",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  'padding': '0vw'
-                }}>
+                <div
+                  className="card-body"
+                  style={{
+                    height: "300px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    padding: "0vw",
+                  }}
+                >
                   <table className="table">
-                    <tr style={{
-                      'text-align': "center",
-                    }}>
+                    <tr
+                      style={{
+                        "text-align": "center",
+                      }}
+                    >
                       <th>#</th>
                       <th>Time</th>
                       <th>
@@ -815,22 +954,35 @@ function Group() {
                     </tr>
                     {result.map(function (el, idx) {
                       return (
-                        <tr style={{
-                          'text-align': "center",
-                        }}>
-                          <td >{el.place}</td>
+                        <tr
+                          style={{
+                            "text-align": "center",
+                          }}
+                        >
+                          <td>{el.place}</td>
                           <td>{el.content}</td>
                           <td>
-                            <div className="form-check" >
-                              <button type="button" className="btn btn-inverse-danger btn-sm" style={{ 'height': '1.5vw', 'padding': '0.1vw 0.4vw' }}>
-                                <i className="mdi mdi-account-outline"> </i>{el.people}
+                            <div className="form-check">
+                              <button
+                                type="button"
+                                className="btn btn-inverse-danger btn-sm"
+                                style={{
+                                  height: "1.5vw",
+                                  padding: "0.1vw 0.4vw",
+                                }}
+                              >
+                                <i className="mdi mdi-account-outline"> </i>
+                                {el.people}
                               </button>
                             </div>
                           </td>
-                          <td >
-                            <div className="form-check" style={{
-                              'margin-left': "2vw",
-                            }}>
+                          <td>
+                            <div
+                              className="form-check"
+                              style={{
+                                "margin-left": "2vw",
+                              }}
+                            >
                               <label className="form-check-label">
                                 <input
                                   type="checkbox"
@@ -839,7 +991,7 @@ function Group() {
                                   onChange={handleOptionsResult}
                                   name={el.id}
                                 />
-                                <i className="input-helper" ></i>
+                                <i className="input-helper"></i>
                               </label>
                             </div>
                           </td>
@@ -848,63 +1000,126 @@ function Group() {
                     })}
                   </table>
                 </div>
-                <button type="button" className="btn btn-inverse-primary btn-sm" style={{ "margin": '3vw 4vw 0vw 12vw' }} onClick={addClose}>
-                  <span style={{ "font-size": '15px', "font-weight": '500' }}> Make Meeting</span>
+                <button
+                  type="button"
+                  className="btn btn-inverse-primary btn-sm"
+                  style={{ margin: "3vw 4vw 0vw 12vw" }}
+                  onClick={addClose}
+                >
+                  <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                    {" "}
+                    Make Meeting
+                  </span>
                 </button>
               </form>
             </div>
           </div>
         </div>
-
-
-
-
-
       </div>
 
       {/* 미팅 정보 메모 */}
 
-      <Modal style={{"position":"relative","margin-left":'0vw'}} show={addShow} onHide={addClose} size="lg" centered >
-        <Modal.Header style={{ "background-color": "#f2edf3"}} closeButton>
-          <Modal.Title id="contained-modal-title-md"style={{}} > <span style={{ "font-weight": '500', "margin": '5vw 0 0 35vw'}}>Input Meeting Information</span></Modal.Title>
+      <Modal
+        style={{ position: "relative", "margin-left": "0vw" }}
+        show={addShow}
+        onHide={addClose}
+        size="lg"
+        centered
+      >
+        <Modal.Header style={{ "background-color": "#f2edf3" }} closeButton>
+          <Modal.Title id="contained-modal-title-md" style={{}}>
+            {" "}
+            <span style={{ "font-weight": "500", margin: "5vw 0 0 35vw" }}>
+              Input Meeting Information
+            </span>
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{"background-color": "#f2edf3"}} >
-          <div style={{ "margin": '0 8vw', }}>
+        <Modal.Body style={{ "background-color": "#f2edf3" }}>
+          <div style={{ margin: "0 8vw" }}>
             <table>
               <tr>
                 <td>
-          <div>
-          <label style={{"padding":" 0.7vw 0 0 0"}}>Meeting Name: </label>
-          <Form.Control type="text" id="event_content" placeholder="meeting name" style={{"width":"400px"}}></Form.Control>{" "}
-          <label style={{"padding":" 0.7vw 0 0 0"}}>Memo </label>
-          <Form.Control type="text" id="event_content" placeholder="..." style={{"width":"400px"}}></Form.Control>{" "}
-          </div>
-          <div>
-          <label style={{"padding":" 0.7vw 0 0 0"}}>Where: </label>
-          <div>
-          <Form.Control type="text" id="event_content" placeholder="Search the location of your meeting" style={{"width":"330px","float":"left"}}></Form.Control>{" "}
-                    <div className="input-group-append">
-          <button className="btn btn-sm btn-gradient-primary" type="button" style={{"float":"right","height":"3vw"}}>Search</button>
+                  <div>
+                    <label style={{ padding: " 0.7vw 0 0 0" }}>
+                      Meeting Name:{" "}
+                    </label>
+                    <Form.Control
+                      type="text"
+                      id="event_content"
+                      placeholder="meeting name"
+                      style={{ width: "400px" }}
+                    ></Form.Control>{" "}
+                    <label style={{ padding: " 0.7vw 0 0 0" }}>Memo </label>
+                    <Form.Control
+                      type="text"
+                      id="event_content"
+                      placeholder="..."
+                      style={{ width: "400px" }}
+                    ></Form.Control>{" "}
+                  </div>
+                  <div>
+                    <label style={{ padding: " 0.7vw 0 0 0" }}>Where: </label>
+                    <div>
+                      <Form.Control
+                        type="text"
+                        id="event_content"
+                        placeholder="Search the location of your meeting"
+                        style={{ width: "330px", float: "left" }}
+                        value={input}
+                        ref={inputRef}
+                        onChange={onChange}
+                      ></Form.Control>{" "}
+                      <div className="input-group-append">
+                        <button
+                          className="btn btn-sm btn-gradient-primary"
+                          type="button"
+                          style={{ float: "right", height: "3vw" }}
+                        >
+                          Search
+                        </button>
+                      </div>
                     </div>
-          </div>
-          <Form.Control type="text" id="event_content" placeholder="place of your meeting" style={{"width":"400px"}}></Form.Control>{" "}
-          </div></td>
-          <td>
-          <div style={{"width":" 650px","height":" 300px", "margin-left":"2vw", "background-color":" white"}}>
-          </div></td>
-      </tr>
+                    <Form.Control
+                      type="text"
+                      id="event_content"
+                      placeholder="place of your meeting"
+                      style={{ width: "400px" }}
+                    ></Form.Control>{" "}
+                  </div>
+                </td>
+                <td>
+                  <div
+                    style={{
+                      width: "650px",
+                      height: "300px",
+                      "margin-left": "2vw",
+                      "background-color": " white",
+                    }}
+                  >
+                    <MapComponent inputRef={inputRef}/>
+                  </div>
+                </td>
+              </tr>
             </table>
           </div>
         </Modal.Body>
-        <Modal.Footer style={{"background-color": "#f2edf3"}} >
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => {
-            addClose();
-          }}>
+        <Modal.Footer style={{ "background-color": "#f2edf3" }}>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              addClose();
+            }}
+          >
             Submit
           </button>
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {
-            addClose();
-          }}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => {
+              addClose();
+            }}
+          >
             Cancel
           </button>
         </Modal.Footer>
@@ -914,17 +1129,29 @@ function Group() {
 
       <Modal show={addAdminCheck} onHide={adminCheckClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title><div style={{ "font-weight": '200', "margin": '0 5vw' }}>Sorry, you can't take this action.<br></br> Ask the Group Admin! </div></Modal.Title>
+          <Modal.Title>
+            <div style={{ "font-weight": "200", margin: "0 5vw" }}>
+              Sorry, you can't take this action.<br></br> Ask the Group Admin!{" "}
+            </div>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Footer>
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => {
-            adminCheckClose();
-          }}>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              adminCheckClose();
+            }}
+          >
             OK
           </button>
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {
-            adminCheckClose();
-          }}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => {
+              adminCheckClose();
+            }}
+          >
             Cancel
           </button>
         </Modal.Footer>
@@ -934,40 +1161,34 @@ function Group() {
 
       {/* 친구찾기 */}
       <Modal show={addFriend} onHide={friendClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Enter the memeber's ID</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form className="pt-3">
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-control form-control-lg"
-                  placeholder="ID"
-                  name="name"
-                />
-              </div>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <button
-              type="button"
-              className="btn btn-primary btn-sm"
-            >
-              OK
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={friendClose}
-            >
-              Cancel
-            </button>
-          </Modal.Footer>
-        </Modal>
-
-
-
+        <Modal.Header closeButton>
+          <Modal.Title>Enter the memeber's ID</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form className="pt-3">
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                placeholder="ID"
+                name="name"
+              />
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" className="btn btn-primary btn-sm">
+            OK
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={friendClose}
+          >
+            Cancel
+          </button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
