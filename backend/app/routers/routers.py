@@ -6,7 +6,7 @@ import datetime
 from fastapi.responses import FileResponse
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema, VoteTimeSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
@@ -271,8 +271,8 @@ async def get_vote_time(gid: int, db: Session = Depends(get_db)):
     return vote_time
 
 @router.post("/votetime")
-async def generate_vote_time(gid: int, start_date: datetime.date, end_date: datetime.date, meetingtime: str, db: Session = Depends(get_db)):
-    vote_time = await generate_votetime(gid, start_date, end_date, meetingtime, db)
+async def generate_vote_time(vt: VoteTimeSchema, db: Session = Depends(get_db)):
+    vote_time = await generate_votetime(vt, db)
     return vote_time
 
 @router.post("/vote")

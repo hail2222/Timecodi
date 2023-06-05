@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite, GenerateVote, Vote
 from ..auth.hash_password import HashPassword
-from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema, VoteTimeSchema
 from ..googlecal.cal_func import get_event
 from ..timecodi.timecodi import calender_to_timetable
 from ..timecodi.generatevote import create_vote
@@ -584,26 +584,26 @@ async def get_votetime(gid: int, db: Session):
     return votetime_exist.all()
 
 
-async def generate_votetime(gid: int, start_date: datetime, end_date: datetime, meetingtime: str, db: Session):
-    db_group = db.query(Group).filter(Group.gid == gid).first()
+async def generate_votetime(vt: VoteTimeSchema, db: Session):
+    db_group = db.query(Group).filter(Group.gid == vt.gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     
     # 기존 투표 존재 -> 제거
-    votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == gid)
+    votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == vt.gid)
     if votetime_exist.first():
         for i in votetime_exist.all():
             db.delete(i)
             db.commit()
-    vote_exist = db.query(Vote).filter(Vote.gid == gid)
+    vote_exist = db.query(Vote).filter(Vote.gid == vt.gid)
     if vote_exist.first():
         for i in vote_exist.all():
             db.delete(i)
             db.commit()
     
-    group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
-    for x in create_vote(group_cal[0], meetingtime):
-        db_votetime = GenerateVote(gid = gid, day = x[0], s_time = x[1], e_time = x[2], members = 0)
+    group_cal = await get_weekly_groupcal(vt.gid, vt.sdatetime, vt.edatetime, db)
+    for x in create_vote(group_cal[0], vt.meetingtime):
+        db_votetime = GenerateVote(gid = vt.gid, day = x[0], s_time = x[1], e_time = x[2], members = 0)
         db.add(db_votetime)
         db.commit()
         db.refresh(db_votetime)
