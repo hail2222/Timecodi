@@ -53,6 +53,7 @@ export function Dashboard() {
   const [visible, setVisible] = useState("");
   const [sdate, setSdate] = useState("");
   const [edate, setEdate] = useState("");
+  const [enddate, setEnddate] = useState("");
 
   const handleAddEvent = () => {
     const data = {
@@ -61,7 +62,7 @@ export function Dashboard() {
       sdatetime: sdate,
       edatetime: edate,
       weekly: 0,
-      enddate: edate.split("T")[0],
+      enddate: enddate.split("T")[0],
     };
     axios
       .post(
@@ -172,7 +173,10 @@ export function Dashboard() {
                     type="datetime-local"
                     id="event_edue"
                     value={edate}
-                    onChange={(e) => setEdate(e.target.value)}
+                    onChange={(e) => {
+                      setEdate(e.target.value);
+                      setEnddate(e.target.value);
+                    }}
                   ></Form.Control>{" "}
                   <br></br>
                   <label>Repeat:</label>
@@ -191,7 +195,12 @@ export function Dashboard() {
                   {repeatOption !== "none" && (
                     <div>
                       <label>Repeat End Date: </label>
-                      <Form.Control type="date" id="event_done"></Form.Control>
+                      <Form.Control
+                        type="date"
+                        id="event_done"
+                        value={enddate}
+                        onChange={(e) => setEnddate(e.target.value)}
+                      ></Form.Control>
                     </div>
                   )}
                   <br></br>

@@ -8,6 +8,7 @@ import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
+import GroupCalContext from "./GroupCalContext";
 import { Bar, Doughnut } from "react-chartjs-2";
 import axios from "axios";
 
@@ -21,6 +22,40 @@ function Group() {
   let gid = parseInt(currentPath.split("/").pop(), 10);
   const [gname, setGname] = useState("");
   const [admin, setAdmin] = useState("");
+
+  const [groupCal, setGroupCal] = useState(null);
+  const fetchGroupCal = async () => {
+    const data = localStorage.getItem("groupWeeklyCal");
+    if (data) {
+      setGroupCal(JSON.parse(data));
+    }
+  };
+
+  let start_date = new Date();
+  let end_date = new Date();
+
+  function getStartDate() {
+    if (groupCal) {
+      const groupCal_dict = groupCal[0];
+      const first_list = groupCal_dict["first_list"];
+      const first_key = Object.keys(first_list)[0]; // 1st list의 가능한 인원수
+      const first_value = first_list[first_key];
+      const first_date = first_value[0]; // 1st list의 가능한 날짜
+      let dateStr = first_date[0]; // string 형태의 날짜
+      let date = new Date(dateStr);
+      let dayOfWeek = date.getUTCDay();
+      let diffToSun = dayOfWeek;
+      let diffToSat = 6 - dayOfWeek;
+      let startDate = new Date(date);
+      startDate.setDate(date.getDate() - diffToSun);
+      let endDate = new Date(date);
+      endDate.setDate(date.getDate() + diffToSat);
+      start_date = startDate.toISOString().substring(0, 10);
+      end_date = endDate.toISOString().substring(0, 10);
+    }
+    console.log("start_date", start_date);
+    console.log("end_date", end_date);
+  }
 
   const getGroupInfo = () => {
     console.log("get group info by gid");
@@ -95,7 +130,7 @@ function Group() {
       .then((response) => {
         let memberList = [];
         response.data.forEach((rel, index) => {
-          memberList.push({id: rel.id, name: rel.name});
+          memberList.push({ id: rel.id, name: rel.name });
         });
         setMembers(memberList);
       })
@@ -108,24 +143,21 @@ function Group() {
 
   const getAdmin = () => {
     axios
-    .get(
-      "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/admin",
-      {
+      .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/admin", {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
         params: {
           gid: gid,
         },
-      }
-    )
-    .then((response) => {
-      setIsAdmin(response.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
+      })
+      .then((response) => {
+        setIsAdmin(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     getGroupInfo();
@@ -134,11 +166,12 @@ function Group() {
   }, []);
 
   const inviteMember = (userId) => {
-    const data = {gid: gid, uid: userId};
+    const data = { gid: gid, uid: userId };
 
     axios
       .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited", data,
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
+        data,
         {
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -152,7 +185,7 @@ function Group() {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
   // let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
   // let [memberList] = useState(members);
 
@@ -254,6 +287,44 @@ function Group() {
     console.log(options);
   };
 
+  const [meetingHour, setMeetingHour] = useState("0");
+  const [meetingMin, setMeetingMin] = useState("00");
+
+  const handleMeetingHour = (event) => {
+    setMeetingHour(event.target.value);
+  };
+  const handleMeetingMin = (event) => {
+    setMeetingMin(event.target.value);
+  };
+
+  const handleGenerateVote = () => {
+    console.log("Selected time:", meetingHour, meetingMin);
+    getStartDate();
+    const data = {
+      gid: gid,
+      start_date: start_date,
+      end_date: end_date,
+      meetingtime: meetingHour + ":" + meetingMin,
+    };
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/votetime",
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        alert("vote success!");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -334,7 +405,7 @@ function Group() {
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
                           >
-                            {el.name}           
+                            {el.name}
                           </td>
                           <td>
                             <button
@@ -372,151 +443,165 @@ function Group() {
         </div>
       </div>
       <div className="row">
-        <div
-          className="col grid-margin"
-          style={{ height: "800px", width: "650px" }}
-        >
-          <div className="card" style={{ height: "750px", width: "600px" }}>
-            <div className="card-body">
-              <h4 className="card-title">
-                <i className="mdi mdi-calendar-multiple-check"></i> Group
-                Calender
-              </h4>
-              <p className="card-description">
-                Click the <span style={{ color: "#fe7c96" }}>pink box</span> to
-                see available time of the week.
-              </p>
-              <div style={{ "margin-top": "4vw" }}>
-                <Main style={{ flexDirection: "column" }} />
-                <br></br>
-                <br></br>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="col grid-margin"
-          style={{ height: "800px", width: "540px" }}
-        >
-          <div className="card" style={{ height: "750px", width: "540px" }}>
-            <div className="card-body">
-              <div className="row">
-                <p
-                  className="card-description"
-                  style={{ "margin-left": "8em" }}
-                >
-                  Your group members are available at..
+        <GroupCalContext.Provider value={{ groupCal, fetchGroupCal }}>
+          <div
+            className="col grid-margin"
+            style={{ height: "800px", width: "650px" }}
+          >
+            <div className="card" style={{ height: "750px", width: "600px" }}>
+              <div className="card-body">
+                <h4 className="card-title">
+                  <i className="mdi mdi-calendar-multiple-check"></i> Group
+                  Calender
+                </h4>
+                <p className="card-description">
+                  Click the <span style={{ color: "#fe7c96" }}>pink box</span>{" "}
+                  to see available time of the week.
                 </p>
-
-                <div
-                  id="visit-sale-chart-legend"
-                  className="rounded-legend legend-horizontal"
-                  style={{ "margin-left": "9em" }}
-                >
-                  <ul>
-                    <li>
-                      <span className="legend-dots bg-primary"></span>1st
-                    </li>
-                    <li>
-                      <span
-                        className="legend-dots"
-                        style={{ "background-color": "#cc9fff" }}
-                      ></span>
-                      2nd
-                    </li>
-                    <li>
-                      <span
-                        className="legend-dots"
-                        style={{ "background-color": "#e0c5ff" }}
-                      ></span>
-                      3rd
-                    </li>
-                  </ul>
+                <div style={{ "margin-top": "4vw" }}>
+                  <Main gid={gid} style={{ flexDirection: "column" }} />
+                  <br></br>
+                  <br></br>
                 </div>
-
-                <TimeTable></TimeTable>
-                <div className="row" style={{ margin: "1.5vw 0 0 3vw" }}>
-                  <p
-                    className="card-description"
-                    style={{ margin: "0.2vw 1vw 0 0", "text-align": "center" }}
-                  >
-                    How long will it take?
-                  </p>
-                  <select
-                    className="form-control form-control-sm"
-                    id="meeting-hour"
-                    style={{
-                      position: "relative",
-                      width: "4vw",
-                      height: "2vw",
-                    }}
-                  >
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
-                    <option>14</option>
-                    <option>15</option>
-                    <option>16</option>
-                    <option>17</option>
-                    <option>18</option>
-                    <option>19</option>
-                    <option>20</option>
-                    <option>21</option>
-                    <option>22</option>
-                    <option>23</option>
-                    <option>24</option>
-                  </select>
-                  <p
-                    className="card-description"
-                    style={{ margin: "0.2vw 0.5vw", "text-align": "center" }}
-                  >
-                    hours &nbsp;
-                  </p>
-                  <select
-                    className="form-control form-control-sm"
-                    id="meeting-min"
-                    style={{
-                      position: "relative",
-                      width: "4vw",
-                      height: "2vw",
-                    }}
-                  >
-                    <option>00</option>
-                    <option>30</option>
-                  </select>
-                  <p
-                    className="card-description"
-                    style={{ margin: "0.2vw 0.5vw", "text-align": "center" }}
-                  >
-                    minutes
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-inverse-primary btn-sm"
-                  style={{ margin: "1vw 0 0vw 12vw" }}
-                >
-                  <i className="mdi mdi-calendar-plus"></i>
-                  <span style={{ "font-size": "15px", "font-weight": "500" }}>
-                    &nbsp; Generate Vote
-                  </span>
-                </button>
               </div>
             </div>
           </div>
-        </div>
+
+          <div
+            className="col grid-margin"
+            style={{ height: "800px", width: "540px" }}
+          >
+            <div className="card" style={{ height: "750px", width: "540px" }}>
+              <div className="card-body">
+                <div className="row">
+                  <p
+                    className="card-description"
+                    style={{ "margin-left": "8em" }}
+                  >
+                    Your group members are available at..
+                  </p>
+
+                  <div
+                    id="visit-sale-chart-legend"
+                    className="rounded-legend legend-horizontal"
+                    style={{ "margin-left": "9em" }}
+                  >
+                    <ul>
+                      <li>
+                        <span className="legend-dots bg-primary"></span>1st
+                      </li>
+                      <li>
+                        <span
+                          className="legend-dots"
+                          style={{ "background-color": "#cc9fff" }}
+                        ></span>
+                        2nd
+                      </li>
+                      <li>
+                        <span
+                          className="legend-dots"
+                          style={{ "background-color": "#e0c5ff" }}
+                        ></span>
+                        3rd
+                      </li>
+                    </ul>
+                  </div>
+
+                  <TimeTable></TimeTable>
+                  <div className="row" style={{ margin: "1.5vw 0 0 3vw" }}>
+                    <p
+                      className="card-description"
+                      style={{
+                        margin: "0.2vw 1vw 0 0",
+                        "text-align": "center",
+                      }}
+                    >
+                      How long will it take?
+                    </p>
+                    <select
+                      className="form-control form-control-sm"
+                      id="meeting-hour"
+                      value={meetingHour}
+                      onChange={(e) => {
+                        handleMeetingHour(e);
+                      }}
+                      style={{
+                        position: "relative",
+                        width: "4vw",
+                        height: "2vw",
+                      }}
+                    >
+                      <option>0</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option>12</option>
+                      <option>13</option>
+                      <option>14</option>
+                      <option>15</option>
+                      <option>16</option>
+                      <option>17</option>
+                      <option>18</option>
+                      <option>19</option>
+                      <option>20</option>
+                      <option>21</option>
+                      <option>22</option>
+                      <option>23</option>
+                      <option>24</option>
+                    </select>
+                    <p
+                      className="card-description"
+                      style={{ margin: "0.2vw 0.5vw", "text-align": "center" }}
+                    >
+                      hours &nbsp;
+                    </p>
+                    <select
+                      className="form-control form-control-sm"
+                      id="meeting-min"
+                      value={meetingMin}
+                      onChange={(e) => {
+                        handleMeetingMin(e);
+                      }}
+                      style={{
+                        position: "relative",
+                        width: "4vw",
+                        height: "2vw",
+                      }}
+                    >
+                      <option>00</option>
+                      <option>30</option>
+                    </select>
+                    <p
+                      className="card-description"
+                      style={{ margin: "0.2vw 0.5vw", "text-align": "center" }}
+                    >
+                      minutes
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-inverse-primary btn-sm"
+                    style={{ margin: "1vw 0 0vw 12vw" }}
+                    onClick={handleGenerateVote}
+                  >
+                    <i className="mdi mdi-calendar-plus"></i>
+                    <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                      &nbsp; Generate Vote
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </GroupCalContext.Provider>
       </div>
       <div className="row">
         <div className="col-6 grid-margin stretch-card">

@@ -1,20 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 
 const Timeslot = (props) => {
-  const {
-    startDate,
-    endDate,
-    dayofWeek,
-    
-  } = props;
+  const { list_for_timeslot } = props; // [{time: 8.0, className: avail-first}, ... ]
+  const [slots, setSlots] = useState(
+    Array.from({ length: 36 }, (_, i) => ({
+      time: (8 + i * 0.5).toFixed(1),
+      className: "",
+    }))
+  );
 
-
+  useEffect(() => {
+    // Update with classes from list_for_timeslot
+    if (list_for_timeslot) {
+      const updatedSlots = slots.map((slot) => {
+        const match = list_for_timeslot.find((s) => s.time === slot.time);
+        return match || slot;
+      });
+      setSlots(updatedSlots);
+    }
+  }, [list_for_timeslot]);
 
   return (
     <Form>
-      <EmptySlot></EmptySlot>
-      <Slot id="8.0"></Slot>
+      <EmptySlot />
+      {slots.map((elm, index) => {
+        const SlotComponent = index % 2 === 0 ? Slot : Slot2;
+        return (
+          <SlotComponent
+            key={elm.time}
+            id={elm.time}
+            className={elm.className}
+          ></SlotComponent>
+        );
+      })}
+    </Form>
+  );
+};
+
+const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const Slot = styled.div`
+  position: relative;
+  width: 58px;
+  height: 12px;
+  border: 1px solid #bb7aff;
+  border-bottom: 1px dotted #bb7aff;
+  text-align: left;
+  z-index: 999;
+  background-color: #f8f8f8;
+  &.avail-first {
+    background-color: #cc9fff;
+  }
+  &.avail-second {
+    background-color: #e0c5ff;
+  }
+  &.avail-third {
+    background-color: #f0e2ff;
+  }
+`;
+const Slot2 = styled.div`
+  position: relative;
+  width: 58px;
+  height: 12px;
+  border: 1px solid #bb7aff;
+  border-top: none;
+  text-align: left;
+  color: black;
+  z-index: 999;
+  background-color: #f8f8f8;
+  &.avail-first {
+    background-color: #cc9fff;
+  }
+  &.avail-second {
+    background-color: #e0c5ff;
+  }
+  &.avail-third {
+    background-color: #f0e2ff;
+  }
+`;
+const EmptySlot = styled.div`
+  position: relative;
+  width: 43px;
+  height: 14px;
+  z-index: 999;
+`;
+
+export default Timeslot;
+
+/* 
+<Slot id="8.0"></Slot>
       <Slot2 id="8.5"></Slot2>
       <Slot id="9.0"></Slot>
       <Slot2 id="9.5"></Slot2>
@@ -50,62 +127,4 @@ const Timeslot = (props) => {
       <Slot2 id="24.5"></Slot2>
       <Slot id="25.0"></Slot>
       <Slot2 id="25.5"></Slot2>
-      {/* <Slot id="26.0"></Slot>
-      <Slot2 id="26.5"></Slot2> */}
-
-    </Form>
-  );
-};
-const Form=styled.div`
-    display:flex;
-  flex-direction:column;
-
-`;
-const Slot = styled.div`
-  position: relative;
-  width: 58px;
-  height: 12px;
-  border: 1px solid #bb7aff;
-  border-bottom: 1px dotted #bb7aff;
-  text-align: left;
-  z-index: 999;
-  background-color: #F8F8F8;
-  &.avail-first{
-    background-color: #cc9fff;
-  }
-  &.avail-second{
-    background-color:#e0c5ff;
-  }
-  &.avail-third{
-    background-color:#f0e2ff;
-  }
-
-`;
-const Slot2 = styled.div`
-  position: relative;
-  width: 58px;
-  height: 12px;
-  border: 1px solid #bb7aff;
-  border-top: none;
-  text-align: left;
-  color: black;
-  z-index: 999;
-  background-color: #F8F8F8;
-  &.avail-first{
-    background-color: #cc9fff;
-  }
-  &.avail-second{
-    background-color:#e0c5ff;
-  }
-  &.avail-third{
-    background-color:#f0e2ff;
-  }
-`;
-const EmptySlot = styled.div`
-  position: relative;
-  width: 43px;
-  height: 14px;
-  z-index: 999;
-`;
-
-export default Timeslot;
+*/

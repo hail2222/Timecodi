@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Head from './components/Head';
-import Body from './components/Body';
-import styled from 'styled-components';
-const Main = () => {
+import React, { useState, useEffect, useContext } from "react";
+import Head from "./components/Head";
+import Body from "./components/Body";
+import GroupCalContext from "../GroupCalContext";
+
+const Main = (props) => {
   let DATE = new Date();
   const YEAR = DATE.getFullYear();
   const MONTH = DATE.getMonth() + 1;
@@ -60,14 +61,22 @@ const Main = () => {
     setToday(TODAY);
   };
 
+  const { groupCal, fetchGroupCal } = useContext(GroupCalContext);
+
   return (
-    <div >
+    <div>
       <Head year={year} month={month} setMonth={setMonth} goToday={goToday} />
-      <Body totalDate={totalDate} today={today} month={month} year={year} />
+      <Body
+        totalDate={totalDate}
+        today={today}
+        month={month}
+        year={year}
+        gid={props.gid}
+        groupCal={groupCal}
+        fetchGroupCal={fetchGroupCal}
+      />
     </div>
   );
 };
-
-
 
 export default Main;

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import Dates from "./Dates";
+import sample_list from "./calendar_to_timetable.js";
+import GroupCalContext from "../../GroupCalContext";
 import axios from "axios";
 
 const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
@@ -9,9 +10,10 @@ const localURL = "https://127.0.0.1:8000";
 const url = realURL;
 
 function Body(props) {
-  const { totalDate, today, month, year } = props;
+  const { totalDate, today, month, year, gid, groupCal, fetchGroupCal } = props;
   const lastDate = totalDate.indexOf(1);
   const firstDate = totalDate.indexOf(1, 7);
+  //   const { groupCal, fetchGroupCal } = useContext(GroupCalContext);
 
   const [holiday, setHoliday] = useState([0]);
 
@@ -64,17 +66,8 @@ function Body(props) {
       startdate.getDate() < 10 ? `0${startdate.getDate()}` : startdate.getDate()
     }`;
     console.log(startdate);
-    // let location = useLocation();
-    // let currentPath = location.pathname;
-    let gid = 11;
-    // gid = parseInt(currentPath.split("/").pop(), 10);
-    console.log(
-      `${url}/weeklygroupcal?gid=${gid}&start_date=${startdate}&end_date=${enddate}`
-    );
 
     // get weekly group calendar
-    // weeklygroupcal?gid=11&start_date=2023-04-30&end_date=2023-05-06
-    // 여기에서 멤버 수도 줘야 하는데
     axios
       .get(
         `${url}/weeklygroupcal?gid=${gid}&start_date=${startdate}&end_date=${enddate}`,
@@ -86,9 +79,11 @@ function Body(props) {
       )
       .then((res) => {
         console.log(res.data);
-        // let newList = [];
-        // newList.push(res.data);
-        // setGroupWeeklyCal(newList[0]);
+        let newList = [];
+        newList.push(res.data);
+        setGroupWeeklyCal(newList[0]);
+        localStorage.setItem("groupWeeklyCal", JSON.stringify(newList[0]));
+        fetchGroupCal();
       })
       .catch((err) => {
         console.log("get group weekly calender");
