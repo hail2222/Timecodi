@@ -8,7 +8,7 @@ import {
 } from "react-google-maps";
 import GoogleMapAPI from "../../GoogleMapAPI";
 
-function MapComponent(inputRef) {
+function MapComponent({inputRef}) {
   const mapRef = useRef();
   // const inputRef = useRef();
   const searchBoxRef = useRef();
@@ -25,7 +25,7 @@ function MapComponent(inputRef) {
       const searchBox = new window.google.maps.places.SearchBox(input);
       searchBoxRef.current = searchBox;
 
-      map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
+      // map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
 
       map.addListener("bounds_changed", () => {
         searchBox.setBounds(map.getBounds());
