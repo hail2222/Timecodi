@@ -4,9 +4,10 @@ import Dates from './Dates';
 import axios from 'axios';
 
 function NonAdminBox (props) {
+  const isAdmin = props.isAdmin;
 
-
-  return (
+  if(isAdmin){
+    return (
     
     <div className="col-4 grid-margin stretch-card" style={{'padding':'0vw 0vw', 'margin':'1.0vw'}}>
     <div className="card row" style={{height: "250px"}}>
@@ -18,14 +19,16 @@ function NonAdminBox (props) {
         </p>
       <div style={{"margin":'2.5vw 0 0 3vw'}}>
       <button type="button" className="btn btn-outline-danger btn-rounded btn-sm">Withdraw from group</button>
-      </div>
 
       </div>
-
-
     </div>
-  </div>
-  );
+    </div>
+    </div>
+    );
+  }
+  else{
+    return null;
+  }
 };
 
 // const Form = styled.div`

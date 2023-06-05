@@ -3,16 +3,20 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import datetime
-
+from fastapi.responses import FileResponse
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
+    invited_register, invited_delete, get_all_members, member_register, get_is_admin, kick_member, transfer_admin,\
+    meeting_register, meeting_remove, meeting_update, get_all_meetings, \
+    google_event_register, get_all_groupcal, get_my_group, send_kakao, \
     invited_register, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
-    google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal
+    google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
+    favorite_group_register, favorite_group_get, favorite_group_delete
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -113,22 +117,46 @@ async def update_group(gid: int, group: GroupSchema, db: Session = Depends(get_d
     update_success = await group_update(gid, group, db)
     return update_success
 
-@router.delete("/group")
-async def delete_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    remove_success = await group_leave(gid, user, db)
-    return remove_success
 
 @router.post("/invited")
-async def add_group(gid: int, uid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await invited_register(gid, uid, user, db)
+async def add_group(invite: InviteSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await invited_register(invite, user, db)
     return register_success
 
+@router.delete("/invited")
+async def delete_invited(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await invited_delete(group, user, db)
+    return remove_success
+
+@router.get("/member")
+async def get_member(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    member_list = await get_all_members(gid, user, db)
+    return member_list
 
 @router.post("/member")
-async def add_member(gid: int, member: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await member_register(gid, member, user, db)
+async def add_member(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await member_register(group, user, db)
     return register_success
 
+@router.delete("/member")
+async def delete_group(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await group_leave(group, user, db)
+    return remove_success
+
+@router.get("/admin")
+async def get_admin(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    is_admin = await get_is_admin(gid, user, db)
+    return is_admin
+
+@router.put("/admin")
+async def transfer(who: InviteSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    transfer_success = await transfer_admin(who, user, db)
+    return transfer_success
+
+@router.delete("/admin")
+async def kick_out(who: InviteSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    kick_success = await kick_member(who, user, db)
+    return kick_success
 
 @router.get("/meeting")    
 async def get_meeting(gid: int, db: Session = Depends(get_db)):
@@ -151,7 +179,7 @@ async def del_meeting(meetid: int, db: Session = Depends(get_db)):
     return remove_success
 
 @router.get("/group_cal")
-async def add_group(gid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+async def add_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     register_success = await get_all_groupcal(gid, user, db)
     return register_success
 
@@ -168,9 +196,65 @@ async def get_mygrouplist(user: str = Depends(authenticate), db: Session = Depen
     group_list = await get_my_group(user, db)
     return group_list
 
+@router.get("/myinvitedlist")
+async def get_myinvitedlist(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    invited_list = await get_my_invited(user, db)
+    return invited_list
+
+
+@router.get("/favorite")
+async def del_favorite_group(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await favorite_group_get(user, db)
+    return register_success
+
+@router.post("/favorite")
+async def add_favorite_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await favorite_group_register(gid, user, db)
+    return register_success
+
+@router.delete("/favorite")
+async def add_favorite_group(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await favorite_group_delete(gid, user, db)
+    return register_success
+
+
 # SELECT * FROM 'test'.'group calenders' WHERE gid=[input_gid] and sdatetime>=[input_start_date] and edatetime<=[input_end_date]
 # get weekly group calendar
+# @router.get("/weeklygroupcal")
+# async def get_weekly_group_cal(gid: int, start_date: datetime.date, end_date: datetime.date, db: Session = Depends(get_db)):
+#     group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
+#     return group_cal
+
+
+from fastapi import Request
+
+@router.get("/kakaoshare")
+async def send_kakaomsg(req: Request, gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    send_msg = await send_kakao(req, gid, user, db)
+    return send_msg
+
+
+@router.get("/invited/{gid}")
+async def print_uid(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    register_success = await invited_register(gid, user, user, db)
+    return register_success
+
+import os.path
+from fastapi.templating import Jinja2Templates
+
+templates=Jinja2Templates(directory='./app/googlemap')
+@router.get("/googlemap")
+async def get_map(req: Request):
+    return templates.TemplateResponse('map.html',{"request":req})
+
+
 @router.get("/weeklygroupcal")
 async def get_weekly_group_cal(gid: int, start_date: datetime.date, end_date: datetime.date, db: Session = Depends(get_db)):
     group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
     return group_cal
+
+# get group info by gid
+@router.get("/groupinfo")
+async def get_group_info(gid: int, db: Session = Depends(get_db)):
+    group_info = await get_groupinfo(gid, db)
+    return group_info

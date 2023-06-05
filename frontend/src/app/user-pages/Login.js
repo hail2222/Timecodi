@@ -26,7 +26,9 @@ export function Login() {
       const token = res.data.token_type + " " + res.data.access_token;
       localStorage.setItem("token", token);
 
+      const userid = res.data.userid;
       const username = res.data.username;
+      localStorage.setItem("userid", userid);
       localStorage.setItem("username", username);
       // alert("login success");
       history.push('/mypage/mygroups');

@@ -1,17 +1,72 @@
 import React, { useState } from "react";
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import Main from './group-timetable/Main';
-import { Form } from 'react-bootstrap';
+import Main from "./group-timetable/Main";
+import { Form } from "react-bootstrap";
 import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
-import { Bar, Doughnut } from 'react-chartjs-2';
+import { Bar, Doughnut } from "react-chartjs-2";
+import axios from "axios";
 
-
+const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
+const localURL = "https://127.0.0.1:8000";
+const url = realURL;
 
 function Group() {
+  let location = useLocation();
+  let currentPath = location.pathname;
+  let gid = parseInt(currentPath.split("/").pop(), 10);
+  const [gname, setGname] = useState("");
+  const [admin, setAdmin] = useState("");
+
+  const getGroupInfo = () => {
+    console.log("get group info by gid");
+    axios
+      .get(`${url}/groupinfo?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setGname(res.data.gname);
+        setAdmin(res.data.admin);
+      })
+      .catch((err) => {
+        console.log("get group info by id");
+        console.log(err);
+      });
+  };
+  const [oo, setOO] = useState(false);
+  const history = useHistory();
+
+  axios
+    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      if (response.data.success == true) {
+        // alert("good");
+      }
+    })
+    .catch((err) => {
+      setOO(true);
+    });
+
+  useEffect(() => {
+    if (oo) {
+      history.push("/user-pages/login-1");
+      // alert("please login");
+    }
+  }, [oo]);
+
+  // const { gid } = useParams();
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -22,11 +77,87 @@ function Group() {
   const [addFriend, setFriend] = useState(false);
   const friendClose = () => setFriend(!addFriend);
 
+  const [members, setMembers] = useState([]);
+
+  const getMembers = () => {
+    axios
+      .get(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+          },
+        }
+      )
+      .then((response) => {
+        let memberList = [];
+        response.data.forEach((rel, index) => {
+          memberList.push({id: rel.id, name: rel.name});
+        });
+        setMembers(memberList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const getAdmin = () => {
+    axios
+    .get(
+      "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/admin",
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        params: {
+          gid: gid,
+        },
+      }
+    )
+    .then((response) => {
+      setIsAdmin(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  useEffect(() => {
+    getGroupInfo();
+    getMembers();
+    getAdmin();
+  }, []);
+
+  const inviteMember = (userId) => {
+    const data = {gid: gid, uid: userId};
+
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited", data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        addClose();
+        alert("invite success!");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  // let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
+  // let [memberList] = useState(members);
   const [addAdminCheck, setAdminCheck] = useState(false);
   const adminCheckClose = () => setAdminCheck(!addAdminCheck);
 
-  let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
-  let [memberList] = useState(members);
 
   let [isVoteActive] = useState(true);
   let [options, setOptions] = useState([
@@ -94,6 +225,34 @@ function Group() {
       people: 5,
     },
     {
+      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
       id: 2,
       place: 2,
       content: "2023-04-25 14:30 ~ 16:30",
@@ -144,18 +303,10 @@ function Group() {
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title">Group 1 Admin</h3>
+        <h3 className="page-title">{gname}</h3>
         <nav aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <a href="!#" onClick={(event) => event.preventDefault()}>
-                Groups
-              </a>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              Group 1
-            </li>
-          </ol>
+          <p>GID: {gid}</p>
+          <p>Admin: {admin}</p>
         </nav>
       </div>
       <div className="row">
@@ -218,14 +369,14 @@ function Group() {
 
                   </thead>
                   <tbody>
-                    {memberList.map(function (el, idx) {
+                    {members.map(function (el, idx) {
                       return (
                         <tr>
                           <td
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
                           >
-                            {el}
+                            {el.name}           
                           </td>
                           <td>
                             <button
@@ -285,7 +436,7 @@ function Group() {
 
                   </thead>
                   <tbody>
-                    {memberList.map(function (el, idx) {
+                    {members.map(function (el, idx) {
                       return (
                         <tr>
                           <td
@@ -325,8 +476,6 @@ function Group() {
 
           </div>
         </div>
-
-
       </div>
       <div className="row">
 
@@ -367,7 +516,6 @@ function Group() {
                     </li>
                   </ul>
                 </div>
-
 
                 <TimeTable></TimeTable>
                 <div className="row" style={{ "margin": '1.5vw 0 0 3vw' }}>
@@ -416,10 +564,9 @@ function Group() {
             </div>
           </div>
         </div>
-
       </div>
       <div className="row">
-      <div className="col-6 grid-margin stretch-card">
+        <div className="col-6 grid-margin stretch-card">
           <div className="card">
             <div
               className="card-body"
@@ -433,6 +580,7 @@ function Group() {
               <p className="card-description">
                 Check the box to vote and submit.
               </p>
+
 
               <form onSubmit={handleSubmit}>
                 <div className="card-body" style={{
@@ -560,13 +708,13 @@ function Group() {
                     <span style={{ "font-size": '15px', "font-weight": '500' }}>&nbsp;End vote</span>
                   </button>
                 </div>
+                
               </form>
             </div>
           </div>
         </div>
 
         {/* //Admin 계정 아닐 때 */}
-
         <div className="col-md-6 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
@@ -640,12 +788,10 @@ function Group() {
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">
-                <i className="mdi mdi-poll"></i>
-                Vote Result (Admin 계정일 때)
+              <i className="mdi mdi-poll"></i> 
+              Vote Result
               </h4>
-              <p className="card-description">
-                See the vote result!
-              </p>
+              <p className="card-description">See the vote result!</p>
               <form onSubmit={handleSubmit}>
                 <div className="card-body" style={{
                   height: "300px",
@@ -662,7 +808,10 @@ function Group() {
                       <th>
                         <i className="mdi mdi-account-multiple"></i>
                       </th>
-                      <th > <i className="mdi mdi-checkbox-multiple-marked-outline"></i></th>
+                      <th>
+                        {" "}
+                        <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
+                      </th>
                     </tr>
                     {result.map(function (el, idx) {
                       return (
@@ -821,8 +970,6 @@ function Group() {
 
     </div>
   );
-
 }
-
 
 export default Group;

@@ -21,13 +21,13 @@ function Navbar() {
   return (
     <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <Link className="navbar-brand brand-logo" to="/dashboard">
+        <Link className="navbar-brand brand-logo" to="/mypage/mygroups">
           <h3 className="text-primary">
             <i className="mdi mdi-timetable mr-1" />
             TimeCodi
           </h3>
         </Link>
-        <Link className="navbar-brand brand-logo-mini" to="/dashboard">
+        <Link className="navbar-brand brand-logo-mini" to="/mypage/mygroups">
           <h3>
             <i className="mdi mdi-timetable mr-1 text-primary" />
           </h3>

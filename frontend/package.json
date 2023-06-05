@@ -39,6 +39,7 @@
     "react-dnd-multi-backend": "^3.2.2",
     "react-dnd-touch-backend": "^9.4.0",
     "react-dom": "^16.9.0",
+    "react-google-maps": "^9.4.5",
     "react-i18next": "^11.2.1",
     "react-images": "^1.0.0",
     "react-input-mask": "^3.0.0-alpha.0",

@@ -45,9 +45,9 @@ class AppRoutes extends Component {
           <Route path="/general-pages/blank-page" component={BlankPage} />
           <Route path="/startPage" component={StartPage} />
           <Route path="/friends" component={ FriendsPage } />
-          <Route path="/my-timetable/timetable" component={ MyTimetablePage } />
+          <Route path="/mypage/timetable" component={ MyTimetablePage } />
           <Route path="/groups/groupTest" component={GroupTest} />
-          <Route path="/groups/groupTestAdmin" component={GroupTestAdmin} />
+          <Route path="/groups/groupTestAdmin/:gid" component={GroupTestAdmin} />
 
           <Redirect to="/startPage" />
         </Switch>
