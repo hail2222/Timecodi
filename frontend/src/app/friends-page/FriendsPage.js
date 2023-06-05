@@ -84,7 +84,7 @@ function FriendsPage() {
       .then((res) => {
         let requestedList = [];
         res.data.forEach((elm, index) => {
-          requestedList.push(elm.uid);
+          requestedList.push({id: elm.id, name: elm.name});
         });
         setRequestFriends(requestedList);
       })
@@ -333,20 +333,20 @@ function FriendsPage() {
                       {requestFriends.map(function (item, index) {
                         return (
                           <tr key={index}>
-                            <td>{}</td>
-                            <td>{item}</td>
+                            <td>{item.name}</td>
+                            <td>{item.id}</td>
                             <td>
                               <button
                                 type="button"
                                 className="btn btn-primary btn-sm"
-                                onClick={() => acceptFriend(item)}
+                                onClick={() => acceptFriend(item.id)}
                               >
                                 Accept
                               </button>
                               <button
                                 type="button"
                                 className="btn btn-secondary btn-sm"
-                                onClick={() => DeleteRequestFriend(item)}
+                                onClick={() => DeleteRequestFriend(item.id)}
                               >
                                 Delete
                               </button>

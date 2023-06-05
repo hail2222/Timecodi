@@ -10,6 +10,7 @@ import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
 import GroupCalContext from "./GroupCalContext";
 import { Bar, Doughnut } from "react-chartjs-2";
+import MapComponent from "./MapComponent";
 import axios from "axios";
 
 const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
@@ -188,6 +189,9 @@ function Group() {
   };
   // let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
   // let [memberList] = useState(members);
+  const [addAdminCheck, setAdminCheck] = useState(false);
+  const adminCheckClose = () => setAdminCheck(!addAdminCheck);
+
 
   let [isVoteActive] = useState(true);
   let [options, setOptions] = useState([
@@ -241,6 +245,48 @@ function Group() {
       people: 5,
     },
     {
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1,          //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
+      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
+      place: 1,
+      content: "2023-04-25 14:00 ~ 16:00",
+      checked: false,
+      people: 5,
+    },
+    {
       id: 2,
       place: 2,
       content: "2023-04-25 14:30 ~ 16:30",
@@ -285,6 +331,14 @@ function Group() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(options);
+  };
+
+  const [input, setInput] = useState("");
+  const inputRef = useRef();
+
+  const onChange = (e) => {
+    setInput(e.target.value);
+    inputRef.current.focus();
   };
 
   const [meetingHour, setMeetingHour] = useState("0");
@@ -349,7 +403,7 @@ function Group() {
                     <th>Content</th>
                   </tr>
                   <tr>
-                    <td className="font-weight-bold">TITLE</td>
+                    <td className="font-weight-bold">MEETING NAME</td>
                     <td>Band Practice</td>
                   </tr>
                   <tr>
@@ -377,7 +431,7 @@ function Group() {
                 margin: "2.5vw 0 0 2.5vw",
               }}
             >
-              <i className="mdi mdi-account"></i> Members
+              <i className="mdi mdi-account"></i> Members (Admin 아닌계정)
             </h4>
 
             <div
@@ -433,13 +487,86 @@ function Group() {
                 type="button"
                 className="btn btn-gradient-primary btn-sm "
                 style={{ "font-weight": "420", margin: "2vw" }}
-                onClick={addClose}
+                onClick={adminCheckClose}
               >
                 <i className="mdi mdi-account-plus"></i>
                 &nbsp;Invite New Member
               </button>
             </center>
           </div>
+        </div>
+
+        <div className="col-6 grid-margin stretch-card">
+          <div className="card">
+            <h4
+              className="card-title"
+              style={{
+                margin: "2.5vw 0 0 2.5vw",
+              }}
+            >
+              <i className="mdi mdi-account"></i> Members (Admin 계정)
+            </h4>
+
+            <div
+              className="card-body"
+              style={{
+                height: "200px",
+                overflowY: "auto",
+                overflowX: "hidden",
+              }}
+            >
+              {/* <p className="card-description">Click member's name</p> */}
+              <div className="table-responsive">
+                <table className="table">
+                  <thead>
+                    {/* <tr style={{"text-align":'center'}}>
+                      <th> Name </th>
+                      <th> Actions </th>
+                    </tr> */}
+                  </thead>
+                  <tbody>
+                    {members.map(function (el, idx) {
+                      return (
+                        <tr>
+                          <td
+                            onClick={handleShow}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {el}
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-inverse-success btn-sm"
+                            >
+                              TimeTable
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-inverse-warning btn-sm"
+                            >
+                              Add friend
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <center>
+              <button
+                type="button"
+                className="btn btn-gradient-primary btn-sm "
+                style={{ "font-weight": "420", margin: "2vw" }}
+                onClick={friendClose}
+              >
+                <i className="mdi mdi-account-plus"></i>
+                &nbsp;Invite New Member
+              </button>
+            </center>
+          
         </div>
       </div>
       <div className="row">
@@ -613,7 +740,95 @@ function Group() {
               }}
             >
               <h4 className="card-title">
-                <i className="mdi mdi-clipboard-text"></i> Vote
+                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정 아닐 때)
+              </h4>
+              <p className="card-description">
+                Check the box to vote and submit.
+              </p>
+
+
+              <form onSubmit={handleSubmit}>
+                <div
+                  className="card-body"
+                  style={{
+                    height: "300px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    padding: "0vw",
+                  }}
+                >
+                  <table className="table">
+                    <tr
+                      style={{
+                        "text-align": "center",
+                      }}
+                    >
+                      <th>#</th>
+                      <th>Time</th>
+                      <th>
+                        <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
+                      </th>
+                    </tr>
+                    {options.map(function (el, idx) {
+                      return (
+                        <tr
+                          style={{
+                            "text-align": "center",
+                          }}
+                        >
+                          <td>{el.id}</td>
+                          <td>{el.content}</td>
+                          <td>
+                            <div
+                              className="form-check"
+                              style={{
+                                "margin-left": "3.5vw",
+                              }}
+                            >
+                              <label className="form-check-label">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  checked={el.checked}
+                                  onChange={handleOptions}
+                                  name={el.id}
+                                />
+                                <i className="input-helper"></i>
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </table>
+                </div>
+
+                <div className="row">
+                  <button
+                    type="button"
+                    className="btn btn-inverse-primary btn-sm"
+                    style={{ margin: "1.5vw 0vw 0vw 14vw" }}
+                  >
+                    <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                      &nbsp;Submit
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-6 grid-margin stretch-card">
+          <div className="card">
+            <div
+              className="card-body"
+              style={{
+                height: "500px",
+              }}
+            >
+              <h4 className="card-title">
+                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정)
               </h4>
               <p className="card-description">
                 Check the box to vote and submit.
@@ -679,7 +894,7 @@ function Group() {
                   <button
                     type="button"
                     className="btn btn-inverse-primary btn-sm"
-                    style={{ margin: "3vw 0vw 0vw 8vw" }}
+                    style={{ margin: "1.5vw 0vw 0vw 10vw" }}
                   >
                     <span style={{ "font-size": "15px", "font-weight": "500" }}>
                       &nbsp;Submit
@@ -688,24 +903,114 @@ function Group() {
                   <button
                     type="button"
                     className="btn btn-inverse-danger btn-sm"
-                    style={{ margin: "3vw 0vw 0vw 5vw" }}
-                    onClick={addClose}
+                    style={{ margin: "1.5vw 0vw 0vw 5vw" }}
                   >
                     <span style={{ "font-size": "15px", "font-weight": "500" }}>
-                      &nbsp;End Vote
+                      &nbsp;End vote
                     </span>
                   </button>
                 </div>
+                
               </form>
             </div>
           </div>
         </div>
+
+        {/* //Admin 계정 아닐 때 */}
         <div className="col-md-6 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">
                 <i className="mdi mdi-poll"></i>
-                Vote Result
+                Vote Result (Admin 계정 아닐 때)
+              </h4>
+              <p className="card-description">See the vote result!</p>
+              <form onSubmit={handleSubmit}>
+                <div
+                  className="card-body"
+                  style={{
+                    height: "350px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    padding: "0vw",
+                  }}
+                >
+                  <table className="table">
+                    <tr
+                      style={{
+                        "text-align": "center",
+                      }}
+                    >
+                      <th>#</th>
+                      <th>Time</th>
+                      <th>
+                        <i className="mdi mdi-account-multiple"></i>
+                      </th>
+                      <th>
+                        {" "}
+                        <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
+                      </th>
+                    </tr>
+                    {result.map(function (el, idx) {
+                      return (
+                        <tr
+                          style={{
+                            "text-align": "center",
+                          }}
+                        >
+                          <td>{el.place}</td>
+                          <td>{el.content}</td>
+                          <td>
+                            <div className="form-check">
+                              <button
+                                type="button"
+                                className="btn btn-inverse-danger btn-sm"
+                                style={{
+                                  height: "1.5vw",
+                                  padding: "0.1vw 0.4vw",
+                                }}
+                              >
+                                <i className="mdi mdi-account-outline"> </i>
+                                {el.people}
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <div
+                              className="form-check"
+                              style={{
+                                "margin-left": "2vw",
+                              }}
+                            >
+                              <label className="form-check-label">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  checked={el.checked}
+                                  onChange={handleOptionsResult}
+                                  name={el.id}
+                                />
+                                <i className="input-helper"></i>
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </table>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* //Admin 계정일 때 */}
+        <div className="col-md-6 grid-margin stretch-card">
+          <div className="card">
+            <div className="card-body">
+              <h4 className="card-title">
+              <i className="mdi mdi-poll"></i> 
+              Vote Result
               </h4>
               <p className="card-description">See the vote result!</p>
               <form onSubmit={handleSubmit}>
@@ -799,36 +1104,117 @@ function Group() {
         </div>
       </div>
 
-      <Modal show={addShow} onHide={addClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>
+      {/* 미팅 정보 메모 */}
+
+      <Modal
+        style={{ position: "relative", "margin-left": "0vw" }}
+        show={addShow}
+        onHide={addClose}
+        size="lg"
+        centered
+      >
+        <Modal.Header style={{ "background-color": "#f2edf3" }} closeButton>
+          <Modal.Title id="contained-modal-title-md" style={{}}>
             {" "}
-            <span style={{ "font-weight": "400", margin: "0 5vw" }}>
-              Are you the Admin of this Group?
+            <span style={{ "font-weight": "500", margin: "5vw 0 0 35vw" }}>
+              Input Meeting Information
             </span>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <div className="row" style={{ margin: "0 8vw" }}>
-            <button
-              type="button"
-              className="btn btn-primary  "
-              onClick={addClose}
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger  "
-              onClick={friendClose}
-            >
-              No
-            </button>
+        <Modal.Body style={{ "background-color": "#f2edf3" }}>
+          <div style={{ margin: "0 8vw" }}>
+            <table>
+              <tr>
+                <td>
+                  <div>
+                    <label style={{ padding: " 0.7vw 0 0 0" }}>
+                      Meeting Name:{" "}
+                    </label>
+                    <Form.Control
+                      type="text"
+                      id="event_content"
+                      placeholder="meeting name"
+                      style={{ width: "400px" }}
+                    ></Form.Control>{" "}
+                    <label style={{ padding: " 0.7vw 0 0 0" }}>Memo </label>
+                    <Form.Control
+                      type="text"
+                      id="event_content"
+                      placeholder="..."
+                      style={{ width: "400px" }}
+                    ></Form.Control>{" "}
+                  </div>
+                  <div>
+                    <label style={{ padding: " 0.7vw 0 0 0" }}>Where: </label>
+                    <div>
+                      <Form.Control
+                        type="text"
+                        id="event_content"
+                        placeholder="Search the location of your meeting"
+                        style={{ width: "330px", float: "left" }}
+                        value={input}
+                        ref={inputRef}
+                        onChange={onChange}
+                      ></Form.Control>{" "}
+                      <div className="input-group-append">
+                        <button
+                          className="btn btn-sm btn-gradient-primary"
+                          type="button"
+                          style={{ float: "right", height: "3vw" }}
+                        >
+                          Search
+                        </button>
+                      </div>
+                    </div>
+                    <Form.Control
+                      type="text"
+                      id="event_content"
+                      placeholder="place of your meeting"
+                      style={{ width: "400px" }}
+                    ></Form.Control>{" "}
+                  </div>
+                </td>
+                <td>
+                  <div
+                    style={{
+                      width: "650px",
+                      height: "300px",
+                      "margin-left": "2vw",
+                      "background-color": " white",
+                    }}
+                  >
+                    <MapComponent inputRef={inputRef}/>
+                  </div>
+                </td>
+              </tr>
+            </table>
           </div>
         </Modal.Body>
+        <Modal.Footer style={{ "background-color": "#f2edf3" }}>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              addClose();
+            }}
+          >
+            Submit
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => {
+              addClose();
+            }}
+          >
+            Cancel
+          </button>
+        </Modal.Footer>
       </Modal>
 
-      <Modal show={addFriend} onHide={friendClose} centered>
+      {/* 어드민인지 확인 */}
+
+      <Modal show={addAdminCheck} onHide={adminCheckClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>
             <div style={{ "font-weight": "200", margin: "0 5vw" }}>
@@ -841,8 +1227,7 @@ function Group() {
             type="button"
             className="btn btn-primary btn-sm"
             onClick={() => {
-              friendClose();
-              addClose();
+              adminCheckClose();
             }}
           >
             OK
@@ -851,15 +1236,46 @@ function Group() {
             type="button"
             className="btn btn-secondary btn-sm"
             onClick={() => {
-              friendClose();
+              adminCheckClose();
             }}
           >
             Cancel
           </button>
         </Modal.Footer>
       </Modal>
-      <AdminBox />
-      <NonAdminBox />
+      <AdminBox gid={gid} isAdmin={isAdmin} members={members}/>
+      <NonAdminBox isAdmin={isAdmin}/>
+
+      {/* 친구찾기 */}
+      <Modal show={addFriend} onHide={friendClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter the memeber's ID</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form className="pt-3">
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                placeholder="ID"
+                name="name"
+              />
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" className="btn btn-primary btn-sm">
+            OK
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={friendClose}
+          >
+            Cancel
+          </button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

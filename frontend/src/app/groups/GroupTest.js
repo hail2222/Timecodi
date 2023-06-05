@@ -8,12 +8,12 @@ import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import { Bar, Doughnut } from "react-chartjs-2";
 // import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import {
-  GoogleMap,
-  Marker,
-  withScriptjs,
-  withGoogleMap,
-} from "react-google-maps";
+// import {
+//   GoogleMap,
+//   Marker,
+//   withScriptjs,
+//   withGoogleMap,
+// } from "react-google-maps";
 import MapComponent from "./MapComponent";
 
 const mapStyles = {

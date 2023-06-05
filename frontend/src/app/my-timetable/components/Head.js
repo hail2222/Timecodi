@@ -8,11 +8,11 @@ const Head = (props) => {
     <Form>
       <Nav>
         <div className="row">
-          <Month>
-            {MONTHS[month - 1]}
+        <Month>
+            {MONTHS[(12000+month - 1)%12]}
           </Month>
           <Year>
-            {month} / {year} 
+            {(month+12000-1)%12+1} / {parseInt((year*12+month-1)/12)} 
           </Year>
 
           <BtnBox>
@@ -65,12 +65,12 @@ const Year = styled.div`
   top: 2.6vw;
 `;
 const BtnBox = styled.div`
-  margin: 0 1vw 0 0;
+  margin: 2.5vw 1vw 0 0;
   width: 30vw;
   position: absolute;
   right: 0vw;
   left: 41vw;
-  top: 4.5vw;
+  /* top: 4.5vw; */
 
 `;
 const Btn = styled.li`
