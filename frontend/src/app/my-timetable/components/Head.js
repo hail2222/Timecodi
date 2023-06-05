@@ -8,11 +8,11 @@ const Head = (props) => {
     <Form>
       <Nav>
         <div className="row">
-          <Month>
-            {MONTHS[month - 1]}
+        <Month>
+            {MONTHS[(12000+month - 1)%12]}
           </Month>
           <Year>
-            {month} / {year} 
+            {(month+12000-1)%12+1} / {parseInt((year*12+month-1)/12)} 
           </Year>
 
           <BtnBox>
