@@ -9,6 +9,7 @@ import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
 import { Bar, Doughnut } from "react-chartjs-2";
+import MapComponent from "./MapComponent";
 import axios from "axios";
 
 const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
