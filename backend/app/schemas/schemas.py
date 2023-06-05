@@ -34,6 +34,7 @@ class MeetingSchema(BaseModel):
     sdatetime: datetime
     edatetime: datetime
     location: str
+    loc_detail: str
     memo: str
 
 class FriendSchema(BaseModel):

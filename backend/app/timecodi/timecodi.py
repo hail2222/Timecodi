@@ -1,7 +1,12 @@
 # 타임코디 그룹캘린더 기능
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
+
+
+# 주석처리 안하면 백엔드 서버 실행이 안되는 테스트 주석들
 # from weekly_groupcal import event_list 
-# from sample_evt_list import sample_evt_list
+# # return calender_to_timetable(event_list, db_num_member, start_date)
+# start_date = "2023-04-30"
+# start_date = datetime.strptime(start_date, "%Y-%m-%d")
 
 weekday_map = {
     "Sunday": 0,
@@ -71,7 +76,7 @@ def date_to_halfhour(evt_list):
     return output
 
 # table mapping
-def data_to_table(output, members):    
+def map_halfhour_to_table(output, members):
     table = [[members for _ in range(7)] for _ in range(37)]  # 7 weekdays, 38 times
     for data in output:
         weekday = weekday_map[data[0]]
@@ -85,32 +90,78 @@ def data_to_table(output, members):
         except IndexError:
             print("IndexError: ", data, time, weekday)
     return table
+# print(map_halfhour_to_table(date_to_halfhour(event_list), 5))
 
-# print(data_to_table(date_to_halfhour(event_list), 5))
-
-# for sending to frontend
-def table_for_frontend(table):
+# pick top 3 
+# 실질적인 메인함수(?). return value: dictionary.  {key: weekday, value: list of top 3 times}
+def pick_top3(table, start_date):
+    
     time_mapping_2 = {v: k for k, v in time_mapping.items()}
     weekday_map_2 = {v: k for k, v in weekday_map.items()}
-    output_dict = {}
+    data_dict = {}
     for i in range(len(table)):
         for j in range(len(table[0])):
             time_str = time_mapping_2[i]
             weekday_str = weekday_map_2[j]
-            if weekday_str not in output_dict:
-                output_dict[weekday_str] = {}
-            output_dict[weekday_str][time_str] = table[i][j]
+            if weekday_str not in data_dict:
+                data_dict[weekday_str] = {}
+            data_dict[weekday_str][time_str] = table[i][j]
 
-    return output_dict
+    first_list, second_list, third_list = [], [], []
+    number_of_members = [0, 0, 0]  # 0: first, 1: second, 2: third members count list
 
-# print(table_for_frontend(data_to_table(date_to_halfhour(event_list), 5)))
+    for day, times in data_dict.items():
+        date = start_date + timedelta(days=weekday_map[day])
+        date = date.strftime("%Y-%m-%d")
+        for time, count in times.items():
+            if count == 0:
+                continue
+            elif count > number_of_members[0]:
+                number_of_members[2] = number_of_members[1]
+                third_list = list(second_list)
+                number_of_members[1] = number_of_members[0]
+                second_list = list(first_list)
+                number_of_members[0] = count
+                first_list = [(date, day, time)]
+            elif count == number_of_members[0]:
+                first_list.append((date, day, time))
+            elif count > number_of_members[1]:
+                number_of_members[2] = number_of_members[1]
+                third_list = list(second_list)
+                number_of_members[1] = count
+                second_list = [(date, day, time)]
+            elif count == number_of_members[1]:
+                second_list.append((date, day, time))
+            elif count > number_of_members[2]:
+                number_of_members[2] = count
+                third_list = [(date, day, time)]
+            elif count == number_of_members[2]:
+                third_list.append((date, day, time))
 
-# main
-def calender_to_timetable(event_list, members):
-    result = []
-    result.append(table_for_frontend(data_to_table(date_to_halfhour(event_list), members)))
+    # frist_list, second_list, third_list : list to tuple
+    first_list = tuple(first_list)
+    second_list = tuple(second_list)
+    third_list = tuple(third_list)
+
+    result = {
+        "first_list": {number_of_members[0]: first_list},
+        "second_list": {number_of_members[1]: second_list},
+        "third_list": {number_of_members[2]: third_list},
+    }
+
     return result
-# print(calender_to_timetable(event_list, 5))
+
+# print(pick_top3(map_halfhour_to_table(date_to_halfhour(event_list), 5), start_date))
+
+# main : for sending to frontend. 
+def calender_to_timetable(event_list, members, start_date):
+    result = []
+    result.append(pick_top3(map_halfhour_to_table(date_to_halfhour(event_list), members), start_date))
+    return result
+# print(calender_to_timetable(event_list, 5, start_date))
+
+
+
 
 # for test
 def print_available_table(available_table):

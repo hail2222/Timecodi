@@ -74,6 +74,7 @@ function MyGroup(props) {
         console.log(err);
       });
   };
+
   let [favoriteList, setFavoriteList] = useState([]); // [{"fgid": 8, "uid": "violet", "gid": 11, "gname": "새그룹" }]
   const getFavoriteList = () => {
     axios
@@ -181,10 +182,9 @@ function MyGroup(props) {
       });
   };
 
-  const addFavorite = (gid, gname) => {
+  const addFavorite = (gid) => {
     const addGroup = {
-      gid,
-      gname
+      gid
     };
     setFavoriteList([addGroup, ...favoriteList])
   };
@@ -199,6 +199,30 @@ function MyGroup(props) {
     else
       return false;
   };
+
+  const groupLeave = (gid) => {
+    const data = { gid: gid };
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          data: data,
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          alert(res.data.msg);
+          getMyGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+  }
 
   return (
     <>
@@ -297,6 +321,9 @@ function MyGroup(props) {
                             <button
                               type="button"
                               className="btn btn-secondary btn-sm"
+                              onClick={()=>{
+                                groupLeave(item.gid);
+                              }}
                             >
                               Leave
                             </button>
@@ -304,7 +331,7 @@ function MyGroup(props) {
                               type="button"
                               className = {["btn btn-sm", (isFavorite(item.gid) ? "btn-warning" : "btn-inverse-warning")].join(" ")}
                               onClick={ () => {
-                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid, item.gname);
+                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid);
                               }}
                             >
                               <i className="mdi mdi-star"></i>

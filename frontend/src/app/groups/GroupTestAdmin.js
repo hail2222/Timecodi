@@ -1156,8 +1156,8 @@ function Group() {
           </button>
         </Modal.Footer>
       </Modal>
-      <AdminBox />
-      <NonAdminBox />
+      <AdminBox gid={gid} isAdmin={isAdmin} members={members}/>
+      <NonAdminBox isAdmin={isAdmin}/>
 
       {/* 친구찾기 */}
       <Modal show={addFriend} onHide={friendClose} centered>

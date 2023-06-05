@@ -8,9 +8,9 @@ import {
 } from "react-google-maps";
 import GoogleMapAPI from "../../GoogleMapAPI";
 
-function MapComponent({inputRef}) {
+function MapComponent() {
   const mapRef = useRef();
-  // const inputRef = useRef();
+  const inputRef = useRef();
   const searchBoxRef = useRef();
   const markersRef = useRef([]);
 
@@ -18,14 +18,14 @@ function MapComponent({inputRef}) {
     const bootstrap = () => {
       const map = new window.google.maps.Map(mapRef.current, {
         center: { lat: 37.2934204446, lng: 126.97467286 },
-        zoom: 14,
+        zoom: 13,
         mapTypeId: "roadmap",
       });
       const input = inputRef.current;
       const searchBox = new window.google.maps.places.SearchBox(input);
       searchBoxRef.current = searchBox;
 
-      // map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
+      map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
 
       map.addListener("bounds_changed", () => {
         searchBox.setBounds(map.getBounds());
@@ -84,8 +84,8 @@ function MapComponent({inputRef}) {
   }, []);
 
   return (
-    <div style={{ width: "650px", height: "300px" }}>
-      {/* <input
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <input
         ref={inputRef}
         type="text"
         placeholder="Search Box"
@@ -106,8 +106,8 @@ function MapComponent({inputRef}) {
           left: "10px",
           zIndex: "5",
         }}
-      /> */}
-      <div ref={mapRef} style={{ width: "650px", height: "300px" }} />
+      />
+      <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
     </div>
   );
 }

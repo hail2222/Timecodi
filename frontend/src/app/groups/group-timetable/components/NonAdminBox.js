@@ -6,7 +6,7 @@ import axios from 'axios';
 function NonAdminBox (props) {
   const isAdmin = props.isAdmin;
 
-  if(isAdmin){
+  if(!isAdmin){
     return (
     
     <div className="col-4 grid-margin stretch-card" style={{'padding':'0vw 0vw', 'margin':'1.0vw'}}>
