@@ -130,6 +130,19 @@ class Sidebar extends Component {
                 </li>
                 <li className="nav-item">
                   {" "}
+                  <Link
+                    className={
+                      this.isPathActive("/mypage/FriendTimetable")
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    to="/mypage/FriendTimetable"
+                  >
+                    <Trans>Friend Timetable</Trans>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  {" "}
                   <Withdrawal />
                 </li>
               </ul>
