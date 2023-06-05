@@ -1,10 +1,35 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import axios from "axios";
 
 export default function Withdrawal() {
+  const history = useHistory();
   const [withdrawal, setWithdrawal] = useState(false);
-  const withdrawalClose = () => setWithdrawal(!withdrawal);
+  const withdrawalClose = () => {
+    setWithdrawal(!withdrawal);
+  }
+
+  const withdraw = () => {
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/account",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        alert(response.data.msg);
+        withdrawalClose();
+        history.push("/user-pages/login-1");
+      })
+      .catch((err) => {
+        alert("err!");
+      });
+  }
 
   return (
     <Link className="nav-link" onClick={withdrawalClose}>
@@ -24,7 +49,7 @@ export default function Withdrawal() {
           <button
             type="button"
             className="btn btn-danger btn-sm"
-            onClick={withdrawalClose}
+            onClick={withdraw}
           >
             YES
           </button>

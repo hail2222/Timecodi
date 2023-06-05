@@ -698,3 +698,50 @@ async def favorite_group_delete(gid: int, user: str, db: Session):
     db.delete(db_favorite)
     db.commit()
     return {"msg": "favorite deleted successfully."}
+
+async def get_friendcal(fid: str, user: str, db: Session):
+    is_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == fid).first()
+    if not is_friend:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
+    return db.query(Event).filter(Event.uid == fid).all()
+
+async def remove_account(user: str, db: Session):
+    db_user = db.query(User).filter(User.id == user).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+
+    is_admin = db.query(Group).filter(Group.admin == user).first()
+    if is_admin:
+        return {"msg": "Transfer Admin first!"}
+
+    db_cal = db.query(Event).filter(Event.uid == user).all()
+    for i in db_cal:
+        db.delete(i)
+
+    db_favorite = db.query(Favorite).filter(Favorite.uid == user).all()
+    for i in db_favorite:
+        db.delete(i)
+
+    db_friendrequest = db.query(FriendRequest).filter(FriendRequest.fid == user).all()
+    for i in db_friendrequest:
+        db.delete(i)
+
+    db_friend = db.query(Friend).filter(or_(Friend.uid == user, Friend.fid == user)).all()
+    for i in db_friendrequest:
+        db.delete(i)
+
+    db_invite = db.query(Invited).filter(Invited.uid == user).all()
+    for i in db_invite:
+        db.delete(i)
+    
+    db_member = db.query(Member).filter(Member.uid == user).all()
+    for i in db_member:
+        db.delete(i)
+
+    db_vote = db.query(Vote).filter(Vote.uid == user).all()
+    for i in db_vote:
+        db.delete(i)
+
+    db.delete(db_user)
+    db.commit()
+    return {"msg": "account deleted!"}
