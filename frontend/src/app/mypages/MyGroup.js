@@ -200,6 +200,30 @@ function MyGroup(props) {
       return false;
   };
 
+  const groupLeave = (gid) => {
+    const data = { gid: gid };
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          data: data,
+        }
+      )
+      .then((res) => {
+        if (res.data) {
+          alert(res.data.msg);
+          getMyGroupList();
+        }
+      })
+      .catch((err) => {
+        // AxiosError: Request failed with status code 422
+        alert(err);
+      });
+  }
+
   return (
     <>
       <div className="page-header">
@@ -297,6 +321,9 @@ function MyGroup(props) {
                             <button
                               type="button"
                               className="btn btn-secondary btn-sm"
+                              onClick={()=>{
+                                groupLeave(item.gid);
+                              }}
                             >
                               Leave
                             </button>

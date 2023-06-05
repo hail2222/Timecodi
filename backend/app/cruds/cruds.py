@@ -235,6 +235,14 @@ async def group_update(gid: int, group: GroupSchema, db: Session):
     db.refresh(db_group)
     return {"msg": "group name updated successfully."}
 
+async def group_remove(group: MemberSchema, user: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid == group.gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    if get_is_admin(group.gid, user, db) == False:
+        return {"msg": "admin can only"}
+    return {"msg": "admin hi"}
+
 async def group_leave(group: MemberSchema, user: str, db: Session):
     db_group = db.query(Group).filter(Group.gid == group.gid).first()
     if not db_group:
@@ -242,14 +250,16 @@ async def group_leave(group: MemberSchema, user: str, db: Session):
     db_member = db.query(Member).filter(Member.gid == group.gid, Member.uid == user).first()
     if not db_member:
         raise HTTPException(status_code=401, detail="Not group member")
+    if get_is_admin(group.gid, user, db) == True:
+        return {"msg": "admin can't leave"}
     db.delete(db_member)
     db.commit()
     
     db_favorite = db.query(Favorite).filter(Favorite.gid == group.gid, Favorite.uid == user).first()
-    if not db_favorite:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
-    db.delete(db_favorite)
-    db.commit()
+    if db_favorite:
+        # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
+        db.delete(db_favorite)
+        db.commit()
     
     db_event = db.query(Event).filter(Event.uid == user).all()
     for x in db_event:

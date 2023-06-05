@@ -773,8 +773,8 @@ function Group() {
           </button>
         </Modal.Footer>
       </Modal>
-      <AdminBox />
-      <NonAdminBox />
+      <AdminBox gid={gid} isAdmin={isAdmin} members={members}/>
+      <NonAdminBox isAdmin={isAdmin}/>
     </div>
   );
 }

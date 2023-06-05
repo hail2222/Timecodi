@@ -71,7 +71,27 @@ function AdminBox (props) {
   }
 
   const withdrawGroup = (gid) => {
-    alert("withdraw!");
+    alert("admin can't!");
+  }
+
+  const deleteGroup = (gid) => {
+    const data = { gid: gid };
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
+        {
+          data: data,
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        alert(response.data.msg);
+      })
+      .catch((err) => {
+        alert("err!");
+      });
   }
 
   if(isAdmin){
@@ -149,7 +169,7 @@ function AdminBox (props) {
           the member who joined the group first among the remaining people will gain the Admin's authority.</p>
           <div style={{"margin":'0 5vw'}}>
         <button type="button" className="btn btn-outline-danger btn-rounded btn-sm" onClick={()=>{withdrawGroup(gid)}}>Withdraw from group</button>
-        <button type="button" className="btn btn-outline-danger btn-rounded btn-sm">Delete group</button>
+        <button type="button" className="btn btn-outline-danger btn-rounded btn-sm" onClick={()=>{deleteGroup(gid)}}>Delete group</button>
         </div>
   </div>
         </div>
