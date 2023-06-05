@@ -4,7 +4,28 @@ import Dates from './Dates';
 import axios from 'axios';
 
 function NonAdminBox (props) {
+  const gid = props.gid;
   const isAdmin = props.isAdmin;
+
+  const withdrawGroup = (gid) => {
+    const data = { gid: gid };
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        {
+          data: data,
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        alert(response.data.msg);
+      })
+      .catch((err) => {
+        alert("err!");
+      });
+  }
 
   if(!isAdmin){
     return (
@@ -18,7 +39,7 @@ function NonAdminBox (props) {
         <p className="card-description" style={{"padding":'0.2vw 1vw 0vw 0',"text-align":'left'}}>I hope you know what you are doing.. 
         </p>
       <div style={{"margin":'2.5vw 0 0 3vw'}}>
-      <button type="button" className="btn btn-outline-danger btn-rounded btn-sm">Withdraw from group</button>
+      <button type="button" className="btn btn-outline-danger btn-rounded btn-sm" onClick={()=>withdrawGroup(gid)}>Withdraw from group</button>
 
       </div>
     </div>

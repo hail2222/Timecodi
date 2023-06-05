@@ -1242,7 +1242,7 @@ function Group() {
         </Modal.Footer>
       </Modal>
       <AdminBox gid={gid} isAdmin={isAdmin} members={members} />
-      <NonAdminBox isAdmin={isAdmin} />
+      <NonAdminBox gid={gid} isAdmin={isAdmin} />
 
       {/* 친구찾기 */}
       <Modal show={addFriend} onHide={friendClose} centered>

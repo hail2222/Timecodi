@@ -239,9 +239,33 @@ async def group_remove(group: MemberSchema, user: str, db: Session):
     db_group = db.query(Group).filter(Group.gid == group.gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+
     if get_is_admin(group.gid, user, db) == False:
         return {"msg": "admin can only"}
-    return {"msg": "admin hi"}
+    # 멤버, 그룹 일정, 미팅 일정, 초대, 즐겨찾기, 그룹 삭제
+    db_member = db.query(Member).filter(Member.gid == group.gid).all()
+    for member in db_member:
+        db.delete(member)
+
+    db_favorite = db.query(Favorite).filter(Favorite.gid == group.gid).all()
+    for favorite in db_favorite:
+        db.delete(favorite)
+
+    db_groupcal = db.query(GroupEvent).filter(GroupEvent.gid == group.gid).all()
+    for groupcal in db_groupcal:
+        db.delete(groupcal)
+    
+    db_invite = db.query(Invited).filter(Invited.gid == group.gid).all()
+    for invite in db_invite:
+        db.delete(invite)
+
+    db_meeting = db.query(Meeting).filter(Meeting.gid == group.gid).all()
+    for meeting in db_meeting:
+        db.delete(meeting)
+
+    db.delete(db_group)
+    db.commit()
+    return {"msg": "delete success"}
 
 async def group_leave(group: MemberSchema, user: str, db: Session):
     db_group = db.query(Group).filter(Group.gid == group.gid).first()
