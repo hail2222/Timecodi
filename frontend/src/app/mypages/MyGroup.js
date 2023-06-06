@@ -13,7 +13,6 @@ function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
-
   axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
       headers: {
@@ -183,21 +182,43 @@ function MyGroup(props) {
   };
 
   const addFavorite = (gid) => {
-    const addGroup = {
-      gid
-    };
-    setFavoriteList([addGroup, ...favoriteList])
+    axios
+      .post(`${url}/favorite?gid=${gid}`, null, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        if (res.data) {
+          getFavoriteList();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-  
+
   const deleteFavorite = (gid) => {
-    setFavoriteList(favoriteList.filter((group) => group.gid !== gid));
+    axios
+      .delete(`${url}/favorite?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        if (res.data) {
+          getFavoriteList();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const isFavorite = (gid) => {
-    if(favoriteList.filter((group) => group.gid === gid).length > 0)
+    if (favoriteList.filter((group) => group.gid === gid).length > 0)
       return true;
-    else
-      return false;
+    else return false;
   };
 
   const groupLeave = (gid) => {
@@ -222,7 +243,7 @@ function MyGroup(props) {
         // AxiosError: Request failed with status code 422
         alert(err);
       });
-  }
+  };
 
   return (
     <>
@@ -321,7 +342,7 @@ function MyGroup(props) {
                             <button
                               type="button"
                               className="btn btn-secondary btn-sm"
-                              onClick={()=>{
+                              onClick={() => {
                                 groupLeave(item.gid);
                               }}
                             >
@@ -329,9 +350,16 @@ function MyGroup(props) {
                             </button>
                             <button
                               type="button"
-                              className = {["btn btn-sm", (isFavorite(item.gid) ? "btn-warning" : "btn-inverse-warning")].join(" ")}
-                              onClick={ () => {
-                                isFavorite(item.gid) ? deleteFavorite(item.gid) : addFavorite(item.gid);
+                              className={[
+                                "btn btn-sm",
+                                isFavorite(item.gid)
+                                  ? "btn-warning"
+                                  : "btn-inverse-warning",
+                              ].join(" ")}
+                              onClick={() => {
+                                isFavorite(item.gid)
+                                  ? deleteFavorite(item.gid)
+                                  : addFavorite(item.gid);
                               }}
                             >
                               <i className="mdi mdi-star"></i>

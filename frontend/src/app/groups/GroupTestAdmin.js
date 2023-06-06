@@ -160,10 +160,71 @@ function Group() {
       });
   };
 
+  let [options, setOptions] = useState([
+    {
+      day: "2000-01-01",
+      e_time: "23:00:00",
+      gid: 1,
+      members: 0,
+      s_time: "00:00:00",
+      vid: 1,
+      checked: false,
+    },
+  ]);
+  const getVote = () => {
+    axios
+      .get(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/votetime",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Vote: ", response.data);
+        let newOptions = response.data;
+        // add new key 'checked' to each option and set it to false
+        newOptions.forEach((option) => {
+          option["checked"] = false;
+        });
+        setOptions(newOptions);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getVoteResult = () => {
+    axios
+      .get(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Vote Result:", response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getGroupInfo();
     getMembers();
     getAdmin();
+    getVote();
+    getVoteResult();
   }, []);
 
   const inviteMember = (userId) => {
@@ -187,97 +248,13 @@ function Group() {
         console.log(err);
       });
   };
-  // let members = ["David Grey", "Stella Johnson", "Marina Michel", "John Doe"];
-  // let [memberList] = useState(members);
+
   const [addAdminCheck, setAdminCheck] = useState(false);
   const adminCheckClose = () => setAdminCheck(!addAdminCheck);
 
   let [isVoteActive] = useState(true);
-  let [options, setOptions] = useState([
-    {
-      id: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-    },
-    {
-      id: 2,
-      content: "2023-04-25 14:30 ~ 16:30",
-      checked: false,
-    },
-    {
-      id: 3,
-      content: "2023-04-25 15:00 ~ 17:00",
-      checked: false,
-    },
-    {
-      id: 4,
-      content: "2023-04-26 13:00 ~ 15:00",
-      checked: false,
-    },
-    {
-      id: 5,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-    },
-    {
-      id: 6,
-      content: "2023-04-25 14:30 ~ 16:30",
-      checked: false,
-    },
-    {
-      id: 7,
-      content: "2023-04-25 15:00 ~ 17:00",
-      checked: false,
-    },
-    {
-      id: 8,
-      content: "2023-04-26 13:00 ~ 15:00",
-      checked: false,
-    },
-  ]);
+
   let [result, setResult] = useState([
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
     {
       id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
       place: 1,
@@ -308,15 +285,17 @@ function Group() {
     },
   ]);
   let handleOptions = (event) => {
-    let newState = [...options];
-    const { name } = event.target;
-    newState.map((op) => {
-      if (op.id === Number(name)) {
-        op.checked = !op.checked;
+    const vid = event.target.dataset.vid;
+    let newState = options.map((op) => {
+      if (op.vid === Number(vid)) {
+        return { ...op, checked: !op.checked };
+      } else {
+        return op;
       }
     });
     setOptions(newState);
   };
+
   let handleOptionsResult = (event) => {
     let newStateResult = [...result];
     const { name } = event.target;
@@ -355,8 +334,8 @@ function Group() {
     getStartDate();
     const data = {
       gid: gid,
-      start_date: start_date,
-      end_date: end_date,
+      sdatetime: start_date,
+      edatetime: end_date,
       meetingtime: meetingHour + ":" + meetingMin,
     };
     axios
@@ -372,6 +351,7 @@ function Group() {
       .then((response) => {
         console.log(response.data);
         alert("vote success!");
+        getVote();
       })
       .catch((err) => {
         console.log(err);
@@ -752,7 +732,7 @@ function Group() {
                   style={{
                     height: "300px",
                     overflowY: "auto",
-                    overflowX: "hidden",
+                    overflowX: "auto",
                     padding: "0vw",
                   }}
                 >
@@ -762,8 +742,9 @@ function Group() {
                         "text-align": "center",
                       }}
                     >
-                      <th>#</th>
-                      <th>Time</th>
+                      <th>Day</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
                       <th>
                         <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
                       </th>
@@ -771,12 +752,14 @@ function Group() {
                     {options.map(function (el, idx) {
                       return (
                         <tr
+                          key={el.vid}
                           style={{
                             "text-align": "center",
                           }}
                         >
-                          <td>{el.id}</td>
-                          <td>{el.content}</td>
+                          <td>{el.day}</td>
+                          <td>{el.s_time}</td>
+                          <td>{el.e_time}</td>
                           <td>
                             <div
                               className="form-check"
@@ -790,7 +773,7 @@ function Group() {
                                   className="form-check-input"
                                   checked={el.checked}
                                   onChange={handleOptions}
-                                  name={el.id}
+                                  data-vid={el.vid}
                                 />
                                 <i className="input-helper"></i>
                               </label>
@@ -804,7 +787,7 @@ function Group() {
 
                 <div className="row">
                   <button
-                    type="button"
+                    type="submit"
                     className="btn btn-inverse-primary btn-sm"
                     style={{ margin: "1.5vw 0vw 0vw 14vw" }}
                   >
@@ -839,7 +822,7 @@ function Group() {
                   style={{
                     height: "300px",
                     overflowY: "auto",
-                    overflowX: "hidden",
+                    overflowX: "auto",
                     padding: "0vw",
                   }}
                 >
@@ -849,8 +832,9 @@ function Group() {
                         "text-align": "center",
                       }}
                     >
-                      <th>#</th>
-                      <th>Time</th>
+                      <th>Day</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
                       <th>
                         <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
                       </th>
@@ -858,12 +842,14 @@ function Group() {
                     {options.map(function (el, idx) {
                       return (
                         <tr
+                          key={el.vid}
                           style={{
                             "text-align": "center",
                           }}
                         >
-                          <td>{el.id}</td>
-                          <td>{el.content}</td>
+                          <td>{el.day}</td>
+                          <td>{el.s_time}</td>
+                          <td>{el.e_time}</td>
                           <td>
                             <div
                               className="form-check"
@@ -877,7 +863,7 @@ function Group() {
                                   className="form-check-input"
                                   checked={el.checked}
                                   onChange={handleOptions}
-                                  name={el.id}
+                                  data-vid={el.vid}
                                 />
                                 <i className="input-helper"></i>
                               </label>
