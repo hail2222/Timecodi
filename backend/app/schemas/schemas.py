@@ -42,6 +42,6 @@ class FriendSchema(BaseModel):
 
 class VoteTimeSchema(BaseModel):
     gid: int
-    sdatetime: datetime.date
-    edatetime: datetime.date
+    sdatetime: datetime
+    edatetime: datetime
     meetingtime: str
