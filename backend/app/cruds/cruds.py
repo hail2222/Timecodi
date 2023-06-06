@@ -585,6 +585,8 @@ async def get_votetime(gid: int, db: Session):
 
 
 async def generate_votetime(vt: VoteTimeSchema, db: Session):
+    # sdatetime = vt.sdatetime.isoformat()
+    # edatetime = vt.edatetime.isoformat()
     db_group = db.query(Group).filter(Group.gid == vt.gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
