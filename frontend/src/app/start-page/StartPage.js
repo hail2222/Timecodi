@@ -78,9 +78,9 @@ function StartPage() {
                 </div>
               </div>
             </div>
-            <div className="p-4 col-5">
+            <div className="p-4 col-6">
               <div className="card-body text-center">
-                <img src="img/personal_calendar.png" alt="" className="col-12"></img>
+                <img src="img/friends.png" alt="" className="col-12"></img>
               </div>
             </div>
           </div>
