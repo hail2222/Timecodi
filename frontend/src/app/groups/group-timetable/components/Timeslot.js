@@ -15,7 +15,7 @@ const Timeslot = (props) => {
     if (list_for_timeslot) {
       const updatedSlots = slots.map((slot) => {
         const match = list_for_timeslot.find((s) => s.time === slot.time);
-        return match || slot;
+        return match ? match : { ...slot, className: "" };
       });
       setSlots(updatedSlots);
     }

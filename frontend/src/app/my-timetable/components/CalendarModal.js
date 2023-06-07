@@ -1,26 +1,70 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Container } from "react-bootstrap";
+import axios from "axios";
 
 function CalendarModal({ date, openModal, setOpenModal, evtList }) {
-  // get schedule list from DB when the modal is opened
-  //   useEffect(() => {
-  //     axios
-  //       .get(`http://127.0.0.1:8000/event?date=${date}`, {
-  //         headers: {
-  //           Authorization: localStorage.getItem("token"),
-  //         },
-  //       })
-  //       .then((res) => {
-  //         let arr = [];
-  //         arr.push(res.data);
-  //         console.log(res.data);
-  //         setScheduleList(arr[0]);
-  //       })
-  //       .catch((err) => {
-  //         alert(err);
-  //       });
-  //   }, []);
+  let [updateEventContent, setUpdateEventContent] = useState({
+    cid: "",
+    cname: "",
+    sdatetime: "",
+    edatetime: "",
+    visibility: "",
+    weekly: "",
+    enddate: "",
+  });
+  const [showUpdateEvent, setShowUpdateEvent] = useState(false); // edit 버튼 눌렀을때 밑에 보이게 하는
+
+  const handleUpdateEvent = (cid) => {
+    // edit 버튼 눌림
+    console.log(evtList); // 오늘의 모든 이벤트들이 들어있는 걸 확인할 수 있습니다
+    // cid에 해당하는 이벤트를 evtList에서 찾아서 updateEventContent에 저장해야 함
+    setShowUpdateEvent(true);
+  };
+
+  const putEvent = () => {
+    // updateEventContent를 서버에 전송
+    setShowUpdateEvent(false);
+    /* 
+    const data = {};
+    axios
+      .put(`https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event`, data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        alert("Event Updated.");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+       */
+  };
+  const deleteEvent = () => {
+    setShowUpdateEvent(false);
+
+    // cid, deleteall(t/f)
+    /* 
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        alert("Event Deleted.");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+       */
+  };
 
   return (
     <Form className="card" style={{ width: "fit-content" }}>
@@ -43,6 +87,7 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
               <th>Title</th>
               <th>Start</th>
               <th>End</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -50,6 +95,7 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
               return (
                 <Schedule
                   key={evt.cid}
+                  cid={evt.cid}
                   cname={
                     evt.visibility === false || evt.visibility === "private"
                       ? "비공개"
@@ -63,18 +109,41 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
           </tbody>
         </Table>
       </Container>
+      {showUpdateEvent && (
+        <Container>
+          <label>/my-timetable/timetable.js 참고 </label>
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => {
+              setShowUpdateEvent(false);
+            }}
+          >
+            Close
+          </button>
+        </Container>
+      )}
     </Form>
   );
-}
 
-function Schedule({ cname, sdatetime, edatetime }) {
-  return (
-    <tr>
-      <td>{cname}</td>
-      <td>{sdatetime}</td>
-      <td>{edatetime}</td>
-    </tr>
-  );
+  function Schedule({ cid, cname, sdatetime, edatetime }) {
+    return (
+      <tr>
+        <td>{cname}</td>
+        <td>{sdatetime}</td>
+        <td>{edatetime}</td>
+        <td>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={(cid) => handleUpdateEvent(cid)}
+          >
+            EDIT
+          </button>
+        </td>
+      </tr>
+    );
+  }
 }
 
 const Table = styled.table`
