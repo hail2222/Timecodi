@@ -17,7 +17,7 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
     favorite_group_register, favorite_group_get, favorite_group_delete, \
-    get_votetime, generate_votetime, vote_register, vote_delete, get_voteresult, get_friendcal, remove_account
+    get_votetime, generate_votetime, get_all_vote, vote_func, vote_register, vote_delete, get_voteresult, get_friendcal, remove_account
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -275,15 +275,20 @@ async def generate_vote_time(vt: VoteTimeSchema, db: Session = Depends(get_db)):
     vote_time = await generate_votetime(vt, db)
     return vote_time
 
-@router.post("/vote")
-async def add_vote(vid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    vote = await vote_register(vid, user, db)
+@router.get("/vote")
+async def get_allvote(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    vote = await get_all_vote(gid, user, db)
     return vote
 
-@router.delete("/vote")
-async def del_vote(vid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    vote = await vote_delete(vid, user, db)
+@router.post("/vote")
+async def add_vote(gid: int, vid_list: list, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    vote = await vote_func(gid, vid_list, user, db)
     return vote
+
+# @router.delete("/vote")
+# async def del_vote(vid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+#     vote = await vote_delete(vid, user, db)
+#     return vote
 
 @router.get("/voteresult")
 async def get_vote_result(gid: int, db: Session = Depends(get_db)):
