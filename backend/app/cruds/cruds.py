@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite, GenerateVote, Vote
 from ..auth.hash_password import HashPassword
-from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema, VoteTimeSchema
 from ..googlecal.cal_func import get_event
 from ..timecodi.timecodi import calender_to_timetable
 from ..timecodi.generatevote import create_vote
@@ -164,7 +164,8 @@ async def friend_remove(friend: FriendSchema, user: str, db: Session):
     return {"msg": "friend deleted successfully."}
 
 async def get_all_requests(user: str, db: Session):
-    return db.query(FriendRequest).filter(FriendRequest.fid == user).all()
+    # return db.query(FriendRequest).filter(FriendRequest.fid == user).all()
+    return db.query(User).join(FriendRequest, FriendRequest.uid == User.id).filter(FriendRequest.fid == user).all()
 
 async def friend_request(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
@@ -236,6 +237,38 @@ async def group_update(gid: int, group: GroupSchema, db: Session):
     db.refresh(db_group)
     return {"msg": "group name updated successfully."}
 
+async def group_remove(group: MemberSchema, user: str, db: Session):
+    db_group = db.query(Group).filter(Group.gid == group.gid).first()
+    if not db_group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+
+    if get_is_admin(group.gid, user, db) == False:
+        return {"msg": "admin can only"}
+    # 멤버, 그룹 일정, 미팅 일정, 초대, 즐겨찾기, 그룹 삭제
+    db_member = db.query(Member).filter(Member.gid == group.gid).all()
+    for member in db_member:
+        db.delete(member)
+
+    db_favorite = db.query(Favorite).filter(Favorite.gid == group.gid).all()
+    for favorite in db_favorite:
+        db.delete(favorite)
+
+    db_groupcal = db.query(GroupEvent).filter(GroupEvent.gid == group.gid).all()
+    for groupcal in db_groupcal:
+        db.delete(groupcal)
+    
+    db_invite = db.query(Invited).filter(Invited.gid == group.gid).all()
+    for invite in db_invite:
+        db.delete(invite)
+
+    db_meeting = db.query(Meeting).filter(Meeting.gid == group.gid).all()
+    for meeting in db_meeting:
+        db.delete(meeting)
+
+    db.delete(db_group)
+    db.commit()
+    return {"msg": "delete success"}
+
 async def group_leave(group: MemberSchema, user: str, db: Session):
     db_group = db.query(Group).filter(Group.gid == group.gid).first()
     if not db_group:
@@ -243,14 +276,16 @@ async def group_leave(group: MemberSchema, user: str, db: Session):
     db_member = db.query(Member).filter(Member.gid == group.gid, Member.uid == user).first()
     if not db_member:
         raise HTTPException(status_code=401, detail="Not group member")
+    if get_is_admin(group.gid, user, db) == True:
+        return {"msg": "admin can't leave"}
     db.delete(db_member)
     db.commit()
     
     db_favorite = db.query(Favorite).filter(Favorite.gid == group.gid, Favorite.uid == user).first()
-    if not db_favorite:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
-    db.delete(db_favorite)
-    db.commit()
+    if db_favorite:
+        # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorite group doesn't exist")
+        db.delete(db_favorite)
+        db.commit()
     
     db_event = db.query(Event).filter(Event.uid == user).all()
     for x in db_event:
@@ -551,26 +586,28 @@ async def get_votetime(gid: int, db: Session):
     return votetime_exist.all()
 
 
-async def generate_votetime(gid: int, start_date: datetime, end_date: datetime, meetingtime: str, db: Session):
-    db_group = db.query(Group).filter(Group.gid == gid).first()
+async def generate_votetime(vt: VoteTimeSchema, db: Session):
+    # sdatetime = vt.sdatetime.isoformat()
+    # edatetime = vt.edatetime.isoformat()
+    db_group = db.query(Group).filter(Group.gid == vt.gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     
     # 기존 투표 존재 -> 제거
-    votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == gid)
+    votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == vt.gid)
     if votetime_exist.first():
         for i in votetime_exist.all():
             db.delete(i)
             db.commit()
-    vote_exist = db.query(Vote).filter(Vote.gid == gid)
+    vote_exist = db.query(Vote).filter(Vote.gid == vt.gid)
     if vote_exist.first():
         for i in vote_exist.all():
             db.delete(i)
             db.commit()
     
-    group_cal = await get_weekly_groupcal(gid, start_date, end_date, db)
-    for x in create_vote(group_cal[0], meetingtime):
-        db_votetime = GenerateVote(gid = gid, day = x[0], s_time = x[1], e_time = x[2], members = 0)
+    group_cal = await get_weekly_groupcal(vt.gid, vt.sdatetime, vt.edatetime, db)
+    for x in create_vote(group_cal[0], vt.meetingtime):
+        db_votetime = GenerateVote(gid = vt.gid, day = x[0], s_time = x[1], e_time = x[2], members = 0)
         db.add(db_votetime)
         db.commit()
         db.refresh(db_votetime)
@@ -665,3 +702,50 @@ async def favorite_group_delete(gid: int, user: str, db: Session):
     db.delete(db_favorite)
     db.commit()
     return {"msg": "favorite deleted successfully."}
+
+async def get_friendcal(fid: str, user: str, db: Session):
+    is_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == fid).first()
+    if not is_friend:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
+    return db.query(Event).filter(Event.uid == fid).all()
+
+async def remove_account(user: str, db: Session):
+    db_user = db.query(User).filter(User.id == user).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+
+    is_admin = db.query(Group).filter(Group.admin == user).first()
+    if is_admin:
+        return {"msg": "Transfer Admin first!"}
+
+    db_cal = db.query(Event).filter(Event.uid == user).all()
+    for i in db_cal:
+        db.delete(i)
+
+    db_favorite = db.query(Favorite).filter(Favorite.uid == user).all()
+    for i in db_favorite:
+        db.delete(i)
+
+    db_friendrequest = db.query(FriendRequest).filter(FriendRequest.fid == user).all()
+    for i in db_friendrequest:
+        db.delete(i)
+
+    db_friend = db.query(Friend).filter(or_(Friend.uid == user, Friend.fid == user)).all()
+    for i in db_friendrequest:
+        db.delete(i)
+
+    db_invite = db.query(Invited).filter(Invited.uid == user).all()
+    for i in db_invite:
+        db.delete(i)
+    
+    db_member = db.query(Member).filter(Member.uid == user).all()
+    for i in db_member:
+        db.delete(i)
+
+    db_vote = db.query(Vote).filter(Vote.uid == user).all()
+    for i in db_vote:
+        db.delete(i)
+
+    db.delete(db_user)
+    db.commit()
+    return {"msg": "account deleted!"}

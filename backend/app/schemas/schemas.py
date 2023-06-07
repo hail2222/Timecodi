@@ -39,3 +39,9 @@ class MeetingSchema(BaseModel):
 
 class FriendSchema(BaseModel):
     fid: str
+
+class VoteTimeSchema(BaseModel):
+    gid: int
+    sdatetime: date
+    edatetime: date
+    meetingtime: str

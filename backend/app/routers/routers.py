@@ -6,18 +6,18 @@ import datetime
 from fastapi.responses import FileResponse
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema, VoteTimeSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
     invited_register, invited_delete, get_all_members, member_register, get_is_admin, kick_member, transfer_admin,\
-    meeting_register, meeting_remove, meeting_update, get_all_meetings, \
+    meeting_register, meeting_remove, meeting_update, get_all_meetings, group_remove,\
     google_event_register, get_all_groupcal, get_my_group, send_kakao, \
     invited_register, member_register, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
     favorite_group_register, favorite_group_get, favorite_group_delete, \
-    get_votetime, generate_votetime, vote_register, vote_delete, get_voteresult
+    get_votetime, generate_votetime, vote_register, vote_delete, get_voteresult, get_friendcal, remove_account
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -118,6 +118,10 @@ async def update_group(gid: int, group: GroupSchema, db: Session = Depends(get_d
     update_success = await group_update(gid, group, db)
     return update_success
 
+@router.delete("/group")
+async def delete_group(group: MemberSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await group_remove(group, user, db)
+    return remove_success
 
 @router.post("/invited")
 async def add_group(invite: InviteSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
@@ -267,8 +271,8 @@ async def get_vote_time(gid: int, db: Session = Depends(get_db)):
     return vote_time
 
 @router.post("/votetime")
-async def generate_vote_time(gid: int, start_date: datetime.date, end_date: datetime.date, meetingtime: str, db: Session = Depends(get_db)):
-    vote_time = await generate_votetime(gid, start_date, end_date, meetingtime, db)
+async def generate_vote_time(vt: VoteTimeSchema, db: Session = Depends(get_db)):
+    vote_time = await generate_votetime(vt, db)
     return vote_time
 
 @router.post("/vote")
@@ -285,3 +289,13 @@ async def del_vote(vid: int, user: str = Depends(authenticate), db: Session = De
 async def get_vote_result(gid: int, db: Session = Depends(get_db)):
     vote_result = await get_voteresult(gid, db)
     return vote_result
+
+@router.get("/friendcal")
+async def get_friend_cal(fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    friend_cal = await get_friendcal(fid, user, db)
+    return friend_cal
+
+@router.delete("/account")
+async def delete_account(user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    remove_success = await remove_account(user, db)
+    return remove_success

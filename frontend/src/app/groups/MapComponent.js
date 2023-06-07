@@ -8,9 +8,9 @@ import {
 } from "react-google-maps";
 import GoogleMapAPI from "../../GoogleMapAPI";
 
-function MapComponent() {
+function MapComponent({inputRef}) {
   const mapRef = useRef();
-  const inputRef = useRef();
+  // const inputRef = useRef();
   const searchBoxRef = useRef();
   const markersRef = useRef([]);
 
@@ -25,7 +25,7 @@ function MapComponent() {
       const searchBox = new window.google.maps.places.SearchBox(input);
       searchBoxRef.current = searchBox;
 
-      map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
+      // map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
 
       map.addListener("bounds_changed", () => {
         searchBox.setBounds(map.getBounds());
@@ -84,8 +84,8 @@ function MapComponent() {
   }, []);
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <input
+    <div style={{ width: "650px", height: "300px" }}>
+      {/* <input
         ref={inputRef}
         type="text"
         placeholder="Search Box"
@@ -106,7 +106,7 @@ function MapComponent() {
           left: "10px",
           zIndex: "5",
         }}
-      />
+      /> */}
       <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
     </div>
   );
