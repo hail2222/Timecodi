@@ -83,6 +83,7 @@ async def event_register(event: EventSchema, user: str, db: Session):
                 db.add(db_event)
                 db.commit()
                 db.refresh(db_event)
+                calendar_success = await groupcal_register(db_event.cid, user, db)
                 event.sdatetime+=timedelta(weeks=1)
                 event.edatetime+=timedelta(weeks=1)
     # enddate가 null이면 반복 x
@@ -92,7 +93,7 @@ async def event_register(event: EventSchema, user: str, db: Session):
         db.add(db_event)
         db.commit()
         db.refresh(db_event)
-    calendar_success = await groupcal_register(db_event.cid, user, db)
+        calendar_success = await groupcal_register(db_event.cid, user, db)
     return {"msg": "event added successfully."}
         
 
@@ -100,6 +101,7 @@ async def event_remove(cid: int, deleteall: bool, user: str, db: Session):
     db_event = db.query(Event).filter(Event.uid == user, Event.cid == cid).first()
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event doesn't exist")
+    calendar_success = await groupcal_remove(db_event.cid, db)
     db.delete(db_event)
     db.commit()
     weekly_id=db_event.weekly
@@ -109,9 +111,9 @@ async def event_remove(cid: int, deleteall: bool, user: str, db: Session):
             db_event = db.query(Event).filter(Event.uid == user, Event.weekly == weekly_id).first()
             if not db_event:
                 break
+            calendar_success = await groupcal_remove(db_event.cid, db)
             db.delete(db_event)
             db.commit()
-    calendar_success = await groupcal_remove(cid, db)
     return {"msg": "event deleted successfully."}    
 
 async def event_update(cid: int, event: EventSchema, user: str, db: Session):
@@ -434,7 +436,7 @@ async def groupcal_register2(gid: int, member: str, db: Session):
 async def groupcal_update(ccid: int, event: EventSchema, db: Session):
     db_event = db.query(GroupEvent).filter(GroupEvent.ccid == ccid).all()
     if not db_event:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting doesn't exist")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="events doesn't exist")
     for x in db_event:
         x.cname = event.cname
         x.sdatetime = event.sdatetime
@@ -442,16 +444,16 @@ async def groupcal_update(ccid: int, event: EventSchema, db: Session):
         x.visibility = event.visibility
         db.add(x)
         db.commit()
-    return {"msg": "meeting info updated successfully."}
+    return {"msg": "events info updated successfully."}
 
 async def groupcal_remove(ccid: int, db: Session):
     db_event = db.query(GroupEvent).filter(GroupEvent.ccid == ccid).all()
     if not db_event:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting doesn't exist")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="events doesn't exist")
     for x in db_event:
         db.delete(x)
         db.commit()
-    return {"msg": "meeting deleted successfully."}
+    return {"msg": "events deleted successfully."}
 
 async def get_all_groupcal(gid: int, user: str, db: Session):
     return db.query(GroupEvent).filter(GroupEvent.gid == gid).all()
