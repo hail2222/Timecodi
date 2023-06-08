@@ -8,6 +8,10 @@ import Timeslot from "./group-timetable/components/Timeslot";
 import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
+import MemberBox from "./group-timetable/components/MemberBox";
+
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+
 import GroupCalContext from "./GroupCalContext";
 import { Bar, Doughnut } from "react-chartjs-2";
 import MapComponent from "./MapComponent";
@@ -394,7 +398,7 @@ function Group() {
       <div className="page-header">
         <h3 className="page-title">{gname}</h3>
         <nav aria-label="breadcrumb">
-          <p>GID: {gid}</p>
+          {/* <p>GID: {gid}</p> */}
           <p>Admin: {admin}</p>
         </nav>
       </div>
@@ -433,6 +437,7 @@ function Group() {
             </div>
           </div>
         </div>
+        {/* 
         <div className="col-6 grid-margin stretch-card">
           <div className="card">
             <h4
@@ -452,37 +457,48 @@ function Group() {
                 overflowX: "hidden",
               }}
             >
-              {/* <p className="card-description">Click member's name</p> */}
               <div className="table-responsive">
                 <table className="table">
-                  <thead>
-                    {/* <tr style={{"text-align":'center'}}>
-                      <th> Name </th>
-                      <th> Actions </th>
-                    </tr> */}
-                  </thead>
+                  
+                    <tr style={{"text-align":'center'}}>
+                      <th style={{"width":'15vw'}}> Name </th>
+                      <th style={{"width":'20vw'}}> ID </th>
+                      <th style={{"width":'35vw'}}> Actions </th>
+                    </tr> 
+                  
                   <tbody>
                     {members.map(function (el, idx) {
                       return (
-                        <tr>
+                        <tr style={{"text-align":'center'}}>
                           <td
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
                           >
                             {el.name}
                           </td>
+                          <td
+                            onClick={handleShow}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {el.id}
+                          </td>
                           <td>
-                            <button
-                              type="button"
-                              className="btn btn-inverse-success btn-sm"
-                            >
-                              TimeTable
+                          <button type="button" className="btn btn-inverse-info btn-sm" style={{"height":'2vw'
+                                }}>
+                              <Link
+                                to={`/mypage/FriendTimetable/${el.gid}`}
+                                
+                              >
+                                <i className="mdi mdi-calendar"></i>
+
+                              </Link>
                             </button>
                             <button
                               type="button"
-                              className="btn btn-inverse-warning btn-sm"
+                              className="btn btn-inverse-warning btn-sm" style={{"height":'2vw'
+                            }}
                             >
-                              Add friend
+                              Friend +
                             </button>
                           </td>
                         </tr>
@@ -492,19 +508,14 @@ function Group() {
                 </table>
               </div>
             </div>
-            <center>
-              <button
-                type="button"
-                className="btn btn-gradient-primary btn-sm "
-                style={{ "font-weight": "420", margin: "2vw" }}
-                onClick={adminCheckClose}
-              >
+            <center style={{"color":"gray", "padding-bottom":'2vw'}}>
+              
                 <i className="mdi mdi-account-plus"></i>
-                &nbsp;Invite New Member
-              </button>
+                &nbsp; To invite new member, ask the admin!
             </center>
           </div>
         </div>
+      */}
 
         <div className="col-6 grid-margin stretch-card">
           <div className="card">
@@ -514,7 +525,7 @@ function Group() {
                 margin: "2.5vw 0 0 2.5vw",
               }}
             >
-              <i className="mdi mdi-account"></i> Members (Admin 계정)
+              <i className="mdi mdi-account"></i> Members
             </h4>
 
             <div
@@ -527,35 +538,47 @@ function Group() {
             >
               {/* <p className="card-description">Click member's name</p> */}
               <div className="table-responsive">
-                <table className="table">
-                  <thead>
-                    {/* <tr style={{"text-align":'center'}}>
-                      <th> Name </th>
-                      <th> Actions </th>
-                    </tr> */}
-                  </thead>
+              <table className="table">
+                  
+                    <tr style={{"text-align":'center'}}>
+                    <th style={{"width":'15vw'}}> Name </th>
+                      <th style={{"width":'20vw'}}> ID </th>
+                      <th style={{"width":'35vw'}}> Actions </th>
+                    </tr> 
+                  
                   <tbody>
                     {members.map(function (el, idx) {
                       return (
-                        <tr>
+                        <tr style={{"text-align":'center'}}>
                           <td
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
                           >
                             {el.name}
                           </td>
+                          <td
+                            onClick={handleShow}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {el.id}
+                          </td>
                           <td>
-                            <button
-                              type="button"
-                              className="btn btn-inverse-success btn-sm"
-                            >
-                              TimeTable
+                          <button type="button" className="btn btn-inverse-info btn-sm" style={{"height":'2vw'
+                                }}>
+                              <Link
+                                to={`/mypage/FriendTimetable/${el.gid}`}
+                                
+                              >
+                                <i className="mdi mdi-calendar"></i>
+
+                              </Link>
                             </button>
                             <button
                               type="button"
-                              className="btn btn-inverse-warning btn-sm"
+                              className="btn btn-inverse-warning btn-sm" style={{"height":'2vw'
+                            }}
                             >
-                              Add friend
+                              Friend +
                             </button>
                           </td>
                         </tr>
@@ -745,6 +768,7 @@ function Group() {
         </GroupCalContext.Provider>
       </div>
       <div className="row">
+        {/*
         <div className="col-6 grid-margin stretch-card">
           <div className="card">
             <div
@@ -835,6 +859,7 @@ function Group() {
             </div>
           </div>
         </div>
+        */}
 
         <div className="col-6 grid-margin stretch-card">
           <div className="card">
@@ -845,7 +870,7 @@ function Group() {
               }}
             >
               <h4 className="card-title">
-                <i className="mdi mdi-clipboard-text"></i> Vote (Admin 계정)
+                <i className="mdi mdi-clipboard-text"></i> Vote 
               </h4>
               <p className="card-description">
                 Check the box to vote and submit.
@@ -935,7 +960,7 @@ function Group() {
           </div>
         </div>
 
-        {/* //Admin 계정 아닐 때 */}
+        {/* //Admin 계정 아닐 때 
         <div className="col-md-6 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
@@ -1024,6 +1049,7 @@ function Group() {
             </div>
           </div>
         </div>
+        */}
 
         {/* //Admin 계정일 때 */}
         <div className="col-md-6 grid-margin stretch-card">

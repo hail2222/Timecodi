@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+
 import { Modal } from "react-bootstrap";
 
 export default function FriendsTable({ friends, onDel }) {
@@ -33,7 +35,14 @@ const FriendItem = ({ friend, onDel }) => {
       <td>{userId}</td>
       <td>
         <button type="button" className="btn btn-inverse-info btn-sm">
-          <i className="mdi mdi-calendar"></i>
+          <Link
+            to={`/mypage/FriendTimetable`}
+            style={{
+            }}
+          >
+            <i className="mdi mdi-calendar"></i>
+
+          </Link>
         </button>
       </td>
       <td>
@@ -45,7 +54,7 @@ const FriendItem = ({ friend, onDel }) => {
           <i className="mdi mdi-close-circle-outline" />
         </button>
       </td>
-      
+
       <Modal show={deleteFriend} onHide={deleteClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Delete</Modal.Title>

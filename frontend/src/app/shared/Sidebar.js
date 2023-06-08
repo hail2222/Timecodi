@@ -128,7 +128,7 @@ class Sidebar extends Component {
                     <Trans>My Timetable</Trans>
                   </Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   {" "}
                   <Link
                     className={
@@ -140,7 +140,7 @@ class Sidebar extends Component {
                   >
                     <Trans>Friend Timetable</Trans>
                   </Link>
-                </li>
+                </li> */}
                 <li className="nav-item">
                   {" "}
                   <Withdrawal />
@@ -161,7 +161,7 @@ class Sidebar extends Component {
               data-toggle="collapse"
             >
               <span className="menu-title">
-                <Trans>Groups</Trans>
+                <Trans>Group Bookmarks</Trans>
               </span>
               <i className="menu-arrow"></i>
               <i className="mdi mdi-account-multiple menu-icon"></i>
@@ -169,7 +169,7 @@ class Sidebar extends Component {
             <Collapse in={this.state.groupsMenuOpen}>
               <ul className="nav flex-column sub-menu">
               <FavoriteGroup />
-              <li className="nav-item">
+              {/* <li className="nav-item">
                   {" "}
                   <Link
                     className={
@@ -204,10 +204,10 @@ class Sidebar extends Component {
                         : "nav-link"
                     }
                     to="/groups/groupTestAdmin"
-                  >
+                  > 
                     <Trans>Group Test Page Admin</Trans>
                   </Link>
-                </li>
+                </li>*/}
               </ul>
             </Collapse>
           </li>
