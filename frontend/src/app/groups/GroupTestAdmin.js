@@ -107,6 +107,37 @@ function Group() {
 
   // const { gid } = useParams();
 
+  const [upcoming, setUpComing] = useState({name: null, when: null, where: null, memo: null});
+
+  const getUpComing = () => {
+    axios
+      .get(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/upcoming",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+          },
+        }
+      )
+      .then((response) => {
+        if(response.data){
+          let upcomingInfo = {name: response.data.title, when: response.data.sdatetime, where: response.data.location + "(" + response.data.loc_detail + ")", memo: response.data.memo};
+          upcomingInfo.when = upcomingInfo.when.replace("T", " at ");
+          setUpComing(upcomingInfo);
+        }
+      })
+      .catch((err) => {
+        alert(err.response.data.detail);
+      });
+  }
+
+  useEffect(() => {
+    getUpComing();
+  }, []);
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -443,6 +474,7 @@ function Group() {
         console.log(response.data);
         localStorage.setItem("submitMeeting", JSON.stringify(response.data));
         alert("submit");
+        getUpComing();
       })
       .catch((err) => {
         console.log(meetingInfo);
@@ -504,19 +536,19 @@ function Group() {
                   </tr>
                   <tr>
                     <td className="font-weight-bold">MEETING NAME</td>
-                    <td>Band Practice</td>
+                    <td>{upcoming.name}</td>
                   </tr>
                   <tr>
                     <td className="font-weight-bold">WHEN</td>
-                    <td>2023년 4월 25일</td>
+                    <td>{upcoming.when}</td>
                   </tr>
                   <tr>
                     <td className="font-weight-bold">WHERE</td>
-                    <td>학생회관</td>
+                    <td>{upcoming.where}</td>
                   </tr>
                   <tr>
                     <td className="font-weight-bold">MEMO</td>
-                    <td>Bring your headphones:)</td>
+                    <td>{upcoming.memo}</td>
                   </tr>
                 </table>
               </div>
