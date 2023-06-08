@@ -14,7 +14,7 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     invited_register, invited_delete, get_all_members, member_register, get_is_admin, kick_member, transfer_admin,\
     meeting_register, meeting_remove, meeting_update, get_all_meetings, group_remove,\
     google_event_register, get_all_groupcal, get_my_group, send_kakao, \
-    invited_register, member_register, \
+    invited_register, member_register, invited_kakao, \
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
     favorite_group_register, favorite_group_get, favorite_group_delete, \
@@ -232,26 +232,26 @@ async def del_favorite_group(gid: int, user: str = Depends(authenticate), db: Se
 #     return group_cal
 
 
-from fastapi import Request
+from fastapi import requests
 
-@router.get("/kakaoshare")
-async def send_kakaomsg(req: Request, gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    send_msg = await send_kakao(req, gid, user, db)
-    return send_msg
-
+# 카카오톡 공유 html 테스트용
+# @router.get("/kakaoshare")
+# async def send_kakaomsg(req: Request, gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+#     send_msg = await send_kakao(req, gid, user, db)
+#     return send_msg
 
 @router.get("/invited/{gid}")
 async def print_uid(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    register_success = await invited_register(gid, user, user, db)
+    register_success = await invited_kakao(gid, user, db)
     return register_success
 
 import os.path
 from fastapi.templating import Jinja2Templates
 
-templates=Jinja2Templates(directory='./app/googlemap')
-@router.get("/googlemap")
-async def get_map(req: Request):
-    return templates.TemplateResponse('map.html',{"request":req})
+# templates=Jinja2Templates(directory='./app/googlemap')
+# @router.get("/googlemap")
+# async def get_map(req: Request):
+#     return templates.TemplateResponse('map.html',{"request":req})
 
 
 @router.get("/weeklygroupcal")
