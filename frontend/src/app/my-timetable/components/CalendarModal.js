@@ -42,16 +42,26 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   };
 
   const putEvent = () => {
-    // updateEventContent를 서버에 전송
-    setShowUpdateEvent(false);
-    /* 
-    const data = {};
+    const data = {
+      cid: updateEventContent.cid,
+      cname: name,
+      sdatetime: sdate,
+      edatetime: edate,
+      visibility: visible,
+      weekly: 0,
+      enddate: updateEventContent.enddate,
+    };
+    // console.log("putEvent", data);
     axios
-      .put(`https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event`, data, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
+      .put(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event`,
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
       .then((response) => {
         console.log(response.data);
         alert("Event Updated.");
@@ -59,12 +69,11 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
       .catch((err) => {
         console.log(err);
       });
-       */
   };
   const deleteEvent = () => {
     // cid, deleteall(t/f)
     const data = { cid: updateEventContent.cid, deleteall: deleteall };
-    console.log(data);
+    // console.log(data);
     axios
       .delete(
         `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?cid=${data.cid}&deleteall=${data.deleteall}`,
@@ -136,7 +145,9 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
       {showUpdateEvent && (
         <Container>
           <div className="d-flex">
-            <div className="col-4" style={{padding: "0.75rem"}}>Event Name: </div>
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              Event Name:{" "}
+            </div>
             <Form.Control
               type="text"
               id="event_content"
@@ -146,7 +157,9 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
           </div>
           <br></br>
           <div className="d-flex">
-            <div className="col-4" style={{padding: "0.75rem"}}>Visibility:</div>
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              Visibility:
+            </div>
             <select
               className="form-control col-8"
               id="event_visibility"
@@ -160,7 +173,9 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
           </div>
           <br></br>
           <div className="d-flex">
-            <div className="col-4" style={{padding: "0.75rem"}}>Start Date: </div>
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              Start Date:{" "}
+            </div>
             <Form.Control
               type="datetime-local"
               id="event_sdue"
@@ -170,7 +185,9 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
           </div>
           <br></br>
           <div className="d-flex">
-            <div className="col-4" style={{padding: "0.75rem"}}>End Date:</div>
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              End Date:
+            </div>
             <Form.Control
               type="datetime-local"
               id="event_edue"
@@ -187,7 +204,7 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
               type="button"
               className="btn btn-primary btn-sm"
               onClick={() => {
-                setShowUpdateEvent(false);
+                putEvent();
               }}
             >
               OK
@@ -221,7 +238,7 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
             <div>
               <button
                 type="button"
-                style={{margin: "5px 10px"}}
+                style={{ margin: "5px 10px" }}
                 className="btn btn-inverse-danger btn-sm"
                 onClick={() => {
                   deleteEvent();
@@ -231,7 +248,6 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
               </button>
             </div>
           </div>
-            
         </Container>
       )}
     </Forms>
