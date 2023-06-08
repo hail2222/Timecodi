@@ -170,6 +170,8 @@ async def get_all_requests(user: str, db: Session):
 
 async def friend_request(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
+    if user == friend.fid:
+        raise HTTPException(status_code=401, detail="it's you")
     if not friend_user_exist:
         raise HTTPException(status_code=404, detail="There is no user")
     already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
@@ -409,6 +411,8 @@ async def get_is_admin(gid: int, user: str, db: Session):
 
 async def transfer_admin(who: InviteSchema, user: str, db: Session):
     if get_is_admin(who.gid, user, db):
+        if who.uid == user:
+            raise HTTPException(status_code=401, detail="You are already admin!")
         db_group = db.query(Group).filter(Group.gid==who.gid).first()
         db_group.admin = who.uid
         group = {"gid": who.gid}
@@ -737,11 +741,11 @@ async def favorite_group_delete(gid: int, user: str, db: Session):
     db.commit()
     return {"msg": "favorite deleted successfully."}
 
-async def get_friendcal(fid: str, user: str, db: Session):
-    is_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == fid).first()
+async def get_friendcal(friend: FriendSchema, user: str, db: Session):
+    is_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
     if not is_friend:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
-    return db.query(Event).filter(Event.uid == fid).all()
+    return db.query(Event).filter(Event.uid == friend.fid).all()
 
 async def remove_account(user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()

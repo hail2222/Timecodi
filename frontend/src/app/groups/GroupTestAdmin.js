@@ -456,6 +456,27 @@ function Group() {
     setName(e.target.value);
   };
 
+  const requestFriend = (userId) => {
+    const data = { fid: userId };
+    axios
+      .post(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/request",
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        alert(response.data.msg);
+      })
+      .catch((err) => {
+        // alert(err.response.data.detail, name);
+        alert(err.response.data.detail);
+      });
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -640,6 +661,7 @@ function Group() {
                               type="button"
                               className="btn btn-inverse-warning btn-sm" style={{"height":'2vw'
                             }}
+                              onClick={()=>{requestFriend(el.id)}}
                             >
                               Friend +
                             </button>
