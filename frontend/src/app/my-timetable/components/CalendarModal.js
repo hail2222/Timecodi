@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Container } from "react-bootstrap";
+import { Form, Container } from "react-bootstrap";
 import axios from "axios";
 
 function CalendarModal({ date, openModal, setOpenModal, evtList }) {
+  const [name, setName] = useState("");
+  const [visible, setVisible] = useState("");
+  const [sdate, setSdate] = useState("");
+  const [edate, setEdate] = useState("");
+  const [enddate, setEnddate] = useState("");
+
   let [updateEventContent, setUpdateEventContent] = useState({
     cid: "",
     cname: "",
@@ -67,7 +73,7 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   };
 
   return (
-    <Form className="card" style={{ width: "fit-content" }}>
+    <Forms className="card" style={{ width: "fit-content" }}>
       <Header>
         {date}
         <button
@@ -111,7 +117,54 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
       </Container>
       {showUpdateEvent && (
         <Container>
-          <label>/my-timetable/timetable.js 참고 </label>
+          <label>Edit Event Name: </label>
+          <Form.Control
+            type="text"
+            id="event_content"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>{" "}
+          <br></br>
+          <label>Visibility:</label>
+          <select
+            className="form-control"
+            id="event_visibility"
+            value={visible}
+            onChange={(e) => setVisible(e.target.value)}
+          >
+            <option value="default">default</option>
+            <option value="public">public</option>
+            <option value="private">private</option>
+          </select>{" "}
+          <br></br>
+          <label>Start Date: </label>
+          <Form.Control
+            type="datetime-local"
+            id="event_sdue"
+            value={sdate}
+            onChange={(e) => setSdate(e.target.value)}
+          ></Form.Control>{" "}
+          <br></br>
+          <label>End Date:</label>
+          <Form.Control
+            type="datetime-local"
+            id="event_edue"
+            value={edate}
+            onChange={(e) => {
+              setEdate(e.target.value);
+              setEnddate(e.target.value);
+            }}
+          ></Form.Control>{" "}
+          <br></br>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              setShowUpdateEvent(false);
+            }}
+          >
+            OK
+          </button>
           <button
             type="button"
             className="btn btn-secondary btn-sm"
@@ -119,11 +172,11 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
               setShowUpdateEvent(false);
             }}
           >
-            Close
+            Cancel
           </button>
         </Container>
       )}
-    </Form>
+    </Forms>
   );
 
   function Schedule({ cid, cname, sdatetime, edatetime }) {
@@ -154,12 +207,12 @@ const Table = styled.table`
   }
 `;
 
-const Form = styled.div`
+const Forms = styled.div`
   position: absolute;
   width: fit-content;
   max-width: 40vw;
   height: fit-content;
-  max-height: 20vw;
+  max-height: 40vw;
   border-radius: 10px;
   background-color: #f2edf3;
   text-align: left;
