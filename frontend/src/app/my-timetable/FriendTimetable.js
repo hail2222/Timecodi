@@ -66,7 +66,7 @@ export function FriendTimetable() {
           <span className="page-title-icon bg-gradient-primary text-white mr-2">
             <i className="mdi mdi-timetable"></i>
           </span>{" "}
-          {fid} ~~FRIEND NAME~~'s Schedule{" "}
+          {fid}'s Schedule{" "}
         </h3>
       </div>
 
