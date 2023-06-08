@@ -171,6 +171,8 @@ async def get_all_requests(user: str, db: Session):
 
 async def friend_request(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
+    if user == friend.fid:
+        raise HTTPException(status_code=401, detail="it's you")
     if not friend_user_exist:
         raise HTTPException(status_code=404, detail="There is no user")
     already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
@@ -244,7 +246,7 @@ async def group_remove(group: MemberSchema, user: str, db: Session):
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
 
-    if get_is_admin(group.gid, user, db) == False:
+    if not get_is_admin(group.gid, user, db):
         return {"msg": "admin can only"}
     # 멤버, 그룹 일정, 미팅 일정, 초대, 즐겨찾기, 그룹 삭제
     db_member = db.query(Member).filter(Member.gid == group.gid).all()
@@ -278,8 +280,8 @@ async def group_leave(group: MemberSchema, user: str, db: Session):
     db_member = db.query(Member).filter(Member.gid == group.gid, Member.uid == user).first()
     if not db_member:
         raise HTTPException(status_code=401, detail="Not group member")
-    if get_is_admin(group.gid, user, db) == True:
-        return {"msg": "admin can't leave"}
+    if get_is_admin(group.gid, user, db):
+        return {"msg": "Transfer the admin permission and then leave please."}
     db.delete(db_member)
     db.commit()
     
@@ -410,6 +412,8 @@ async def get_is_admin(gid: int, user: str, db: Session):
 
 async def transfer_admin(who: InviteSchema, user: str, db: Session):
     if get_is_admin(who.gid, user, db):
+        if who.uid == user:
+            raise HTTPException(status_code=401, detail="You are already admin!")
         db_group = db.query(Group).filter(Group.gid==who.gid).first()
         db_group.admin = who.uid
         group = {"gid": who.gid}
@@ -427,6 +431,8 @@ async def kick_member(who: InviteSchema, user: str, db: Session):
         db_member = db.query(Member).filter(Member.gid == who.gid, Member.uid == who.uid).first()
         if not db_member:
             raise HTTPException(status_code=401, detail="Not group member")
+        if who.uid == user:
+            raise HTTPException(status_code=401, detail="You can't kick out yourself!")
         db.delete(db_member)
         db.commit()
         
@@ -773,6 +779,18 @@ async def get_friendcal(fid: str, user: str, db: Session):
     if not is_friend:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
     return db.query(Event).filter(Event.uid == fid).all()
+
+async def get_membercal(gid: int, fid: str, user: str, db: Session):
+    is_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if is_member:
+        also_member = db.query(Member).filter(Member.gid == gid, Member.uid == fid).first()
+        if also_member:
+            return db.query(Event).filter(Event.uid == fid).all()
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member doesn't exist")
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+        
 
 async def remove_account(user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()

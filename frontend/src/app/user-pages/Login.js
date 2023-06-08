@@ -65,15 +65,6 @@ export function Login() {
                 <div className="mt-3">
                   <button type="button" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={handleLogin}>SIGN IN</button>
                 </div>
-                <div className="my-2 d-flex justify-content-between align-items-center">
-                  <div className="form-check">
-                    <label className="form-check-label text-muted">
-                      <input type="checkbox" className="form-check-input"/>
-                      <i className="input-helper"></i>
-                      Keep me signed in
-                    </label>
-                  </div>
-                </div>
                 <div className="text-center mt-4 font-weight-light">
                   Don't have an account? <Link to="/user-pages/register" className="text-primary">Create</Link>
                 </div>
