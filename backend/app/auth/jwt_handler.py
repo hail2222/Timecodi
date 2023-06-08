@@ -11,7 +11,7 @@ env = os.environ
 def create_access_token(user: str):
     payload = {
         "user": user,
-        "expires": time.time() + 600
+        "expires": time.time() + 3600
     }
 
     token = jwt.encode(payload, env["SECRET_KEY"], algorithm="HS256")
