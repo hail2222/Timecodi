@@ -214,19 +214,4 @@ const Header = styled.div`
   font-weight: 700;
   border-bottom: 2px solid #d3d3d3;
 `;
-const Close = styled.div`
-  position: relative;
-  margin: 0.4vw 0.9vw;
-  padding: 0.3vw;
-  width: 4vw;
-  left: 14.5vw;
-  bottom: 5.1vw;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background-color: #d3d3d3;
-  border-radius: 5px;
-  text-align: center;
-  cursor: pointer;
-  z-index: 999;
-`;
 export default CalendarModal;
