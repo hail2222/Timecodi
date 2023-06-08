@@ -311,25 +311,31 @@ function Group() {
   }, []);
 
   const inviteMember = (userId) => {
-    const data = { gid: gid, uid: userId };
+    if(isAdmin){
+      const data = { gid: gid, uid: userId };
 
-    axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((response) => {
-        friendClose();
-        alert("invite success!");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      axios
+        .post(
+          "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
+          data,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
+        )
+        .then((response) => {
+          friendClose();
+          alert("invite success!");
+        })
+        .catch((err) => {
+          alert(err.response.data.detail);
+        });
+    }
+    else{
+      alert("only admin can invite members!");
+    }
+    
   };
 
   const [addAdminCheck, setAdminCheck] = useState(false);

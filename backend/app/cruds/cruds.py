@@ -302,7 +302,7 @@ async def invited_register(invite: InviteSchema, user: str, db: Session):
     if get_is_admin(invite.gid, user, db):
         db_user = db.query(User).filter(User.id == invite.uid).first()
         if not db_user:
-            raise HTTPException(status_code=stiatus.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
         already_invited = db.query(Invited).filter(Invited.uid == invite.uid, Invited.gid == invite.gid).first()
         if already_invited:
             raise HTTPException(status_code=401, detail="already invited")
