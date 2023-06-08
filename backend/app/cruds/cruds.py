@@ -747,6 +747,18 @@ async def get_friendcal(fid: str, user: str, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
     return db.query(Event).filter(Event.uid == fid).all()
 
+async def get_membercal(gid: int, fid: str, user: str, db: Session):
+    is_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if is_member:
+        also_member = db.query(Member).filter(Member.gid == gid, Member.uid == fid).first()
+        if also_member:
+            return db.query(Event).filter(Event.uid == fid).all()
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member doesn't exist")
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+        
+
 async def remove_account(user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()
     if not db_user:
