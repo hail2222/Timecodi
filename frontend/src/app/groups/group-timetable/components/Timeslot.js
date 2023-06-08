@@ -4,7 +4,7 @@ import styled from "styled-components";
 const Timeslot = (props) => {
   const { list_for_timeslot } = props; // [{time: 8.0, className: avail-first}, ... ]
   const [slots, setSlots] = useState(
-    Array.from({ length: 36 }, (_, i) => ({
+    Array.from({ length: 32 }, (_, i) => ({
       time: (8 + i * 0.5).toFixed(1),
       className: "",
     }))
@@ -15,7 +15,7 @@ const Timeslot = (props) => {
     if (list_for_timeslot) {
       const updatedSlots = slots.map((slot) => {
         const match = list_for_timeslot.find((s) => s.time === slot.time);
-        return match || slot;
+        return match ? match : { ...slot, className: "" };
       });
       setSlots(updatedSlots);
     }
@@ -45,7 +45,7 @@ const Form = styled.div`
 const Slot = styled.div`
   position: relative;
   width: 58px;
-  height: 12px;
+  height: 13px;
   border: 1px solid #bb7aff;
   border-bottom: 1px dotted #bb7aff;
   text-align: left;
@@ -64,7 +64,7 @@ const Slot = styled.div`
 const Slot2 = styled.div`
   position: relative;
   width: 58px;
-  height: 12px;
+  height: 13px;
   border: 1px solid #bb7aff;
   border-top: none;
   text-align: left;

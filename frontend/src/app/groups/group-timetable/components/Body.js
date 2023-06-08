@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import Dates from "./Dates";
-import sample_list from "./calendar_to_timetable.js";
-import GroupCalContext from "../../GroupCalContext";
 import axios from "axios";
 
 const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
@@ -10,10 +8,18 @@ const localURL = "https://127.0.0.1:8000";
 const url = realURL;
 
 function Body(props) {
-  const { totalDate, today, month, year, gid, groupCal, fetchGroupCal } = props;
+  const {
+    totalDate,
+    today,
+    month,
+    year,
+    gid,
+    groupCal,
+    fetchGroupCal,
+    meetingList,
+  } = props;
   const lastDate = totalDate.indexOf(1);
   const firstDate = totalDate.indexOf(1, 7);
-  //   const { groupCal, fetchGroupCal } = useContext(GroupCalContext);
 
   const [holiday, setHoliday] = useState([0]);
 
@@ -35,6 +41,56 @@ function Body(props) {
   let viewButtons5 = [1, 2, 3, 4, 5];
   let viewButtons6 = [1, 2, 3, 4, 5, 6];
   let lastDatesOfWeek = [];
+
+  let [meetingMap, setMeetingMap] = useState(new Map()); // key: date, value: meetingInfo
+  const populateEvtMap = (meetingList) => {
+    const newEvtMap = new Map();
+
+    meetingList.forEach((evt) => {
+      if (evt.sdatetime !== undefined && evt.edatetime !== undefined) {
+        let sdate = evt.sdatetime.split("T")[0];
+        let edate = evt.edatetime.split("T")[0];
+
+        if (newEvtMap.has(sdate)) {
+          newEvtMap.get(sdate).push(evt);
+        } else {
+          newEvtMap.set(sdate, [evt]);
+        }
+
+        if (sdate !== edate) {
+          let currentDate = new Date(sdate);
+          const lastDate = new Date(edate);
+
+          while (currentDate <= lastDate) {
+            let dateKey = currentDate.toISOString().split("T")[0];
+            if (!newEvtMap.has(dateKey)) {
+              newEvtMap.set(dateKey, [evt]);
+            } else if (!newEvtMap.get(dateKey).some((e) => e.cid === evt.cid)) {
+              newEvtMap.get(dateKey).push(evt);
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        }
+      }
+    });
+    setMeetingMap(newEvtMap);
+    console.log(meetingMap);
+  };
+
+  useEffect(() => {
+    populateEvtMap(meetingList);
+  }, [meetingList]);
+
+  function getEvtFromMap(year, month, elm) {
+    let evtList = [];
+    const date = `${year}-${String(month).padStart(2, "0")}-${String(
+      elm
+    ).padStart(2, "0")}`;
+    if (meetingMap.has(date)) {
+      evtList = meetingMap.get(date);
+    }
+    return evtList;
+  }
 
   const [viewWeekActive, setViewWeekActive] = useState("unactive");
   const [groupWeeklyCal, setGroupWeeklyCal] = useState([]);
@@ -145,6 +201,7 @@ function Body(props) {
                   month={month}
                   year={year}
                   holiday={holiday.item}
+                  meetingInfo={getEvtFromMap(year, month, elm)}
                 ></Dates>
               )}
             </div>

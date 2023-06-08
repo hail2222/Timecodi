@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 
 const TimetableHeader = (props) => {
-  const {
-    startDate,
-    endDate,
-    dayofWeek,
-    
-  } = props;
-
-
+  const { startDate, endDate, dayofWeek } = props;
 
   return (
     <Form>
@@ -31,20 +24,15 @@ const TimetableHeader = (props) => {
       <Header>10:00</Header>
       <Header>11:00</Header>
       <Header>12:00</Header>
-      <Header>1:00</Header>
-      <Header>2:00</Header>
-
-
-
-
+      {/* <Header>1:00</Header>
+      <Header>2:00</Header> */}
     </Form>
   );
 };
-const Form=styled.div`
-  display:flex;
-  flex-direction:column;
+const Form = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 448px;
-
 `;
 const Slot = styled.div`
   position: relative;
@@ -57,7 +45,7 @@ const Header = styled.div`
   width: 65px;
   height: 40px;
   font-size: 13px;
-  padding-right:4px;
+  padding-right: 4px;
   text-align: right;
   color: gray;
   z-index: 999;

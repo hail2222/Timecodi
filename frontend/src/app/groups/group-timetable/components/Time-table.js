@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import styled from "styled-components";
 import Timeslot from "./Timeslot";
 import TimetableHeader from "./TimeTableHeader";
@@ -8,43 +14,86 @@ const TimeTable = (props) => {
   const { startDate, endDate } = props;
   const { groupCal } = useContext(GroupCalContext);
 
-  let list_for_timeslot = {
-    Sunday: [],
-    Monday: [],
-    Tuesday: [],
-    Wednesday: [],
-    Thursday: [],
-    Friday: [],
-    Saturday: [],
-  };
-  const iter_for_timeslot = (list, className) => {
+  const iter_for_timeslot = useCallback((list, className) => {
+    let slots = {
+      sundayList: [],
+      mondayList: [],
+      tuesdayList: [],
+      wednesdayList: [],
+      thursdayList: [],
+      fridayList: [],
+      saturdayList: [],
+    };
     list.forEach((element) => {
       let dayOfWeek = element[1];
       let [hour, minute] = element[2].split(":").map(Number);
       let time = (hour + minute / 60).toFixed(1); // 08:30:00 to 8.5
       let timeSlot = { time: time.toString(), className: className };
-      if (list_for_timeslot[dayOfWeek]) {
-        list_for_timeslot[dayOfWeek].push(timeSlot);
+
+      if (dayOfWeek === "Sunday") {
+        slots.sundayList.push(timeSlot);
+      } else if (dayOfWeek === "Monday") {
+        slots.mondayList.push(timeSlot);
+      } else if (dayOfWeek === "Tuesday") {
+        slots.tuesdayList.push(timeSlot);
+      } else if (dayOfWeek === "Wednesday") {
+        slots.wednesdayList.push(timeSlot);
+      } else if (dayOfWeek === "Thursday") {
+        slots.thursdayList.push(timeSlot);
+      } else if (dayOfWeek === "Friday") {
+        slots.fridayList.push(timeSlot);
+      } else if (dayOfWeek === "Saturday") {
+        slots.saturdayList.push(timeSlot);
       }
-    });
-  };
-  let tester = "before";
-  if (groupCal) {
-    const groupCal_dict = groupCal[0];
-    const first_list = groupCal_dict["first_list"];
-    const first_key = Object.keys(first_list)[0]; // 1st list의 가능한 인원수
-    const first_value = first_list[first_key]; // 1st list의 가능한 시간들: 2023-05-01 Monday 08:00:00
-    iter_for_timeslot(first_value, "avail-first");
-    const second_list = groupCal_dict["second_list"];
-    const second_key = Object.keys(second_list)[0]; // 2nd list의 가능한 인원수
-    const second_value = second_list[second_key]; // 2nd list의 가능한 시간들: 2023-05-01 Monday 08:00:00
-    iter_for_timeslot(second_value, "avail-second");
-    const third_list = groupCal_dict["third_list"];
-    const third_key = Object.keys(third_list)[0]; // 3rd list의 가능한 인원수
-    const third_value = third_list[third_key]; // 3rd list의 가능한 시간들: 2023-05-01 Monday 08:00:00
-    iter_for_timeslot(third_value, "avail-third");
-    // tester = JSON.stringify(first_key);
-  }
+    }); // for loop
+    return slots;
+  }, []);
+
+  const {
+    sundayList,
+    mondayList,
+    tuesdayList,
+    wednesdayList,
+    thursdayList,
+    fridayList,
+    saturdayList,
+  } = useMemo(() => {
+    let slots = {
+      sundayList: [],
+      mondayList: [],
+      tuesdayList: [],
+      wednesdayList: [],
+      thursdayList: [],
+      fridayList: [],
+      saturdayList: [],
+    };
+    if (groupCal) {
+      const groupCal_dict = groupCal[0];
+      const first_list = groupCal_dict["first_list"];
+      const first_key = Object.keys(first_list)[0]; // 1st list's possible number of people
+      const first_value = first_list[first_key]; // 1st list's available times: 2023-05-01 Monday 08:00:00
+      const first_slots = iter_for_timeslot(first_value, "avail-first");
+
+      const second_list = groupCal_dict["second_list"];
+      const second_key = Object.keys(second_list)[0]; // 2nd list's possible number of people
+      const second_value = second_list[second_key]; // 2nd list's available times: 2023-05-01 Monday 08:00:00
+      const second_slots = iter_for_timeslot(second_value, "avail-second");
+
+      const third_list = groupCal_dict["third_list"];
+      const third_key = Object.keys(third_list)[0]; // 3rd list's possible number of people
+      const third_value = third_list[third_key]; // 3rd list's available times: 2023-05-01 Monday 08:00:00
+      const third_slots = iter_for_timeslot(third_value, "avail-third");
+
+      for (let dayOfWeek in slots) {
+        slots[dayOfWeek] = [
+          ...first_slots[dayOfWeek],
+          ...second_slots[dayOfWeek],
+          ...third_slots[dayOfWeek],
+        ];
+      }
+    }
+    return slots;
+  }, [groupCal, iter_for_timeslot]);
 
   return (
     <div>
@@ -59,13 +108,13 @@ const TimeTable = (props) => {
       </HeaderForm>
       <Form>
         <TimetableHeader></TimetableHeader>
-        <Timeslot list_for_timeslot={list_for_timeslot["Sunday"]}></Timeslot>
-        <Timeslot list_for_timeslot={list_for_timeslot["Monday"]}></Timeslot>
-        <Timeslot list_for_timeslot={list_for_timeslot["Tuesday"]}></Timeslot>
-        <Timeslot list_for_timeslot={list_for_timeslot["Wednesday"]}></Timeslot>
-        <Timeslot list_for_timeslot={list_for_timeslot["Thursday"]}></Timeslot>
-        <Timeslot list_for_timeslot={list_for_timeslot["Friday"]}></Timeslot>
-        <Timeslot list_for_timeslot={list_for_timeslot["Saturday"]}></Timeslot>
+        <Timeslot list_for_timeslot={sundayList}></Timeslot>
+        <Timeslot list_for_timeslot={mondayList}></Timeslot>
+        <Timeslot list_for_timeslot={tuesdayList}></Timeslot>
+        <Timeslot list_for_timeslot={wednesdayList}></Timeslot>
+        <Timeslot list_for_timeslot={thursdayList}></Timeslot>
+        <Timeslot list_for_timeslot={fridayList}></Timeslot>
+        <Timeslot list_for_timeslot={saturdayList}></Timeslot>
       </Form>
     </div>
   );

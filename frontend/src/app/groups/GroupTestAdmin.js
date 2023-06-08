@@ -185,7 +185,7 @@ function Group() {
         }
       )
       .then((response) => {
-        console.log("Vote: ", response.data);
+        // console.log("Vote: ", response.data);
         let newOptions = response.data;
         // add new key 'checked' to each option and set it to false
         newOptions.forEach((option) => {
@@ -198,21 +198,56 @@ function Group() {
       });
   };
 
+  let [result, setResult] = useState([
+    {
+      vid: 0,
+      s_time: "00:00:00",
+      e_time: "23:30:00",
+      gid: 0,
+      day: "2000-01-01",
+      members: 2,
+    },
+  ]);
   const getVoteResult = () => {
     axios
       .get(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult",
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult?gid=${gid}`,
         {
           headers: {
             Authorization: localStorage.getItem("token"),
-          },
-          params: {
-            gid: gid,
           },
         }
       )
       .then((response) => {
         console.log("Vote Result:", response.data);
+        setResult(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const [meetingList, setMeetingList] = useState([
+    {
+      edatetime: "2023-06-04T09:54:21",
+      gid: 11,
+      loc_detail: "string",
+      location: "string",
+      meetid: 3,
+      memo: "string",
+      sdatetime: "2023-06-04T09:54:21",
+      title: "sample data",
+    },
+  ]);
+  const getMeetingInfo = () => {
+    axios
+      .get(`${url}/meeting?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log("Meeting Info", res.data);
+        setMeetingList(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -225,6 +260,7 @@ function Group() {
     getAdmin();
     getVote();
     getVoteResult();
+    getMeetingInfo();
   }, []);
 
   const inviteMember = (userId) => {
@@ -254,36 +290,6 @@ function Group() {
 
   let [isVoteActive] = useState(true);
 
-  let [result, setResult] = useState([
-    {
-      id: 1, //setOptions의 id와 구분하기 위해 100번대부터 시작
-      place: 1,
-      content: "2023-04-25 14:00 ~ 16:00",
-      checked: false,
-      people: 5,
-    },
-    {
-      id: 2,
-      place: 2,
-      content: "2023-04-25 14:30 ~ 16:30",
-      checked: false,
-      people: 3,
-    },
-    {
-      id: 3,
-      place: 2,
-      content: "2023-04-26 14:30 ~ 16:30",
-      checked: false,
-      people: 3,
-    },
-    {
-      id: 4,
-      place: 3,
-      content: "2023-04-25 15:00 ~ 17:00",
-      checked: false,
-      people: 2,
-    },
-  ]);
   let handleOptions = (event) => {
     const vid = event.target.dataset.vid;
     let newState = options.map((op) => {
@@ -304,11 +310,36 @@ function Group() {
         op.checked = !op.checked;
       }
     });
-    setResult(newStateResult);
+    // setResult(newStateResult);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(options);
+    // console.log(options);
+    let selectedOptions = [];
+    options.forEach((option) => {
+      if (option.checked) {
+        selectedOptions.push(option.vid);
+      }
+    });
+    console.log(selectedOptions);
+    axios
+      .post(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/vote?gid=${gid}`,
+        selectedOptions,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        alert("vote success!");
+      })
+      .catch((err) => {
+        console.log(err);
+        // 없을때 404
+      });
   };
 
   const [input, setInput] = useState("");
@@ -565,7 +596,11 @@ function Group() {
                   to see available time of the week.
                 </p>
                 <div style={{ "margin-top": "4vw" }}>
-                  <Main gid={gid} style={{ flexDirection: "column" }} />
+                  <Main
+                    gid={gid}
+                    meetingList={meetingList}
+                    style={{ flexDirection: "column" }}
+                  />
                   <br></br>
                   <br></br>
                 </div>
@@ -925,8 +960,9 @@ function Group() {
                         "text-align": "center",
                       }}
                     >
-                      <th>#</th>
-                      <th>Time</th>
+                      <th>Day</th>
+                      <th>Start</th>
+                      <th>End</th>
                       <th>
                         <i className="mdi mdi-account-multiple"></i>
                       </th>
@@ -942,8 +978,9 @@ function Group() {
                             "text-align": "center",
                           }}
                         >
-                          <td>{el.place}</td>
-                          <td>{el.content}</td>
+                          <td>{el.day}</td>
+                          <td>{el.s_time}</td>
+                          <td>{el.e_time}</td>
                           <td>
                             <div className="form-check">
                               <button
@@ -955,7 +992,7 @@ function Group() {
                                 }}
                               >
                                 <i className="mdi mdi-account-outline"> </i>
-                                {el.people}
+                                {el.members}
                               </button>
                             </div>
                           </td>
@@ -972,7 +1009,7 @@ function Group() {
                                   className="form-check-input"
                                   checked={el.checked}
                                   onChange={handleOptionsResult}
-                                  name={el.id}
+                                  name={el.vid}
                                 />
                                 <i className="input-helper"></i>
                               </label>
@@ -1013,8 +1050,9 @@ function Group() {
                         "text-align": "center",
                       }}
                     >
-                      <th>#</th>
-                      <th>Time</th>
+                      <th>Day</th>
+                      <th>Start</th>
+                      <th>End</th>
                       <th>
                         <i className="mdi mdi-account-multiple"></i>
                       </th>
@@ -1030,8 +1068,9 @@ function Group() {
                             "text-align": "center",
                           }}
                         >
-                          <td>{el.place}</td>
-                          <td>{el.content}</td>
+                          <td>{el.day}</td>
+                          <td>{el.s_time}</td>
+                          <td>{el.e_time}</td>
                           <td>
                             <div className="form-check">
                               <button
@@ -1043,7 +1082,7 @@ function Group() {
                                 }}
                               >
                                 <i className="mdi mdi-account-outline"> </i>
-                                {el.people}
+                                {el.members}
                               </button>
                             </div>
                           </td>
@@ -1060,7 +1099,7 @@ function Group() {
                                   className="form-check-input"
                                   checked={el.checked}
                                   onChange={handleOptionsResult}
-                                  name={el.id}
+                                  name={el.vid}
                                 />
                                 <i className="input-helper"></i>
                               </label>
