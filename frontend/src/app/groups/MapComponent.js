@@ -1,14 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import {
-  GoogleMap,
-  Marker,
-  withScriptjs,
-  withGoogleMap,
-  useLoadScript,
-} from "react-google-maps";
 import GoogleMapAPI from "../../GoogleMapAPI";
 
-function MapComponent({inputRef}) {
+function MapComponent({ inputRef }) {
   const mapRef = useRef();
   // const inputRef = useRef();
   const searchBoxRef = useRef();

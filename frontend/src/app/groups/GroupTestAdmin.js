@@ -213,6 +213,7 @@ function Group() {
     },
   ]);
   const getVoteResult = () => {
+    console.log("End vote Clicked");
     axios
       .get(
         `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult?gid=${gid}`,
@@ -306,17 +307,27 @@ function Group() {
     setOptions(newState);
   };
 
+  const [checkedName, setCheckedName] = useState(null);
+
   let handleOptionsResult = (event) => {
-    let newStateResult = [...result];
-    const { name } = event.target;
-    newStateResult.map((op) => {
-      if (op.id === Number(name)) {
-        op.checked = !op.checked;
+    setCheckedName(event.target.value); // vid
+    // find s_time and e_time by vid
+    let s_time = "";
+    let e_time = "";
+    result.forEach((el) => {
+      if (el.vid === Number(event.target.value)) {
+        s_time = el.s_time;
+        e_time = el.e_time;
       }
     });
-    // setResult(newStateResult);
+    setMeetingInfo((prevMeetingInfo) => ({
+      ...prevMeetingInfo,
+      sdatetime: s_time,
+      edatetime: e_time,
+    }));
   };
-  const handleSubmit = (event) => {
+
+  const handleSubmitVote = (event) => {
     event.preventDefault();
     // console.log(options);
     let selectedOptions = [];
@@ -325,14 +336,18 @@ function Group() {
         selectedOptions.push(option.vid);
       }
     });
-    console.log(selectedOptions);
+    console.log(selectedOptions); // [1933, 1934, 1935]
     axios
       .post(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/vote?gid=${gid}`,
-        selectedOptions,
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/vote`,
+        {},
         {
           headers: {
             Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+            selectedOptions,
           },
         }
       )
@@ -391,6 +406,54 @@ function Group() {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  let [meetingInfo, setMeetingInfo] = useState({
+    title: "",
+    location: "",
+    loc_detail: "",
+    memo: "",
+    sdatetime: "",
+    edatetime: "",
+  });
+
+  const handleMeetingInfo = (event) => {
+    const { id, value } = event.target;
+    setMeetingInfo((prevMeetingInfo) => ({
+      ...prevMeetingInfo,
+      [id]: value,
+    }));
+  };
+
+  const submitMeeting = (e) => {
+    localStorage.setItem("meetingInfo", JSON.stringify(meetingInfo));
+    axios
+      .post(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/meeting?gid=${gid}`,
+        meetingInfo,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          //   params: meetingInfo,
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        localStorage.setItem("submitMeeting", JSON.stringify(response.data));
+        alert("submit");
+      })
+      .catch((err) => {
+        console.log(err);
+        localStorage.setItem("submitMeeting", JSON.stringify(err));
+        alert(err);
+      });
+  };
+
+  const [name, setName] = useState("");
+
+  const nameSet = (e) => {
+    setName(e.target.value);
   };
 
   return (
@@ -785,7 +848,7 @@ function Group() {
                 Check the box to vote and submit.
               </p>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmitVote}>
                 <div
                   className="card-body"
                   style={{
@@ -876,7 +939,7 @@ function Group() {
                 Check the box to vote and submit.
               </p>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmitVote}>
                 <div
                   className="card-body"
                   style={{
@@ -969,83 +1032,58 @@ function Group() {
                 Vote Result (Admin 계정 아닐 때)
               </h4>
               <p className="card-description">See the vote result!</p>
-              <form onSubmit={handleSubmit}>
-                <div
-                  className="card-body"
-                  style={{
-                    height: "350px",
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                    padding: "0vw",
-                  }}
-                >
-                  <table className="table">
-                    <tr
-                      style={{
-                        "text-align": "center",
-                      }}
-                    >
-                      <th>Day</th>
-                      <th>Start</th>
-                      <th>End</th>
-                      <th>
-                        <i className="mdi mdi-account-multiple"></i>
-                      </th>
-                      <th>
-                        {" "}
-                        <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
-                      </th>
-                    </tr>
-                    {result.map(function (el, idx) {
-                      return (
-                        <tr
-                          style={{
-                            "text-align": "center",
-                          }}
-                        >
-                          <td>{el.day}</td>
-                          <td>{el.s_time}</td>
-                          <td>{el.e_time}</td>
-                          <td>
-                            <div className="form-check">
-                              <button
-                                type="button"
-                                className="btn btn-inverse-danger btn-sm"
-                                style={{
-                                  height: "1.5vw",
-                                  padding: "0.1vw 0.4vw",
-                                }}
-                              >
-                                <i className="mdi mdi-account-outline"> </i>
-                                {el.members}
-                              </button>
-                            </div>
-                          </td>
-                          <td>
-                            <div
-                              className="form-check"
+              <div
+                className="card-body"
+                style={{
+                  height: "350px",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  padding: "0vw",
+                }}
+              >
+                <table className="table">
+                  <tr
+                    style={{
+                      "text-align": "center",
+                    }}
+                  >
+                    <th>Day</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>
+                      <i className="mdi mdi-account-multiple"></i>
+                    </th>
+                  </tr>
+                  {result.map(function (el, idx) {
+                    return (
+                      <tr
+                        style={{
+                          "text-align": "center",
+                        }}
+                      >
+                        <td>{el.day}</td>
+                        <td>{el.s_time}</td>
+                        <td>{el.e_time}</td>
+                        <td>
+                          <div className="form-check">
+                            <button
+                              type="button"
+                              className="btn btn-inverse-danger btn-sm"
                               style={{
-                                "margin-left": "2vw",
+                                height: "1.5vw",
+                                padding: "0.1vw 0.4vw",
                               }}
                             >
-                              <label className="form-check-label">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  checked={el.checked}
-                                  onChange={handleOptionsResult}
-                                  name={el.vid}
-                                />
-                                <i className="input-helper"></i>
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </table>
-                </div>
-              </form>
+                              <i className="mdi mdi-account-outline"> </i>
+                              {el.members}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -1060,94 +1098,93 @@ function Group() {
                 Vote Result
               </h4>
               <p className="card-description">See the vote result!</p>
-              <form onSubmit={handleSubmit}>
-                <div
-                  className="card-body"
-                  style={{
-                    height: "300px",
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                    padding: "0vw",
-                  }}
-                >
-                  <table className="table">
-                    <tr
-                      style={{
-                        "text-align": "center",
-                      }}
-                    >
-                      <th>Day</th>
-                      <th>Start</th>
-                      <th>End</th>
-                      <th>
-                        <i className="mdi mdi-account-multiple"></i>
-                      </th>
-                      <th>
-                        {" "}
-                        <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
-                      </th>
-                    </tr>
-                    {result.map(function (el, idx) {
-                      return (
-                        <tr
-                          style={{
-                            "text-align": "center",
-                          }}
-                        >
-                          <td>{el.day}</td>
-                          <td>{el.s_time}</td>
-                          <td>{el.e_time}</td>
-                          <td>
-                            <div className="form-check">
-                              <button
-                                type="button"
-                                className="btn btn-inverse-danger btn-sm"
-                                style={{
-                                  height: "1.5vw",
-                                  padding: "0.1vw 0.4vw",
-                                }}
-                              >
-                                <i className="mdi mdi-account-outline"> </i>
-                                {el.members}
-                              </button>
-                            </div>
-                          </td>
-                          <td>
-                            <div
-                              className="form-check"
+
+              <div
+                className="card-body"
+                style={{
+                  height: "300px",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  padding: "0vw",
+                }}
+              >
+                <table className="table">
+                  <tr
+                    style={{
+                      "text-align": "center",
+                    }}
+                  >
+                    <th>Day</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>
+                      <i className="mdi mdi-account-multiple"></i>
+                    </th>
+                    <th>
+                      {" "}
+                      <i className="mdi mdi-checkbox-multiple-marked-outline"></i>
+                    </th>
+                  </tr>
+                  {result.map(function (el, idx) {
+                    return (
+                      <tr
+                        style={{
+                          "text-align": "center",
+                        }}
+                      >
+                        <td>{el.day}</td>
+                        <td>{el.s_time}</td>
+                        <td>{el.e_time}</td>
+                        <td>
+                          <div className="form-check">
+                            <button
+                              type="button"
+                              className="btn btn-inverse-danger btn-sm"
                               style={{
-                                "margin-left": "2vw",
+                                height: "1.5vw",
+                                padding: "0.1vw 0.4vw",
                               }}
                             >
-                              <label className="form-check-label">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  checked={el.checked}
-                                  onChange={handleOptionsResult}
-                                  name={el.vid}
-                                />
-                                <i className="input-helper"></i>
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </table>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-inverse-primary btn-sm"
-                  style={{ margin: "3vw 4vw 0vw 12vw" }}
-                  onClick={addClose}
-                >
-                  <span style={{ "font-size": "15px", "font-weight": "500" }}>
-                    {" "}
-                    Make Meeting
-                  </span>
-                </button>
-              </form>
+                              <i className="mdi mdi-account-outline"> </i>
+                              {el.members}
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            className="form-check"
+                            style={{
+                              "margin-left": "2vw",
+                            }}
+                          >
+                            <label className="form-check-label">
+                              <input
+                                type="radio"
+                                className="form-check-input"
+                                name="resultsRadios"
+                                onChange={handleOptionsResult}
+                                value={el.vid}
+                              />
+                              <i className="input-helper"></i>
+                            </label>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </table>
+              </div>
+              <button
+                type="button"
+                className="btn btn-inverse-primary btn-sm"
+                style={{ margin: "3vw 4vw 0vw 12vw" }}
+                onClick={addClose}
+              >
+                <span style={{ "font-size": "15px", "font-weight": "500" }}>
+                  {" "}
+                  Make Meeting
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -1170,95 +1207,99 @@ function Group() {
             </span>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ "background-color": "#f2edf3" }}>
-          <div style={{ margin: "0 8vw" }}>
-            <table>
-              <tr>
-                <td>
-                  <div>
-                    <label style={{ padding: " 0.7vw 0 0 0" }}>
-                      Meeting Name:{" "}
-                    </label>
-                    <Form.Control
-                      type="text"
-                      id="event_content"
-                      placeholder="meeting name"
-                      style={{ width: "400px" }}
-                    ></Form.Control>{" "}
-                    <label style={{ padding: " 0.7vw 0 0 0" }}>Memo </label>
-                    <Form.Control
-                      type="text"
-                      id="event_content"
-                      placeholder="..."
-                      style={{ width: "400px" }}
-                    ></Form.Control>{" "}
-                  </div>
-                  <div>
-                    <label style={{ padding: " 0.7vw 0 0 0" }}>Where: </label>
+        <Form onSubmit={submitMeeting}>
+          <Modal.Body style={{ "background-color": "#f2edf3" }}>
+            <div style={{ margin: "0 8vw" }}>
+              <table>
+                <tr>
+                  <td>
                     <div>
+                      <label style={{ padding: " 0.7vw 0 0 0" }}>
+                        Meeting Name:{" "}
+                      </label>
                       <Form.Control
                         type="text"
-                        id="event_content"
-                        placeholder="Search the location of your meeting"
-                        style={{ width: "330px", float: "left" }}
-                        value={input}
-                        ref={inputRef}
-                        onChange={onChange}
+                        id="title"
+                        placeholder="meeting name"
+                        value={meetingInfo.title}
+                        onChange={handleMeetingInfo}
+                        style={{ width: "400px" }}
                       ></Form.Control>{" "}
-                      <div className="input-group-append">
-                        <button
-                          className="btn btn-sm btn-gradient-primary"
-                          type="button"
-                          style={{ float: "right", height: "3vw" }}
-                        >
-                          Search
-                        </button>
-                      </div>
+                      <label style={{ padding: " 0.7vw 0 0 0" }}>Memo </label>
+                      <Form.Control
+                        type="text"
+                        id="memo"
+                        value={meetingInfo.memo}
+                        onChange={handleMeetingInfo}
+                        placeholder="..."
+                        style={{ width: "400px" }}
+                      ></Form.Control>{" "}
                     </div>
-                    <Form.Control
-                      type="text"
-                      id="event_content"
-                      placeholder="place of your meeting"
-                      style={{ width: "400px" }}
-                    ></Form.Control>{" "}
-                  </div>
-                </td>
-                <td>
-                  <div
-                    style={{
-                      width: "650px",
-                      height: "300px",
-                      "margin-left": "2vw",
-                      "background-color": " white",
-                    }}
-                  >
-                    <MapComponent inputRef={inputRef} />
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </Modal.Body>
-        <Modal.Footer style={{ "background-color": "#f2edf3" }}>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={() => {
-              addClose();
-            }}
-          >
-            Submit
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={() => {
-              addClose();
-            }}
-          >
-            Cancel
-          </button>
-        </Modal.Footer>
+                    <div>
+                      <label style={{ padding: " 0.7vw 0 0 0" }}>Where: </label>
+                      <div>
+                        <Form.Control
+                          type="text"
+                          id="location"
+                          value={meetingInfo.location}
+                          onChange={handleMeetingInfo}
+                          placeholder="Search the location of your meeting"
+                          style={{ width: "330px", float: "left" }}
+                          // value={input}
+                          ref={inputRef}
+                          // onChange={onChange}
+                        ></Form.Control>{" "}
+                        <div className="input-group-append">
+                          <button
+                            className="btn btn-sm btn-gradient-primary"
+                            type="button"
+                            style={{ float: "right", height: "3vw" }}
+                          >
+                            Search
+                          </button>
+                        </div>
+                      </div>
+                      <Form.Control
+                        type="text"
+                        id="loc_detail"
+                        value={meetingInfo.loc_detail}
+                        onChange={handleMeetingInfo}
+                        placeholder="place of your meeting"
+                        style={{ width: "400px" }}
+                      ></Form.Control>{" "}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      style={{
+                        width: "650px",
+                        height: "300px",
+                        "margin-left": "2vw",
+                        "background-color": " white",
+                      }}
+                    >
+                      <MapComponent inputRef={inputRef} />
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </Modal.Body>
+          <Modal.Footer style={{ "background-color": "#f2edf3" }}>
+            <button type="submit" className="btn btn-primary btn-sm">
+              Submit
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => {
+                addClose();
+              }}
+            >
+              Cancel
+            </button>
+          </Modal.Footer>
+        </Form>
       </Modal>
 
       {/* 어드민인지 확인 */}
@@ -1307,13 +1348,21 @@ function Group() {
                 type="text"
                 className="form-control form-control-lg"
                 placeholder="ID"
+                onChange={nameSet}
                 name="name"
+                value={name}
               />
             </div>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" className="btn btn-primary btn-sm">
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              inviteMember(name);
+            }}
+          >
             OK
           </button>
           <button
