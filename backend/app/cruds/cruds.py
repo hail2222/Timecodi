@@ -694,8 +694,8 @@ async def get_voteresult(gid: int, db: Session):
             max_members2 = x.members
     if max_members2!=0:
         db_max2 = db.query(GenerateVote).filter(GenerateVote.gid == gid, GenerateVote.members == max_members2).all()
-        db_max.append(db_max2)
-
+        for x in db_max2:
+            db_max.append(x)
     return db_max
 
 # get group info by gid
