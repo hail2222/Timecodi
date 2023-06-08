@@ -741,11 +741,11 @@ async def favorite_group_delete(gid: int, user: str, db: Session):
     db.commit()
     return {"msg": "favorite deleted successfully."}
 
-async def get_friendcal(friend: FriendSchema, user: str, db: Session):
-    is_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
+async def get_friendcal(fid: str, user: str, db: Session):
+    is_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == fid).first()
     if not is_friend:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
-    return db.query(Event).filter(Event.uid == friend.fid).all()
+    return db.query(Event).filter(Event.uid == fid).all()
 
 async def remove_account(user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()
