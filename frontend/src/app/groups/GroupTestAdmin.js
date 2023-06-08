@@ -312,24 +312,24 @@ function Group() {
   let handleOptionsResult = (event) => {
     setCheckedName(event.target.value); // vid
     // find s_time and e_time by vid
+    let day = "";
     let s_time = "";
     let e_time = "";
     result.forEach((el) => {
       if (el.vid === Number(event.target.value)) {
         s_time = el.s_time;
         e_time = el.e_time;
+        day = el.day;
       }
     });
     setMeetingInfo((prevMeetingInfo) => ({
       ...prevMeetingInfo,
-      sdatetime: s_time,
-      edatetime: e_time,
+      sdatetime: day + "T" + s_time,
+      edatetime: day + "T" + e_time,
     }));
   };
 
   const handleSubmitVote = (event) => {
-    event.preventDefault();
-    // console.log(options);
     let selectedOptions = [];
     options.forEach((option) => {
       if (option.checked) {
@@ -347,7 +347,7 @@ function Group() {
           },
           params: {
             gid: gid,
-            selectedOptions,
+            vidlist: selectedOptions,
           },
         }
       )
@@ -415,6 +415,7 @@ function Group() {
     memo: "",
     sdatetime: "",
     edatetime: "",
+    gid: gid,
   });
 
   const handleMeetingInfo = (event) => {
@@ -426,16 +427,16 @@ function Group() {
   };
 
   const submitMeeting = (e) => {
+    e.preventDefault();
     localStorage.setItem("meetingInfo", JSON.stringify(meetingInfo));
     axios
       .post(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/meeting?gid=${gid}`,
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/meeting`,
         meetingInfo,
         {
           headers: {
             Authorization: localStorage.getItem("token"),
           },
-          //   params: meetingInfo,
         }
       )
       .then((response) => {
@@ -444,6 +445,7 @@ function Group() {
         alert("submit");
       })
       .catch((err) => {
+        console.log(meetingInfo);
         console.log(err);
         localStorage.setItem("submitMeeting", JSON.stringify(err));
         alert(err);
@@ -622,18 +624,17 @@ function Group() {
             >
               {/* <p className="card-description">Click member's name</p> */}
               <div className="table-responsive">
-              <table className="table">
-                  
-                    <tr style={{"text-align":'center'}}>
-                    <th style={{"width":'15vw'}}> Name </th>
-                      <th style={{"width":'20vw'}}> ID </th>
-                      <th style={{"width":'35vw'}}> Actions </th>
-                    </tr> 
-                  
+                <table className="table">
+                  <tr style={{ "text-align": "center" }}>
+                    <th style={{ width: "15vw" }}> Name </th>
+                    <th style={{ width: "20vw" }}> ID </th>
+                    <th style={{ width: "35vw" }}> Actions </th>
+                  </tr>
+
                   <tbody>
                     {members.map(function (el, idx) {
                       return (
-                        <tr style={{"text-align":'center'}}>
+                        <tr style={{ "text-align": "center" }}>
                           <td
                             onClick={handleShow}
                             style={{ cursor: "pointer" }}
@@ -647,21 +648,22 @@ function Group() {
                             {el.id}
                           </td>
                           <td>
-                          <button type="button" className="btn btn-inverse-info btn-sm" style={{"height":'2vw'
-                                }}>
-                              <Link
-                                to={`/mypage/FriendTimetable/${el.gid}`}
-                                
-                              >
+                            <button
+                              type="button"
+                              className="btn btn-inverse-info btn-sm"
+                              style={{ height: "2vw" }}
+                            >
+                              <Link to={`/mypage/FriendTimetable/${el.gid}`}>
                                 <i className="mdi mdi-calendar"></i>
-
                               </Link>
                             </button>
                             <button
                               type="button"
-                              className="btn btn-inverse-warning btn-sm" style={{"height":'2vw'
-                            }}
-                              onClick={()=>{requestFriend(el.id)}}
+                              className="btn btn-inverse-warning btn-sm"
+                              style={{ height: "2vw" }}
+                              onClick={() => {
+                                requestFriend(el.id);
+                              }}
                             >
                               Friend +
                             </button>
@@ -955,7 +957,7 @@ function Group() {
               }}
             >
               <h4 className="card-title">
-                <i className="mdi mdi-clipboard-text"></i> Vote 
+                <i className="mdi mdi-clipboard-text"></i> Vote
               </h4>
               <p className="card-description">
                 Check the box to vote and submit.
