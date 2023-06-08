@@ -1,14 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import {
-  GoogleMap,
-  Marker,
-  withScriptjs,
-  withGoogleMap,
-  useLoadScript,
-} from "react-google-maps";
 import GoogleMapAPI from "../../GoogleMapAPI";
 
-function MapComponent({inputRef}) {
+function MapComponent({ inputRef }) {
   const mapRef = useRef();
   // const inputRef = useRef();
   const searchBoxRef = useRef();
@@ -50,10 +43,19 @@ function MapComponent({inputRef}) {
             console.log("Returned place contains no geometry");
             return;
           }
+
+          const icon = {
+            url: place.icon,
+            size: new window.google.maps.Size(71, 71),
+            origin: new window.google.maps.Point(0, 0),
+            anchor: new window.google.maps.Point(17, 34),
+            scaledSize: new window.google.maps.Size(25, 25),
+          };
+
           markersRef.current.push(
             new window.google.maps.Marker({
               map,
-              icon: place.icon,
+              icon,
               title: place.name,
               position: place.geometry.location,
             })
