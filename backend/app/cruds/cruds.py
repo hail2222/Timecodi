@@ -5,7 +5,8 @@ from sqlalchemy import func, or_, and_
 from datetime import datetime, timedelta
 
 from ..auth.jwt_handler import create_access_token
-from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite, GenerateVote, Vote
+from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting,\
+    GroupEvent, Invited, Favorite, GenerateVote, Vote, VoteResult
 from ..auth.hash_password import HashPassword
 from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, \
     MeetingSchema, displayMeeting, FriendSchema, VoteTimeSchema, VoteSchema, displayEvent
@@ -170,6 +171,8 @@ async def get_all_requests(user: str, db: Session):
 
 async def friend_request(friend: FriendSchema, user: str, db: Session):
     friend_user_exist = db.query(User).filter(User.id == friend.fid).first()
+    if user == friend.fid:
+        raise HTTPException(status_code=401, detail="it's you")
     if not friend_user_exist:
         raise HTTPException(status_code=404, detail="There is no user")
     already_friend = db.query(Friend).filter(Friend.uid == user, Friend.fid == friend.fid).first()
@@ -409,6 +412,8 @@ async def get_is_admin(gid: int, user: str, db: Session):
 
 async def transfer_admin(who: InviteSchema, user: str, db: Session):
     if get_is_admin(who.gid, user, db):
+        if who.uid == user:
+            raise HTTPException(status_code=401, detail="You are already admin!")
         db_group = db.query(Group).filter(Group.gid==who.gid).first()
         db_group.admin = who.uid
         group = {"gid": who.gid}
@@ -584,8 +589,8 @@ async def get_votetime(gid: int, db: Session):
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == gid)
-    if not votetime_exist.first():
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="votetime doesn't exist")
+    # if not votetime_exist.first():
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="votetime doesn't exist")
     return votetime_exist.all()
 
 
@@ -596,6 +601,12 @@ async def generate_votetime(vt: VoteTimeSchema, db: Session):
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
     
+    # 기존 투표결과 존재 -> 제거
+    voteresult_exist = db.query(VoteResult).filter(VoteResult.gid == vt.gid)
+    if voteresult_exist.first():
+        for i in voteresult_exist.all():
+            db.delete(i)
+            db.commit()
     # 기존 투표 존재 -> 제거
     votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == vt.gid)
     if votetime_exist.first():
@@ -677,7 +688,7 @@ async def vote_delete(vid: int, user: str, db: Session):
     db.commit()
     return {"msg": "user delete vote successfully."}
 
-async def get_voteresult(gid: int, db: Session):
+async def add_voteresult(gid: int, db: Session):
     db_group = db.query(Group).filter(Group.gid == gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
@@ -690,6 +701,11 @@ async def get_voteresult(gid: int, db: Session):
     if max_members==0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No one voted")
     db_max = db.query(GenerateVote).filter(GenerateVote.gid == gid, GenerateVote.members == max_members).all()
+    for x in db_max:
+        max1 = VoteResult(gid=gid, day=x.day, s_time=x.s_time, e_time=x.e_time, members=x.members)
+        db.add(max1)
+        db.commit()
+        db.refresh(max1)
     
     max_members2=0
     for x in db_result:
@@ -698,8 +714,29 @@ async def get_voteresult(gid: int, db: Session):
     if max_members2!=0:
         db_max2 = db.query(GenerateVote).filter(GenerateVote.gid == gid, GenerateVote.members == max_members2).all()
         for x in db_max2:
-            db_max.append(x)
-    return db_max
+            max2 = VoteResult(gid=gid, day=x.day, s_time=x.s_time, e_time=x.e_time, members=x.members)
+            db.add(max2)
+            db.commit()
+            db.refresh(max2)
+            
+    # 기존 투표 존재 -> 제거
+    votetime_exist = db.query(GenerateVote).filter(GenerateVote.gid == gid)
+    if votetime_exist.first():
+        for i in votetime_exist.all():
+            db.delete(i)
+            db.commit()
+    vote_exist = db.query(Vote).filter(Vote.gid == gid)
+    if vote_exist.first():
+        for i in vote_exist.all():
+            db.delete(i)
+            db.commit()
+    return {"msg": "generate vote result successfully."}
+
+async def get_voteresult(gid: int, db: Session):
+    db_voteresult = db.query(VoteResult).filter(VoteResult.gid == gid).all()
+    if not db_voteresult:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="vote result doesn't exist")
+    return db_voteresult
 
 # get group info by gid
 async def get_groupinfo(gid: int, db: Session):
@@ -742,6 +779,38 @@ async def get_friendcal(fid: str, user: str, db: Session):
     if not is_friend:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friend doesn't exist")
     return db.query(Event).filter(Event.uid == fid).all()
+
+async def get_membercal(gid: int, fid: str, user: str, db: Session):
+    is_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if is_member:
+        also_member = db.query(Member).filter(Member.gid == gid, Member.uid == fid).first()
+        if also_member:
+            return db.query(Event).filter(Event.uid == fid).all()
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member doesn't exist")
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+        
+async def get_upcoming(gid: int, user: str, db: Session):
+    is_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if not is_member:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    
+    now = datetime.now() + timedelta(hours=9)
+
+    current = db.query(Meeting).filter(Meeting.sdatetime <= now, Meeting.edatetime > now).first()
+    if current:
+        return current
+    else:
+        upcoming_list = db.query(Meeting).filter(Meeting.sdatetime > now).all()
+        if not upcoming_list:
+            return 
+        else:
+            upcoming = upcoming_list[0]
+            for meeting in upcoming_list:
+                if meeting.sdatetime < upcoming.sdatetime:
+                    upcoming = meeting
+            return upcoming
 
 async def remove_account(user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()

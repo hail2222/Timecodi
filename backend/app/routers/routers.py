@@ -18,7 +18,11 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
     favorite_group_register, favorite_group_get, favorite_group_delete, \
-    get_votetime, generate_votetime, get_all_vote, vote_func, vote_register, vote_delete, get_voteresult, get_friendcal, remove_account
+<<<<<<< HEAD
+    get_votetime, generate_votetime, get_all_vote, vote_func, vote_register, vote_delete, get_voteresult, get_friendcal, get_membercal, get_upcoming, remove_account
+=======
+    get_votetime, generate_votetime, get_all_vote, vote_func, vote_register, vote_delete, add_voteresult, get_voteresult, get_friendcal, remove_account
+>>>>>>> 00615b6f87ecc2d609b7fdde9970ec81b1dfd4f2
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -290,10 +294,14 @@ async def add_vote(vid_list: VoteSchema, user: str = Depends(authenticate), db: 
 # async def del_vote(vid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
 #     vote = await vote_delete(vid, user, db)
 #     return vote
-
 @router.get("/voteresult")
 async def get_vote_result(gid: int, db: Session = Depends(get_db)):
     vote_result = await get_voteresult(gid, db)
+    return vote_result
+
+@router.post("/voteresult")
+async def add_vote_result(gid: int, db: Session = Depends(get_db)):
+    vote_result = await add_voteresult(gid, db)
     return vote_result
 
 @router.get("/friendcal")
@@ -301,6 +309,19 @@ async def get_friend_cal(fid: str, user: str = Depends(authenticate), db: Sessio
     friend_cal = await get_friendcal(fid, user, db)
     return friend_cal
 
+<<<<<<< HEAD
+@router.get("/membercal")
+async def get_member_cal(gid: int, fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    member_cal = await get_membercal(gid, fid, user, db)
+    return member_cal
+
+@router.get("/upcoming")
+async def get_upcoming_meeting(gid: int, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    upcoming = await get_upcoming(gid, user, db)
+    return upcoming
+
+=======
+>>>>>>> 00615b6f87ecc2d609b7fdde9970ec81b1dfd4f2
 @router.delete("/account")
 async def delete_account(user: str = Depends(authenticate), db: Session = Depends(get_db)):
     remove_success = await remove_account(user, db)

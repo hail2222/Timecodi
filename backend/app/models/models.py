@@ -97,6 +97,16 @@ class GenerateVote(Base):
     e_time = Column(String)
     members = Column(Integer)
 
+class VoteResult(Base):
+    __tablename__ = "vote results"
+    
+    rid = Column(Integer, primary_key=True)
+    gid = Column(Integer)
+    day = Column(String)
+    s_time = Column(String)
+    e_time = Column(String)
+    members = Column(Integer)
+
 class Vote(Base):
     __tablename__ = "votes"
     
