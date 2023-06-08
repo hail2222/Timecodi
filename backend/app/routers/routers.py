@@ -18,11 +18,7 @@ from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     meeting_register, meeting_remove, meeting_update, get_all_meetings, \
     google_event_register, get_all_groupcal, get_my_group, get_weekly_groupcal, get_groupinfo, get_my_invited, \
     favorite_group_register, favorite_group_get, favorite_group_delete, \
-<<<<<<< HEAD
     get_votetime, generate_votetime, get_all_vote, vote_func, vote_register, vote_delete, add_voteresult, get_voteresult, get_friendcal, remove_account
-=======
-    get_votetime, generate_votetime, get_all_vote, vote_func, vote_register, vote_delete, get_voteresult, get_friendcal, get_membercal, remove_account
->>>>>>> b7783b91e539108b05cf31adbe2c09bad3f47d06
 router = APIRouter()
 
 # @router.get("/{id}")
@@ -308,11 +304,6 @@ async def add_vote_result(gid: int, db: Session = Depends(get_db)):
 async def get_friend_cal(fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
     friend_cal = await get_friendcal(fid, user, db)
     return friend_cal
-
-@router.get("/membercal")
-async def get_member_cal(gid: int, fid: str, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    member_cal = await get_membercal(gid, fid, user, db)
-    return member_cal
 
 @router.delete("/account")
 async def delete_account(user: str = Depends(authenticate), db: Session = Depends(get_db)):
