@@ -282,7 +282,7 @@ function Group() {
         }
       )
       .then((response) => {
-        addClose();
+        friendClose();
         alert("invite success!");
       })
       .catch((err) => {

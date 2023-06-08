@@ -6,7 +6,8 @@ import datetime
 from fastapi.responses import FileResponse
 from ..auth.authenticate import authenticate
 from ..db.connection import get_db
-from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema, VoteTimeSchema
+from ..schemas.schemas import TokenResponse, UserSchema, EventSchema, displayEvent,\
+    GroupSchema, MemberSchema, InviteSchema, MeetingSchema, displayMeeting, FriendSchema, VoteTimeSchema, VoteSchema
 from ..cruds.cruds import get_login, signin, signup, get_all_events,\
     event_register, event_remove, event_update, get_all_friends, \
     friend_register, friend_remove, get_all_requests, friend_request, request_remove, friend_accept, accept_remove, group_register, group_update, group_leave, \
@@ -63,8 +64,8 @@ async def del_event(cid: int, deleteall: bool, user: str = Depends(authenticate)
     return remove_success
 
 @router.put("/event")
-async def update_event(cid: int, event: EventSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    update_success = await event_update(cid, event, user, db)
+async def update_event(event: displayEvent, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    update_success = await event_update(event, user, db)
     return update_success
 
 
@@ -169,13 +170,13 @@ async def get_meeting(gid: int, db: Session = Depends(get_db)):
     return meeting_list
 
 @router.post("/meeting")
-async def add_meeting(gid: int, meeting: MeetingSchema, db: Session = Depends(get_db)):
-    register_success = await meeting_register(gid, meeting, db)
+async def add_meeting(meeting: MeetingSchema, db: Session = Depends(get_db)):
+    register_success = await meeting_register(meeting, db)
     return register_success
 
 @router.put("/meeting")
-async def update_event(meetid: int, meeting: MeetingSchema, db: Session = Depends(get_db)):
-    update_success = await meeting_update(meetid, meeting, db)
+async def update_event(meeting: displayMeeting, db: Session = Depends(get_db)):
+    update_success = await meeting_update(meeting, db)
     return update_success
 
 @router.delete("/meeting")    
@@ -281,8 +282,8 @@ async def get_allvote(gid: int, user: str = Depends(authenticate), db: Session =
     return vote
 
 @router.post("/vote")
-async def add_vote(gid: int, vid_list: list, user: str = Depends(authenticate), db: Session = Depends(get_db)):
-    vote = await vote_func(gid, vid_list, user, db)
+async def add_vote(vid_list: VoteSchema, user: str = Depends(authenticate), db: Session = Depends(get_db)):
+    vote = await vote_func(vid_list, user, db)
     return vote
 
 # @router.delete("/vote")

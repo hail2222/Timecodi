@@ -52,6 +52,7 @@ function AdminBox (props) {
 
   const kickOut = (userId) => {
     const data = { gid: gid, uid: userId };
+    console.log(data);
     axios
       .delete(
         "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/admin",
@@ -63,7 +64,7 @@ function AdminBox (props) {
         }
       )
       .then((response) => {
-        alert("user kick out!")
+        alert(response.data.success);
       })
       .catch((err) => {
         alert(err.response.data.detail);
@@ -71,7 +72,23 @@ function AdminBox (props) {
   }
 
   const withdrawGroup = (gid) => {
-    alert("admin can't!");
+    const data = { gid: gid };
+    axios
+      .delete(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
+        {
+          data: data,
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        alert(response.data.msg);
+      })
+      .catch((err) => {
+        alert(err.response.data.detail);
+      });
   }
 
   const deleteGroup = (gid) => {
