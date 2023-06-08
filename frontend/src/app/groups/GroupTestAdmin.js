@@ -130,7 +130,7 @@ function Group() {
         }
       })
       .catch((err) => {
-        alert(err.response.data.detail);
+        alert(err);
       });
   }
 
