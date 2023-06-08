@@ -218,6 +218,33 @@ function Group() {
         console.log(err);
       });
   };
+  const [meetingList, setMeetingList] = useState([
+    {
+      edatetime: "2023-06-04T09:54:21",
+      gid: 11,
+      loc_detail: "string",
+      location: "string",
+      meetid: 3,
+      memo: "string",
+      sdatetime: "2023-06-04T09:54:21",
+      title: "sample data",
+    },
+  ]);
+  const getMeetingInfo = () => {
+    axios
+      .get(`${url}/meeting?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setMeetingList(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     getGroupInfo();
@@ -225,6 +252,7 @@ function Group() {
     getAdmin();
     getVote();
     getVoteResult();
+    getMeetingInfo();
   }, []);
 
   const inviteMember = (userId) => {
@@ -565,7 +593,11 @@ function Group() {
                   to see available time of the week.
                 </p>
                 <div style={{ "margin-top": "4vw" }}>
-                  <Main gid={gid} style={{ flexDirection: "column" }} />
+                  <Main
+                    gid={gid}
+                    meetingList={meetingList}
+                    style={{ flexDirection: "column" }}
+                  />
                   <br></br>
                   <br></br>
                 </div>

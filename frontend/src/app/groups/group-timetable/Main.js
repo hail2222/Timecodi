@@ -74,6 +74,7 @@ const Main = (props) => {
         gid={props.gid}
         groupCal={groupCal}
         fetchGroupCal={fetchGroupCal}
+        meetingList={props.meetingList}
       />
     </div>
   );
