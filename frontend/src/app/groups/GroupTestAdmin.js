@@ -389,6 +389,12 @@ function Group() {
       });
   };
 
+  const [name, setName] = useState("");
+
+  const nameSet = (e) => {
+    setName(e.target.value);
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -1281,13 +1287,15 @@ function Group() {
                 type="text"
                 className="form-control form-control-lg"
                 placeholder="ID"
+                onChange={nameSet}
                 name="name"
+                value={name}
               />
             </div>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" className="btn btn-primary btn-sm">
+          <button type="button" className="btn btn-primary btn-sm" onClick={()=>{inviteMember(name)}}>
             OK
           </button>
           <button
