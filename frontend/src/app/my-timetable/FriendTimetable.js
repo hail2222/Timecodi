@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLocation } from "react";
 import DatePicker from "react-datepicker";
 import { Form, FormControl } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
@@ -14,6 +14,11 @@ import axios from "axios";
 export function FriendTimetable() {
   const [oo, setOO] = useState(false);
   const history = useHistory();
+
+  let location = useLocation();
+  let currentPath = location.pathname;
+  let fid = parseInt(currentPath.split("/").pop(), 10);
+  console.log("fid", fid);
 
   axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
@@ -54,62 +59,6 @@ export function FriendTimetable() {
   const [sdate, setSdate] = useState("");
   const [edate, setEdate] = useState("");
 
-  const handleAddEvent = () => {
-    const data = {
-      cname: name,
-      visibility: visible,
-      sdatetime: sdate,
-      edatetime: edate,
-      weekly: 0,
-      enddate: edate.split("T")[0],
-    };
-    axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        alert(res.data.msg);
-        window.location.reload();
-      })
-      .catch((err) => {
-        alert("add event failed");
-      });
-  };
-
-  const [repeatOption, setRepeatOption] = useState("none");
-  const handleShowRepeat = (e) => {
-    setRepeatOption(e.target.value);
-  };
-
-  const handleGoogleCalendar = () => {
-    console.log("google calendar clicked");
-    axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/google",
-        {},
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-        alert(res.data.msg);
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err);
-      });
-  };
-
   return (
     <div>
       <div className="page-header">
@@ -117,22 +66,26 @@ export function FriendTimetable() {
           <span className="page-title-icon bg-gradient-primary text-white mr-2">
             <i className="mdi mdi-timetable"></i>
           </span>{" "}
-          ~~FRIEND NAME~~'s Schedule{" "}
+          {fid} ~~FRIEND NAME~~'s Schedule{" "}
         </h3>
       </div>
 
       <div className="row">
         <div className="col-lg- ">
-          <div className="card" style={{"margin-left":"1.2vw"}}>
+          <div className="card" style={{ "margin-left": "1.2vw" }}>
             <div className="card-body d-flex">
-            <div style={{"text-align":"right"}}>
-            <p style={{"color":"gray"}}>&nbsp; &nbsp; &nbsp; &nbsp; ** You can only see schedules that are set "public" **&nbsp; &nbsp;&nbsp; &nbsp;</p>
-              <div>
-                <Main style={{ flexDirection: "column" , "margin-top":"20vw"}} />
+              <div style={{ "text-align": "right" }}>
+                <p style={{ color: "gray" }}>
+                  &nbsp; &nbsp; &nbsp; &nbsp; ** You can only see schedules that
+                  are set "public" **&nbsp; &nbsp;&nbsp; &nbsp;
+                </p>
+                <div>
+                  <Main
+                    style={{ flexDirection: "column", "margin-top": "20vw" }}
+                  />
+                </div>
               </div>
-            
-              
-              </div></div>
+            </div>
           </div>
         </div>
       </div>

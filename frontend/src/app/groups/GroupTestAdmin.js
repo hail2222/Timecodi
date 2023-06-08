@@ -719,7 +719,7 @@ function Group() {
                               className="btn btn-inverse-info btn-sm"
                               style={{ height: "2vw" }}
                             >
-                              <Link to={`/mypage/FriendTimetable/${el.gid}`}>
+                              <Link to={`/mypage/FriendTimetable/${el.id}`}>
                                 <i className="mdi mdi-calendar"></i>
                               </Link>
                             </button>

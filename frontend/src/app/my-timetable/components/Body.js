@@ -51,7 +51,7 @@ const Body = (props) => {
 
   const fetchEvtList = () => {
     axios
-      .get(`${url}/event`, {
+      .get(`${url}/friendcal`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
