@@ -149,8 +149,8 @@ function FriendsPage() {
         setFriend(!addFriend);
       })
       .catch((err) => {
-        // alert(err.response.data.detail, name);
-        console.log(err.response.data.detail, name);
+        alert(err.response.data.detail, name);
+        // console.log(err.response.data.detail, name);
       });
   };
 
