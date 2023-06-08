@@ -299,20 +299,23 @@ async def group_leave(group: MemberSchema, user: str, db: Session):
     return {"msg": "group member deleted successfully."}
 
 async def invited_register(invite: InviteSchema, user: str, db: Session):
-    db_user = db.query(User).filter(User.id == invite.uid).first()
-    if not db_user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
-    already_invited = db.query(Invited).filter(Invited.uid == invite.uid, Invited.gid == invite.gid).first()
-    if already_invited:
-        raise HTTPException(status_code=401, detail="already invited")
-    already_member = db.query(Member).filter(Member.gid == invite.gid, Member.uid == invite.uid).first()
-    if already_member:
-        raise HTTPException(status_code=401, detail="already member")
-    db_group = Invited(gid=invite.gid, uid=invite.uid)
-    db.add(db_group)
-    db.commit()
-    db.refresh(db_group)
-    return {"msg": "invited added successfully."}
+    if get_is_admin(invite.gid, user, db):
+        db_user = db.query(User).filter(User.id == invite.uid).first()
+        if not db_user:
+            raise HTTPException(status_code=stiatus.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+        already_invited = db.query(Invited).filter(Invited.uid == invite.uid, Invited.gid == invite.gid).first()
+        if already_invited:
+            raise HTTPException(status_code=401, detail="already invited")
+        already_member = db.query(Member).filter(Member.gid == invite.gid, Member.uid == invite.uid).first()
+        if already_member:
+            raise HTTPException(status_code=401, detail="already member")
+        db_group = Invited(gid=invite.gid, uid=invite.uid)
+        db.add(db_group)
+        db.commit()
+        db.refresh(db_group)
+        return {"msg": "invited added successfully."}
+    else:
+        raise HTTPException(status_code=status.HTTP_401_NOT_FOUND, detail="Only admin can invite members")
 
 async def invited_kakao(gid: int, user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()
@@ -807,6 +810,26 @@ async def get_membercal(gid: int, fid: str, user: str, db: Session):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
         
+async def get_upcoming(gid: int, user: str, db: Session):
+    is_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if not is_member:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
+    
+    now = datetime.now() + timedelta(hours=9)
+
+    current = db.query(Meeting).filter(Meeting.sdatetime <= now, Meeting.edatetime > now).first()
+    if current:
+        return current
+    else:
+        upcoming_list = db.query(Meeting).filter(Meeting.sdatetime > now).all()
+        if not upcoming_list:
+            return 
+        else:
+            upcoming = upcoming_list[0]
+            for meeting in upcoming_list:
+                if meeting.sdatetime < upcoming.sdatetime:
+                    upcoming = meeting
+            return upcoming
 
 async def remove_account(user: str, db: Session):
     db_user = db.query(User).filter(User.id == user).first()

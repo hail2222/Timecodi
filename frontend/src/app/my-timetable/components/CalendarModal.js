@@ -42,16 +42,26 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   };
 
   const putEvent = () => {
-    // updateEventContent를 서버에 전송
-    setShowUpdateEvent(false);
-    /* 
-    const data = {};
+    const data = {
+      cid: updateEventContent.cid,
+      cname: name,
+      sdatetime: sdate,
+      edatetime: edate,
+      visibility: visible,
+      weekly: 0,
+      enddate: updateEventContent.enddate,
+    };
+    // console.log("putEvent", data);
     axios
-      .put(`https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event`, data, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
+      .put(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event`,
+        data,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
       .then((response) => {
         console.log(response.data);
         alert("Event Updated.");
@@ -59,12 +69,11 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
       .catch((err) => {
         console.log(err);
       });
-       */
   };
   const deleteEvent = () => {
     // cid, deleteall(t/f)
     const data = { cid: updateEventContent.cid, deleteall: deleteall };
-    console.log(data);
+    // console.log(data);
     axios
       .delete(
         `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?cid=${data.cid}&deleteall=${data.deleteall}`,
@@ -135,86 +144,110 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
       </Container>
       {showUpdateEvent && (
         <Container>
-          <label>Edit Event Name: </label>
-          <Form.Control
-            type="text"
-            id="event_content"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></Form.Control>{" "}
+          <div className="d-flex">
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              Event Name:{" "}
+            </div>
+            <Form.Control
+              type="text"
+              id="event_content"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </div>
           <br></br>
-          <label>Visibility:</label>
-          <select
-            className="form-control"
-            id="event_visibility"
-            value={visible}
-            onChange={(e) => setVisible(e.target.value)}
-          >
-            <option value="default">default</option>
-            <option value="public">public</option>
-            <option value="private">private</option>
-          </select>{" "}
+          <div className="d-flex">
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              Visibility:
+            </div>
+            <select
+              className="form-control col-8"
+              id="event_visibility"
+              value={visible}
+              onChange={(e) => setVisible(e.target.value)}
+            >
+              <option value="default">default</option>
+              <option value="public">public</option>
+              <option value="private">private</option>
+            </select>{" "}
+          </div>
           <br></br>
-          <label>Start Date: </label>
-          <Form.Control
-            type="datetime-local"
-            id="event_sdue"
-            value={sdate}
-            onChange={(e) => setSdate(e.target.value)}
-          ></Form.Control>{" "}
+          <div className="d-flex">
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              Start Date:{" "}
+            </div>
+            <Form.Control
+              type="datetime-local"
+              id="event_sdue"
+              value={sdate}
+              onChange={(e) => setSdate(e.target.value)}
+            ></Form.Control>
+          </div>
           <br></br>
-          <label>End Date:</label>
-          <Form.Control
-            type="datetime-local"
-            id="event_edue"
-            value={edate}
-            onChange={(e) => {
-              setEdate(e.target.value);
-              setEnddate(e.target.value);
-            }}
-          ></Form.Control>{" "}
-          <br></br>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={() => {
-              setShowUpdateEvent(false);
-            }}
-          >
-            OK
-          </button>
-          <button
-            type="button"
-            className="btn btn-inverse-secondary btn-sm"
-            onClick={() => {
-              setShowUpdateEvent(false);
-            }}
-          >
-            Cancel
-          </button>
-          <br></br>
-          <label className="form-check-label">
-            delete all repeated schedules?{"          "}
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={deleteall}
-              onChange={() => {
-                setDeleteAll(!deleteall);
+          <div className="d-flex">
+            <div className="col-4" style={{ padding: "0.75rem" }}>
+              End Date:
+            </div>
+            <Form.Control
+              type="datetime-local"
+              id="event_edue"
+              value={edate}
+              onChange={(e) => {
+                setEdate(e.target.value);
+                setEnddate(e.target.value);
               }}
-            />
-            <i className="input-helper"></i>{" "}
-          </label>
-
-          <button
-            type="button"
-            className="btn btn-inverse-danger btn-sm"
-            onClick={() => {
-              deleteEvent();
-            }}
-          >
-            DELETE
-          </button>
+            ></Form.Control>
+          </div>
+          <br></br>
+          <center>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                putEvent();
+              }}
+            >
+              OK
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => {
+                setShowUpdateEvent(false);
+              }}
+            >
+              Cancel
+            </button>
+          </center>
+          <br></br>
+          <div className="d-flex justify-content-center">
+            <div className="form-check">
+              <label className="form-check-label">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  checked={deleteall}
+                  onChange={() => {
+                    setDeleteAll(!deleteall);
+                  }}
+                />
+                <i className="input-helper"></i>
+                Delete all repeated schedules?{""}
+              </label>
+            </div>
+            <div>
+              <button
+                type="button"
+                style={{ margin: "5px 10px" }}
+                className="btn btn-inverse-danger btn-sm"
+                onClick={() => {
+                  deleteEvent();
+                }}
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
         </Container>
       )}
     </Forms>

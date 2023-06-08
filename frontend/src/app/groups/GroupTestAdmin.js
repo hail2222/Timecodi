@@ -107,6 +107,48 @@ function Group() {
 
   // const { gid } = useParams();
 
+  const [upcoming, setUpComing] = useState({
+    name: null,
+    when: null,
+    where: null,
+    memo: null,
+  });
+
+  const getUpComing = () => {
+    axios
+      .get(
+        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/upcoming",
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+          params: {
+            gid: gid,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data) {
+          let upcomingInfo = {
+            name: response.data.title,
+            when: response.data.sdatetime,
+            where:
+              response.data.location + "(" + response.data.loc_detail + ")",
+            memo: response.data.memo,
+          };
+          upcomingInfo.when = upcomingInfo.when.replace("T", " at ");
+          setUpComing(upcomingInfo);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  useEffect(() => {
+    getUpComing();
+  }, []);
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -213,7 +255,7 @@ function Group() {
     },
   ]);
   const getVoteResult = () => {
-    console.log("End vote Clicked");
+    console.log("getVoteResult");
     axios
       .get(
         `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult?gid=${gid}`,
@@ -330,6 +372,8 @@ function Group() {
   };
 
   const handleSubmitVote = (event) => {
+    event.preventDefault();
+    console.log("handleSubmitVote");
     let selectedOptions = [];
     options.forEach((option) => {
       if (option.checked) {
@@ -337,17 +381,18 @@ function Group() {
       }
     });
     console.log(selectedOptions); // [1933, 1934, 1935]
+    const data = {
+      gid: gid,
+      vidlist: selectedOptions,
+    };
+    console.log("handleSubmitVote: ", data);
     axios
       .post(
         `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/vote`,
-        {},
+        data,
         {
           headers: {
             Authorization: localStorage.getItem("token"),
-          },
-          params: {
-            gid: gid,
-            vidlist: selectedOptions,
           },
         }
       )
@@ -400,8 +445,28 @@ function Group() {
       )
       .then((response) => {
         console.log(response.data);
-        alert("vote success!");
+        alert("vote successfully generated!");
         getVote();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleEndVote = () => {
+    axios
+      .post(
+        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult?gid=${gid}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        alert("vote successfully ended!");
+        getVoteResult();
       })
       .catch((err) => {
         console.log(err);
@@ -443,6 +508,7 @@ function Group() {
         console.log(response.data);
         localStorage.setItem("submitMeeting", JSON.stringify(response.data));
         alert("submit");
+        getUpComing();
       })
       .catch((err) => {
         console.log(meetingInfo);
@@ -504,19 +570,19 @@ function Group() {
                   </tr>
                   <tr>
                     <td className="font-weight-bold">MEETING NAME</td>
-                    <td>Band Practice</td>
+                    <td>{upcoming.name}</td>
                   </tr>
                   <tr>
                     <td className="font-weight-bold">WHEN</td>
-                    <td>2023년 4월 25일</td>
+                    <td>{upcoming.when}</td>
                   </tr>
                   <tr>
                     <td className="font-weight-bold">WHERE</td>
-                    <td>학생회관</td>
+                    <td>{upcoming.where}</td>
                   </tr>
                   <tr>
                     <td className="font-weight-bold">MEMO</td>
-                    <td>Bring your headphones:)</td>
+                    <td>{upcoming.memo}</td>
                   </tr>
                 </table>
               </div>
@@ -1024,7 +1090,7 @@ function Group() {
 
                 <div className="row">
                   <button
-                    type="button"
+                    type="submit"
                     className="btn btn-inverse-primary btn-sm"
                     style={{ margin: "1.5vw 0vw 0vw 10vw" }}
                   >
@@ -1036,6 +1102,7 @@ function Group() {
                     type="button"
                     className="btn btn-inverse-danger btn-sm"
                     style={{ margin: "1.5vw 0vw 0vw 5vw" }}
+                    onClick={handleEndVote}
                   >
                     <span style={{ "font-size": "15px", "font-weight": "500" }}>
                       &nbsp;End vote
