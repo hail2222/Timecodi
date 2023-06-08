@@ -18,6 +18,15 @@ class EventSchema(BaseModel):
     edatetime: datetime
     weekly: int
     enddate: Optional[date]
+
+class displayEvent(BaseModel):
+    cid: int
+    cname: str
+    visibility: str
+    sdatetime: datetime
+    edatetime: datetime
+    weekly: int
+    enddate: Optional[date]
     
 class GroupSchema(BaseModel):
     gname: str
@@ -30,6 +39,16 @@ class InviteSchema(BaseModel):
     gid: int
     
 class MeetingSchema(BaseModel):
+    gid: int
+    title: str
+    sdatetime: datetime
+    edatetime: datetime
+    location: str
+    loc_detail: str
+    memo: str
+    
+class displayMeeting(BaseModel):
+    meetid: int
     title: str
     sdatetime: datetime
     edatetime: datetime
@@ -45,3 +64,7 @@ class VoteTimeSchema(BaseModel):
     sdatetime: date
     edatetime: date
     meetingtime: str
+    
+class VoteSchema(BaseModel):
+    gid: int
+    vidlist: list

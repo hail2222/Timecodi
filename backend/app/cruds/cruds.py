@@ -7,7 +7,8 @@ from datetime import datetime, timedelta
 from ..auth.jwt_handler import create_access_token
 from ..models.models import User, Event, Friend, FriendRequest, Group, Member, Meeting, GroupEvent, Invited, Favorite, GenerateVote, Vote
 from ..auth.hash_password import HashPassword
-from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, MeetingSchema, FriendSchema, VoteTimeSchema
+from ..schemas.schemas import UserSchema, EventSchema, GroupSchema, MemberSchema, InviteSchema, \
+    MeetingSchema, displayMeeting, FriendSchema, VoteTimeSchema, VoteSchema, displayEvent
 from ..googlecal.cal_func import get_event
 from ..timecodi.timecodi import calender_to_timetable
 from ..timecodi.generatevote import create_vote
@@ -116,8 +117,8 @@ async def event_remove(cid: int, deleteall: bool, user: str, db: Session):
             db.commit()
     return {"msg": "event deleted successfully."}    
 
-async def event_update(cid: int, event: EventSchema, user: str, db: Session):
-    db_event = db.query(Event).filter(Event.uid == user, Event.cid == cid).first()
+async def event_update(event: displayEvent, user: str, db: Session):
+    db_event = db.query(Event).filter(Event.uid == user, Event.cid == event.cid).first()
     if not db_event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event doesn't exist")
     db_event.cname = event.cname
@@ -126,7 +127,7 @@ async def event_update(cid: int, event: EventSchema, user: str, db: Session):
     db_event.edatetime = event.edatetime
     db.add(db_event)
     db.commit()
-    calendar_success = await groupcal_update(cid, event, db)
+    calendar_success = await groupcal_update(event.cid, event, db)
     return {"msg": "event updated successfully."}
 
 
@@ -323,11 +324,11 @@ async def invited_delete(group: MemberSchema, user: str, db: Session):
 async def get_all_meetings(gid: int, db: Session):
     return db.query(Meeting).filter(Meeting.gid == gid).all()
 
-async def meeting_register(gid: int, meeting: MeetingSchema, db: Session):
-    db_group = db.query(Group).filter(Group.gid == gid).first()
+async def meeting_register(meeting: MeetingSchema, db: Session):
+    db_group = db.query(Group).filter(Group.gid == meeting.gid).first()
     if not db_group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group doesn't exist")
-    db_meeting = Meeting(gid=gid, 
+    db_meeting = Meeting(gid = meeting.gid, 
                          title = meeting.title,
                          sdatetime = meeting.sdatetime,
                          edatetime = meeting.edatetime,
@@ -339,8 +340,8 @@ async def meeting_register(gid: int, meeting: MeetingSchema, db: Session):
     db.refresh(db_meeting)
     return {"msg": "meeting added successfully."}
 
-async def meeting_update(meetid: int, meeting: MeetingSchema, db: Session):
-    db_meeting = db.query(Meeting).filter(Meeting.meetid == meetid).first()
+async def meeting_update(meeting: displayMeeting, db: Session):
+    db_meeting = db.query(Meeting).filter(Meeting.meetid == meeting.meetid).first()
     if not db_meeting:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting doesn't exist")
     db_meeting.title = meeting.title
@@ -613,17 +614,17 @@ async def generate_votetime(vt: VoteTimeSchema, db: Session):
         db.refresh(db_votetime)
     return {"msg": "votetime added successfully."}
 
-async def vote_func(gid: str, vid_list: list, user: str, db: Session):
-    if len(vid_list)==0:
+async def vote_func(vid_list: VoteSchema, user: str, db: Session):
+    if len(vid_list.vidlist)==0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Please vote time at least one!")
-    db_exist = await get_all_vote(gid, user, db)
+    db_exist = await get_all_vote(vid_list.gid, user, db)
     # 기존 투표 존재하는데 vid_list에서 제외됐으면 삭제 
     if db_exist:
         for x in db_exist:
             vid = x.vid
             if vid not in vid_list:
                 db_delete = await vote_delete(vid, user, db)
-    for vid in vid_list:
+    for vid in vid_list.vidlist:
         votetime_exist = db.query(GenerateVote).filter(GenerateVote.vid == vid).first()
         if not votetime_exist:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="votetime doesn't exist")
