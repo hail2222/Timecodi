@@ -317,6 +317,22 @@ async def invited_register(invite: InviteSchema, user: str, db: Session):
     else:
         raise HTTPException(status_code=status.HTTP_401_NOT_FOUND, detail="Only admin can invite members")
 
+async def invited_kakao(gid: int, user: str, db: Session):
+    db_user = db.query(User).filter(User.id == user).first()
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User doesn't exist")
+    already_invited = db.query(Invited).filter(Invited.uid == user, Invited.gid == gid).first()
+    if already_invited:
+        raise HTTPException(status_code=401, detail="already invited")
+    already_member = db.query(Member).filter(Member.gid == gid, Member.uid == user).first()
+    if already_member:
+        raise HTTPException(status_code=401, detail="already member")
+    db_group = Invited(gid=gid, uid=user)
+    db.add(db_group)
+    db.commit()
+    db.refresh(db_group)
+    return {"msg": "invited added successfully."}
+
 async def invited_delete(group: MemberSchema, user: str, db: Session):
     already_invited = db.query(Invited).filter(Invited.uid == user, Invited.gid == group.gid).first()
     if not already_invited:
