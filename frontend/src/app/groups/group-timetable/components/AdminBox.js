@@ -127,12 +127,25 @@ function AdminBox (props) {
               <tbody>
                 {members.map(function (el, idx) {
                   return (
-                    <tr>
+                    <div>
+                    <tr style={{"text-align":'center'}}>
+                    <th style={{"width":'15vw'}}> Name </th>
+                      <th style={{"width":'20vw'}}> ID </th>
+                      <th style={{"width":'35vw'}}> Actions </th>
+                    </tr> 
+                    <tbody>
+                    <tr style={{"text-align":'center'}}>
                       <td
                         onClick={handleShow}
                         style={{ cursor: "pointer" }}
                       >
                         {el.name}
+                      </td>
+                      <td
+                        onClick={handleShow}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {el.id}
                       </td>
                       <td>
                         <button
@@ -151,6 +164,8 @@ function AdminBox (props) {
                         </button>
                       </td>
                     </tr>
+                    </tbody>
+                    </div>
                   );
                 })}
               </tbody>
