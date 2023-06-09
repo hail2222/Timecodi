@@ -817,11 +817,11 @@ async def get_upcoming(gid: int, user: str, db: Session):
     
     now = datetime.now() + timedelta(hours=9)
 
-    current = db.query(Meeting).filter(Meeting.sdatetime <= now, Meeting.edatetime > now).first()
+    current = db.query(Meeting).filter(Meeting.gid == gid, Meeting.sdatetime <= now, Meeting.edatetime > now).first()
     if current:
         return current
     else:
-        upcoming_list = db.query(Meeting).filter(Meeting.sdatetime > now).all()
+        upcoming_list = db.query(Meeting).filter(Meeting.gid == gid, Meeting.sdatetime > now).all()
         if not upcoming_list:
             return 
         else:
