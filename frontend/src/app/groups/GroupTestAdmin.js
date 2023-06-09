@@ -757,6 +757,15 @@ function Group() {
                 <i className="mdi mdi-account-plus"></i>
                 &nbsp;Invite New Member
               </button>
+              <button
+                type="button"
+                className="btn btn-gradient-success btn-sm "
+                style={{ "font-weight": "420", margin: "2vw" }}
+                onClick={friendClose}
+              >
+                <i className="mdi mdi-message-plus"></i>
+                &nbsp;Invite via KaKaoTalk
+              </button>
             </center>
           </div>
         </div>
