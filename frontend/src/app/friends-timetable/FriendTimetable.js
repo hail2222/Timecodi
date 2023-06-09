@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useLocation } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Form, FormControl } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 // import "react-datepicker/dist/react-datepicker.css";
 //달력 추가
@@ -15,10 +15,10 @@ export function FriendTimetable() {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
-  //   let location = useLocation();
-  //   let currentPath = location.pathname;
-  //   let fid = parseInt(currentPath.split("/").pop(), 10);
-  //   console.log("fid", fid);
+  let location = useLocation();
+  let currentPath = location.pathname;
+  let fid = currentPath.split("/").pop();
+  console.log("fid", fid);
 
   axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
@@ -66,7 +66,7 @@ export function FriendTimetable() {
           <span className="page-title-icon bg-gradient-primary text-white mr-2">
             <i className="mdi mdi-timetable"></i>
           </span>{" "}
-          friend's Schedule{" "}
+          friend {fid}'s Schedule{" "}
         </h3>
       </div>
 
@@ -81,6 +81,7 @@ export function FriendTimetable() {
                 </p>
                 <div>
                   <Main
+                    fid={fid}
                     style={{ flexDirection: "column", "margin-top": "20vw" }}
                   />
                 </div>

@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Spinner from "../app/shared/Spinner";
 
- const Dashboard = lazy(() => import("./dashboard/Dashboard"));
+const Dashboard = lazy(() => import("./dashboard/Dashboard"));
 // const Buttons = lazy(() => import("./basic-ui/Buttons"));
 // const Dropdowns = lazy(() => import("./basic-ui/Dropdowns"));
 // const Typography = lazy(() => import("./basic-ui/Typography"));
@@ -18,21 +18,22 @@ const Login = lazy(() => import("./user-pages/Login"));
 const Register = lazy(() => import("./user-pages/Register"));
 
 const MyGroup = lazy(() => import("./mypages/MyGroup"));
-const MyTimetablePage = lazy(() => import('./my-timetable/timetable'));
-const FriendTimetable = lazy(() => import('./my-timetable/FriendTimetable'));
+const MyTimetablePage = lazy(() => import("./my-timetable/timetable"));
+const FriendTimetable = lazy(() =>
+  import("./friends-timetable/FriendTimetable")
+);
 
 const Group = lazy(() => import("./groups/Group"));
 const GroupTest = lazy(() => import("./groups/GroupTest"));
 const GroupTestAdmin = lazy(() => import("./groups/GroupTestAdmin"));
-const FriendsPage = lazy(() => import('./friends-page/FriendsPage'));
-
+const FriendsPage = lazy(() => import("./friends-page/FriendsPage"));
 
 class AppRoutes extends Component {
   render() {
     return (
       <Suspense fallback={<Spinner />}>
         <Switch>
-           <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/dashboard" component={Dashboard} />
           {/*<Route path="/basic-ui/dropdowns" component={Dropdowns} />
           <Route path="/basic-ui/typography" component={Typography} />
           <Route path="/form-Elements/basic-elements" component={BasicElements} />
@@ -45,13 +46,16 @@ class AppRoutes extends Component {
           <Route path="/user-pages/register" component={Register} />
 
           <Route path="/mypage/mygroups" component={MyGroup} />
-          <Route path="/mypage/timetable" component={ MyTimetablePage } />
-          <Route path="/mypage/FriendTimetable" component={ FriendTimetable } />
+          <Route path="/mypage/timetable" component={MyTimetablePage} />
+          <Route path="/mypage/FriendTimetable" component={FriendTimetable} />
 
           <Route path="/groups/group" component={Group} />
           <Route path="/groups/groupTest" component={GroupTest} />
-          <Route path="/groups/groupTestAdmin/:gid" component={GroupTestAdmin} />
-          <Route path="/friends" component={ FriendsPage } />
+          <Route
+            path="/groups/groupTestAdmin/:gid"
+            component={GroupTestAdmin}
+          />
+          <Route path="/friends" component={FriendsPage} />
 
           <Redirect to="/startPage" />
         </Switch>
