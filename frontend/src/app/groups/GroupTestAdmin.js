@@ -551,6 +551,42 @@ function Group() {
       });
   };
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js";
+    script.onload = () => {
+      if (window.Kakao) {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init("14dcf3c6484a4b89bd48acc4844afa01");
+        }
+
+        window.Kakao.Share.createDefaultButton({
+          container: "#kakaotalk-sharing-btn",
+          objectType: "text",
+          text: `hyun님이 당신을 그룹1에 초대했습니다! :) 그룹에 가입하려면 아래 버튼을 클릭하세요.`,
+          link: {
+            mobileWebUrl: "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
+            webUrl: "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
+          },
+          buttons: [
+            {
+              title: "그룹 초대",
+              link: {
+                mobileWebUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${ gid }`,
+                webUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${ gid }`,
+              },
+            },
+          ],
+        });
+      }
+    };
+    document.head.appendChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+
   return (
     <div>
       <div className="page-header">
@@ -756,6 +792,15 @@ function Group() {
               >
                 <i className="mdi mdi-account-plus"></i>
                 &nbsp;Invite New Member
+              </button>
+              <button
+                type="button"
+                className="btn btn-gradient-success btn-sm "
+                style={{ "font-weight": "420", margin: "2vw" }}
+                id="kakaotalk-sharing-btn" alt="카카오톡 공유 보내기 버튼"
+              >
+                <i className="mdi mdi-message-plus"></i>
+                &nbsp;Invite via KaKaoTalk
               </button>
             </center>
           </div>
