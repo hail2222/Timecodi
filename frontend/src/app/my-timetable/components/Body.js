@@ -50,21 +50,21 @@ const Body = (props) => {
   }, []);
 
   const fetchEvtList = () => {
-    axios
-      .get(`${url}/friendcal`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        let newEvtList = [];
-        newEvtList.push(res.data);
-        setEvtList(newEvtList[0]);
-      })
-      .catch((err) => {
-        alert(err);
-        console.log(err);
-      });
+    // axios
+    //   .get(`${url}/friendcal`, {
+    //     headers: {
+    //       Authorization: localStorage.getItem("token"),
+    //     },
+    //   })
+    //   .then((res) => {
+    //     let newEvtList = [];
+    //     newEvtList.push(res.data);
+    //     setEvtList(newEvtList[0]);
+    //   })
+    //   .catch((err) => {
+    //     alert(err);
+    //     console.log(err);
+    //   });
   };
 
   const populateEvtMap = (evtList) => {

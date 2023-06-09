@@ -15,10 +15,10 @@ export function FriendTimetable() {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
-  let location = useLocation();
-  let currentPath = location.pathname;
-  let fid = parseInt(currentPath.split("/").pop(), 10);
-  console.log("fid", fid);
+  //   let location = useLocation();
+  //   let currentPath = location.pathname;
+  //   let fid = parseInt(currentPath.split("/").pop(), 10);
+  //   console.log("fid", fid);
 
   axios
     .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
@@ -66,7 +66,7 @@ export function FriendTimetable() {
           <span className="page-title-icon bg-gradient-primary text-white mr-2">
             <i className="mdi mdi-timetable"></i>
           </span>{" "}
-          {fid}'s Schedule{" "}
+          friend's Schedule{" "}
         </h3>
       </div>
 
