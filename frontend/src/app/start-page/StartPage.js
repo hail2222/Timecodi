@@ -20,7 +20,6 @@ function StartPage() {
                   quickly and easily
                 </h3>
                 <div>
-                  이미지 수정 예정
                   <img src="img/personal_calendar.png" alt="" className="col-5"></img>
                 </div>
               </div>
@@ -49,7 +48,7 @@ function StartPage() {
           <div className="row justify-content-center bg-white">
             <div className="p-4 col-5">
               <div className="card-body">
-                <img src="img/personal_calendar.png" alt="" className="col-12"></img>
+                <img src="img/group.png" alt="" className="col-12"></img>
               </div>
             </div>
             <div className="p-4 col-3 d-flex align-items-center">
