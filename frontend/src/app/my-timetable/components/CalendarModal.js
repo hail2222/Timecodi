@@ -65,6 +65,7 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
       .then((response) => {
         console.log(response.data);
         alert("Event Updated.");
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
