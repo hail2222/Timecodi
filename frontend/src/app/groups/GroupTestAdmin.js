@@ -563,17 +563,17 @@ function Group() {
         window.Kakao.Share.createDefaultButton({
           container: "#kakaotalk-sharing-btn",
           objectType: "text",
-          text: "{{ username }}님이 당신을 '{{ groupname }}'에 초대했습니다! :) 그룹에 가입하려면 아래 버튼을 클릭하세요.",
+          text: `hyun님이 당신을 그룹1에 초대했습니다! :) 그룹에 가입하려면 아래 버튼을 클릭하세요.`,
           link: {
-            mobileWebUrl: "https://timecodi.netlify.app/",
-            webUrl: "https://timecodi.netlify.app/",
+            mobileWebUrl: "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
+            webUrl: "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
           },
           buttons: [
             {
               title: "그룹 초대",
               link: {
-                mobileWebUrl: "https://timecodi.netlify.app/invited/{{ gid }}",
-                webUrl: "https://timecodi.netlify.app/invited/{{ gid }}",
+                mobileWebUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${ gid }`,
+                webUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${ gid }`,
               },
             },
           ],
