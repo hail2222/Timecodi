@@ -246,7 +246,7 @@ function Group() {
 
   let [result, setResult] = useState([
     {
-      vid: 0,
+      rid: 0,
       s_time: "00:00:00",
       e_time: "23:30:00",
       gid: 0,
@@ -311,7 +311,7 @@ function Group() {
   }, []);
 
   const inviteMember = (userId) => {
-    if(isAdmin){
+    if (isAdmin) {
       const data = { gid: gid, uid: userId };
 
       axios
@@ -331,11 +331,9 @@ function Group() {
         .catch((err) => {
           alert(err.response.data.detail);
         });
-    }
-    else{
+    } else {
       alert("only admin can invite members!");
     }
-    
   };
 
   const [addAdminCheck, setAdminCheck] = useState(false);
@@ -358,13 +356,14 @@ function Group() {
   const [checkedName, setCheckedName] = useState(null);
 
   let handleOptionsResult = (event) => {
+    console.log("radio checked", event.target.value);
     setCheckedName(event.target.value); // vid
     // find s_time and e_time by vid
     let day = "";
     let s_time = "";
     let e_time = "";
     result.forEach((el) => {
-      if (el.vid === Number(event.target.value)) {
+      if (el.rid === Number(event.target.value)) {
         s_time = el.s_time;
         e_time = el.e_time;
         day = el.day;
@@ -513,7 +512,7 @@ function Group() {
       .then((response) => {
         console.log(response.data);
         localStorage.setItem("submitMeeting", JSON.stringify(response.data));
-        alert("submit");
+        alert("submit meeting");
         getUpComing();
       })
       .catch((err) => {
@@ -565,15 +564,17 @@ function Group() {
           objectType: "text",
           text: `hyun님이 당신을 그룹1에 초대했습니다! :) 그룹에 가입하려면 아래 버튼을 클릭하세요.`,
           link: {
-            mobileWebUrl: "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
-            webUrl: "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
+            mobileWebUrl:
+              "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
+            webUrl:
+              "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
           },
           buttons: [
             {
               title: "그룹 초대",
               link: {
-                mobileWebUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${ gid }`,
-                webUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${ gid }`,
+                mobileWebUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${gid}`,
+                webUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${gid}`,
               },
             },
           ],
@@ -585,7 +586,6 @@ function Group() {
       document.head.removeChild(script);
     };
   }, []);
-
 
   return (
     <div>
@@ -797,7 +797,8 @@ function Group() {
                 type="button"
                 className="btn btn-gradient-success btn-sm "
                 style={{ "font-weight": "420", margin: "2vw" }}
-                id="kakaotalk-sharing-btn" alt="카카오톡 공유 보내기 버튼"
+                id="kakaotalk-sharing-btn"
+                alt="카카오톡 공유 보내기 버튼"
               >
                 <i className="mdi mdi-message-plus"></i>
                 &nbsp;Invite via KaKaoTalk
@@ -1305,7 +1306,7 @@ function Group() {
                                 className="form-check-input"
                                 name="resultsRadios"
                                 onChange={handleOptionsResult}
-                                value={el.vid}
+                                value={el.rid}
                               />
                               <i className="input-helper"></i>
                             </label>
