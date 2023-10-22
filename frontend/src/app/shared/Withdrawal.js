@@ -3,24 +3,22 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
+import apiurl from "./../apiurl";
 
 export default function Withdrawal() {
   const history = useHistory();
   const [withdrawal, setWithdrawal] = useState(false);
   const withdrawalClose = () => {
     setWithdrawal(!withdrawal);
-  }
+  };
 
   const withdraw = () => {
     axios
-      .delete(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/account",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .delete(url + "/account", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         alert(response.data.msg);
         withdrawalClose();
@@ -29,7 +27,7 @@ export default function Withdrawal() {
       .catch((err) => {
         alert("err!");
       });
-  }
+  };
 
   return (
     <Link className="nav-link" onClick={withdrawalClose}>
@@ -40,7 +38,7 @@ export default function Withdrawal() {
         </Modal.Header>
         <Modal.Body>
           <h4 className="font-weight-light">
-            This is not a logout. <br/>
+            This is not a logout. <br />
             If you withdraw, all your data will be deleted and you will not be
             able to use the service. Are you sure you want to withdraw?
           </h4>

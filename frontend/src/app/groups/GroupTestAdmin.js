@@ -16,10 +16,7 @@ import GroupCalContext from "./GroupCalContext";
 import { Bar, Doughnut } from "react-chartjs-2";
 import MapComponent from "./MapComponent";
 import axios from "axios";
-
-const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
-const localURL = "https://127.0.0.1:8000";
-const url = realURL;
+import apiurl from "./../apiurl";
 
 function Group() {
   let location = useLocation();

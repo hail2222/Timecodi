@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Trans } from "react-i18next";
+import apiurl from "./../apiurl";
 
 export default function FavoriteGroup() {
-  const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
-  const localURL = "https://127.0.0.1:8000";
-  const url = realURL;
-
   const location = useLocation();
   const isPathActive = (path) => {
     return location.pathname === path;

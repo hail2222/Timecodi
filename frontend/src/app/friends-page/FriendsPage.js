@@ -4,13 +4,14 @@ import FriendsTable from "./FriendsTable";
 
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import apiurl from "./../apiurl";
 
 function FriendsPage() {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
   axios
-    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+    .get(url + "/login", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -50,14 +51,11 @@ function FriendsPage() {
 
   const getFriends = () => {
     axios
-      .get(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .get(url + "/friend", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         let friendList = [];
         response.data.forEach((rel, index) => {
@@ -73,18 +71,15 @@ function FriendsPage() {
 
   const getRequestedFriends = () => {
     axios
-      .get(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/request",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .get(url + "/request", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         let requestedList = [];
         res.data.forEach((elm, index) => {
-          requestedList.push({id: elm.id, name: elm.name});
+          requestedList.push({ id: elm.id, name: elm.name });
         });
         setRequestFriends(requestedList);
       })
@@ -135,15 +130,11 @@ function FriendsPage() {
   const requestFriend = () => {
     const data = { fid: name };
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/request",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/request", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         alert(response.data.msg, name);
         setFriend(!addFriend);
@@ -182,15 +173,12 @@ function FriendsPage() {
   const onDel = (id) => {
     const data = { fid: friends.filter((friend) => friend.id == id)[0].userId };
     axios
-      .delete(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/friend",
-        {
-          data: data,
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .delete(url + "/friend", {
+        data: data,
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data.msg);
         getFriends();
@@ -204,15 +192,11 @@ function FriendsPage() {
     console.log("acceptFriend: ", id);
     const data = { fid: id };
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/accept",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/accept", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         alert(response.data.msg);
         window.location.reload();
@@ -226,15 +210,12 @@ function FriendsPage() {
   const DeleteRequestFriend = (id) => {
     const data = { fid: id };
     axios
-      .delete(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/accept",
-        {
-          data: data,
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .delete(url + "/accept", {
+        data: data,
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         alert(response.data.msg);
         window.location.reload();
@@ -316,47 +297,47 @@ function FriendsPage() {
         <div className="col-lg-12 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
-                <h4 className="card-title">Requested</h4>
-                <p className="card-description">
-                  They want to be friends with me!
-                </p>
-                <div className="table-responsive">
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>ID</th>
-                        <th>Edit</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {requestFriends.map(function (item, index) {
-                        return (
-                          <tr key={index}>
-                            <td>{item.name}</td>
-                            <td>{item.id}</td>
-                            <td>
-                              <button
-                                type="button"
-                                className="btn btn-primary btn-sm"
-                                onClick={() => acceptFriend(item.id)}
-                              >
-                                Accept
-                              </button>
-                              <button
-                                type="button"
-                                className="btn btn-secondary btn-sm"
-                                onClick={() => DeleteRequestFriend(item.id)}
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+              <h4 className="card-title">Requested</h4>
+              <p className="card-description">
+                They want to be friends with me!
+              </p>
+              <div className="table-responsive">
+                <table className="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>ID</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {requestFriends.map(function (item, index) {
+                      return (
+                        <tr key={index}>
+                          <td>{item.name}</td>
+                          <td>{item.id}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                              onClick={() => acceptFriend(item.id)}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => DeleteRequestFriend(item.id)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Dates from "./Dates";
 import axios from "axios";
-
-const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
-const localURL = "https://127.0.0.1:8000";
-const url = realURL;
+import apiurl from "./../../apiurl";
 
 const sampleEvtList = [
   {

@@ -10,13 +10,14 @@ import { useHistory } from "react-router-dom";
 // import Theme from "./styles/Theme";
 import Main from "./Main";
 import axios from "axios";
+import apiurl from "./../apiurl";
 
 export function Dashboard() {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
   axios
-    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+    .get(url + "/login", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -65,15 +66,11 @@ export function Dashboard() {
       enddate: enddate.split("T")[0],
     };
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/event", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         alert(res.data.msg);
         window.location.reload();
@@ -92,7 +89,7 @@ export function Dashboard() {
     console.log("google calendar clicked");
     axios
       .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/google",
+        `${url}/google`,
         {},
         {
           headers: {

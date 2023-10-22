@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Form, Container } from "react-bootstrap";
 import axios from "axios";
+import apiurl from "./../../apiurl";
 
 function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   const [name, setName] = useState("");
@@ -53,15 +54,11 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
     };
     // console.log("putEvent", data);
     axios
-      .put(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event`,
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .put(`${url}/event`, data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data);
         alert("Event Updated.");
@@ -76,14 +73,11 @@ function CalendarModal({ date, openModal, setOpenModal, evtList }) {
     const data = { cid: updateEventContent.cid, deleteall: deleteall };
     // console.log(data);
     axios
-      .delete(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/event?cid=${data.cid}&deleteall=${data.deleteall}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .delete(`${url}/event?cid=${data.cid}&deleteall=${data.deleteall}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data);
         alert("Event Deleted.");

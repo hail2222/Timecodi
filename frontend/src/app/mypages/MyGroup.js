@@ -4,17 +4,14 @@ import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Group from "../groups/Group";
-
-const realURL = "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app";
-const localURL = "https://127.0.0.1:8000";
-const url = realURL;
+import apiurl from "./../apiurl";
 
 function MyGroup(props) {
   const [oo, setOO] = useState(false);
   const history = useHistory();
 
   axios
-    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+    .get(url + "/login", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -110,15 +107,11 @@ function MyGroup(props) {
     };
     console.log(data);
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/group",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/group", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         if (res.data) {
           // console.log("handleAddGroup");
@@ -137,15 +130,11 @@ function MyGroup(props) {
   const acceptInvite = (gid) => {
     const data = { gid: gid };
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/member", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
         if (res.data) {
           getMyGroupList();
@@ -161,15 +150,12 @@ function MyGroup(props) {
   const declineInvite = (gid) => {
     const data = { gid: gid };
     axios
-      .delete(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-          data: data,
-        }
-      )
+      .delete(url + "/invited", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        data: data,
+      })
       .then((res) => {
         if (res.data) {
           getInvitedGroupList();
@@ -224,15 +210,12 @@ function MyGroup(props) {
   const groupLeave = (gid) => {
     const data = { gid: gid };
     axios
-      .delete(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-          data: data,
-        }
-      )
+      .delete(url + "/member", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        data: data,
+      })
       .then((res) => {
         if (res.data) {
           alert(res.data.msg);

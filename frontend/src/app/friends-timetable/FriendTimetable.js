@@ -10,6 +10,7 @@ import { useHistory, useLocation } from "react-router-dom";
 // import Theme from "./styles/Theme";
 import Main from "./Main";
 import axios from "axios";
+import apiurl from "./../apiurl";
 
 export function FriendTimetable() {
   const [oo, setOO] = useState(false);
@@ -21,7 +22,7 @@ export function FriendTimetable() {
   console.log("fid", fid);
 
   axios
-    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+    .get(url + "/login", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },

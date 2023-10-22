@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import apiurl from "./../apiurl";
 
 export function Register() {
   const [name, setName] = useState();
@@ -12,19 +13,19 @@ export function Register() {
 
   const handleSignUp = () => {
     const data = {
-      "id": email,
-      "pw": password,
-      "name": name
+      id: email,
+      pw: password,
+      name: name,
     };
     axios
-      .post("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/signup", data)
+      .post(url + "/signup", data)
       .then((res) => {
         history.push("/user-pages/login");
-        alert("signup success")
+        alert("signup success");
         // 회원가입 성공 메시지 출력
       })
       .catch((err) => {
-        alert("signup failed")
+        alert("signup failed");
         // 회원가입 실패 메시지 출력
       });
   };
@@ -42,31 +43,63 @@ export function Register() {
                 </h3>
               </div>
               <h4>New here?</h4>
-              <h6 className="font-weight-light">Signing up is easy. It only takes a few steps</h6>
+              <h6 className="font-weight-light">
+                Signing up is easy. It only takes a few steps
+              </h6>
               <form className="pt-3">
                 <div className="form-group">
-                  <input type="text" className="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username" value={name} onChange={(e) => setName(e.target.value)} />
+                  <input
+                    type="text"
+                    className="form-control form-control-lg"
+                    id="exampleInputUsername1"
+                    placeholder="Username"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </div>
                 <div className="form-group">
-                  <input type="email" className="form-control form-control-lg" id="exampleInputEmail1" placeholder="ID" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <input
+                    type="email"
+                    className="form-control form-control-lg"
+                    id="exampleInputEmail1"
+                    placeholder="ID"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
                 <div className="form-group">
-                  <input type="password" className="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <input
+                    type="password"
+                    className="form-control form-control-lg"
+                    id="exampleInputPassword1"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
                 <div className="mb-4">
                   <div className="form-check">
                     <label className="form-check-label text-muted">
                       <input type="checkbox" className="form-check-input" />
-                      <i className="input-helper"></i>
-                      I agree to all Terms & Conditions
+                      <i className="input-helper"></i>I agree to all Terms &
+                      Conditions
                     </label>
                   </div>
                 </div>
                 <div className="mt-3">
-                  <button type="button" className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={handleSignUp}>SIGN UP</button>
+                  <button
+                    type="button"
+                    className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
+                    onClick={handleSignUp}
+                  >
+                    SIGN UP
+                  </button>
                 </div>
                 <div className="text-center mt-4 font-weight-light">
-                  Already have an account? <Link to="/user-pages/login" className="text-primary">Login</Link>
+                  Already have an account?{" "}
+                  <Link to="/user-pages/login" className="text-primary">
+                    Login
+                  </Link>
                 </div>
               </form>
             </div>
@@ -77,4 +110,4 @@ export function Register() {
   );
 }
 
-export default Register
+export default Register;
