@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import axios from "axios";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 export function Login() {
   const [email, setEmail] = useState("");

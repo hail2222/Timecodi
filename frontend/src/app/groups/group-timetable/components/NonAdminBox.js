@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Dates from "./Dates";
 import axios from "axios";
-import apiurl from "./../../../apiurl";
+import url from "./../../../apiurl";
 
 function NonAdminBox(props) {
   const gid = props.gid;

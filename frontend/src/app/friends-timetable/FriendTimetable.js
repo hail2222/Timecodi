@@ -10,7 +10,7 @@ import { useHistory, useLocation } from "react-router-dom";
 // import Theme from "./styles/Theme";
 import Main from "./Main";
 import axios from "axios";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 export function FriendTimetable() {
   const [oo, setOO] = useState(false);

@@ -4,7 +4,7 @@ import FriendsTable from "./FriendsTable";
 
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 function FriendsPage() {
   const [oo, setOO] = useState(false);

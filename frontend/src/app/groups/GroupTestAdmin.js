@@ -16,7 +16,7 @@ import GroupCalContext from "./GroupCalContext";
 import { Bar, Doughnut } from "react-chartjs-2";
 import MapComponent from "./MapComponent";
 import axios from "axios";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 function Group() {
   let location = useLocation();

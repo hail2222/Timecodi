@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 export default function Withdrawal() {
   const history = useHistory();

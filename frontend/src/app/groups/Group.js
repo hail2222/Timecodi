@@ -8,7 +8,7 @@ import TimeTable from "./group-timetable/components/Time-table";
 import AdminBox from "./group-timetable/components/AdminBox";
 import NonAdminBox from "./group-timetable/components/NonAdminBox";
 import axios from "axios";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 function Group() {
   let location = useLocation();

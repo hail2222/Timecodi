@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Form, Container } from "react-bootstrap";
 import axios from "axios";
-import apiurl from "./../../apiurl";
+import url from "./../../apiurl";
 
 function CalendarModal({ date, openModal, setOpenModal, evtList }) {
   const [name, setName] = useState("");

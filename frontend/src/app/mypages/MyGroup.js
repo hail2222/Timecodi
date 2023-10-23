@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Group from "../groups/Group";
-import apiurl from "./../apiurl";
+import url from "./../apiurl";
 
 function MyGroup(props) {
   const [oo, setOO] = useState(false);
