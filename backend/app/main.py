@@ -5,7 +5,7 @@ from .routers.routers import router
 
 app = FastAPI()
 
-origins = ["https://timecodi.netlify.app"]
+origins = ["https://time-codi.netlify.app"]
 # "https://timecodi.netlify.app"
 
 app.add_middleware(
