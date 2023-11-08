@@ -19,7 +19,7 @@ class Event(Base):
     visibility = Column(String(255))
     sdatetime = Column(DateTime)
     edatetime = Column(DateTime)
-    weekly = Column(Integer)
+    weekly = Column(String(255))
     enddate = Column(Date)
 
 class Friend(Base):

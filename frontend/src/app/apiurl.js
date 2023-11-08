@@ -1,4 +1,4 @@
-const realURL = "https://port-0-timecodi-jvpb2mlo0yal18.sel5.cloudtype.app/";
+const realURL = "https://port-0-timecodi-jvpb2mlo0yal18.sel5.cloudtype.app";
 const localURL = "http://127.0.0.1:8000";
 const url = realURL;
 

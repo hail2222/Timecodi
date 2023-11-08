@@ -13,7 +13,6 @@ import MemberBox from "./group-timetable/components/MemberBox";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 import GroupCalContext from "./GroupCalContext";
-import { Bar, Doughnut } from "react-chartjs-2";
 import MapComponent from "./MapComponent";
 import axios from "axios";
 import url from "./../apiurl";
@@ -81,7 +80,7 @@ function Group() {
   const history = useHistory();
 
   axios
-    .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/login", {
+    .get(url + "/login", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -113,17 +112,14 @@ function Group() {
 
   const getUpComing = () => {
     axios
-      .get(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/upcoming",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-          params: {
-            gid: gid,
-          },
-        }
-      )
+      .get(url + "/upcoming", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        params: {
+          gid: gid,
+        },
+      })
       .then((response) => {
         if (response.data) {
           let upcomingInfo = {
@@ -160,17 +156,14 @@ function Group() {
 
   const getMembers = () => {
     axios
-      .get(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/member",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-          params: {
-            gid: gid,
-          },
-        }
-      )
+      .get(url + "/member", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        params: {
+          gid: gid,
+        },
+      })
       .then((response) => {
         let memberList = [];
         response.data.forEach((rel, index) => {
@@ -187,7 +180,7 @@ function Group() {
 
   const getAdmin = () => {
     axios
-      .get("https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/admin", {
+      .get(url + "/admin", {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
@@ -216,17 +209,14 @@ function Group() {
   ]);
   const getVote = () => {
     axios
-      .get(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/votetime",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-          params: {
-            gid: gid,
-          },
-        }
-      )
+      .get(url + "/votetime", {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        params: {
+          gid: gid,
+        },
+      })
       .then((response) => {
         // console.log("Vote: ", response.data);
         let newOptions = response.data;
@@ -254,14 +244,11 @@ function Group() {
   const getVoteResult = () => {
     console.log("getVoteResult");
     axios
-      .get(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult?gid=${gid}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .get(`${url}/voteresult?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log("Vote Result:", response.data);
         setResult(response.data);
@@ -312,15 +299,11 @@ function Group() {
       const data = { gid: gid, uid: userId };
 
       axios
-        .post(
-          "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited",
-          data,
-          {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-            },
-          }
-        )
+        .post(url + "/invited", data, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
         .then((response) => {
           friendClose();
           alert("invite success!");
@@ -389,15 +372,11 @@ function Group() {
     };
     console.log("handleSubmitVote: ", data);
     axios
-      .post(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/vote`,
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(`${url}/vote`, data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data);
         alert("vote success!");
@@ -436,15 +415,11 @@ function Group() {
       meetingtime: meetingHour + ":" + meetingMin,
     };
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/votetime",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/votetime", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data);
         alert("vote successfully generated!");
@@ -457,14 +432,11 @@ function Group() {
 
   const handleEndVote = () => {
     axios
-      .post(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/voteresult?gid=${gid}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(`${url}/voteresult?gid=${gid}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data);
         alert("vote successfully ended!");
@@ -497,15 +469,11 @@ function Group() {
     e.preventDefault();
     localStorage.setItem("meetingInfo", JSON.stringify(meetingInfo));
     axios
-      .post(
-        `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/meeting`,
-        meetingInfo,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(`${url}/meeting`, meetingInfo, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         console.log(response.data);
         localStorage.setItem("submitMeeting", JSON.stringify(response.data));
@@ -529,15 +497,11 @@ function Group() {
   const requestFriend = (userId) => {
     const data = { fid: userId };
     axios
-      .post(
-        "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/request",
-        data,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+      .post(url + "/request", data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
         alert(response.data.msg);
       })
@@ -561,17 +525,15 @@ function Group() {
           objectType: "text",
           text: `hyun님이 당신을 그룹1에 초대했습니다! :) 그룹에 가입하려면 아래 버튼을 클릭하세요.`,
           link: {
-            mobileWebUrl:
-              "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
-            webUrl:
-              "https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app",
+            mobileWebUrl: url,
+            webUrl: url,
           },
           buttons: [
             {
               title: "그룹 초대",
               link: {
-                mobileWebUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${gid}`,
-                webUrl: `https://port-0-timecodi-416cq2mlg8dr0qo.sel3.cloudtype.app/invited/${gid}`,
+                mobileWebUrl: `${url}/invited/${gid}`,
+                webUrl: `${url}/invited/${gid}`,
               },
             },
           ],
