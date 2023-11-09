@@ -35,13 +35,8 @@ const FriendItem = ({ friend, onDel }) => {
       <td>{userId}</td>
       <td>
         <button type="button" className="btn btn-inverse-info btn-sm">
-          <Link
-            to={`/mypage/FriendTimetable`}
-            style={{
-            }}
-          >
+          <Link to={`/mypage/FriendTimetable/${userId}`} style={{}}>
             <i className="mdi mdi-calendar"></i>
-
           </Link>
         </button>
       </td>
