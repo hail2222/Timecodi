@@ -6,6 +6,7 @@
 
 Our service allows users to save their timetables and store them in a database with schedules of team members who are part of the same group. It recommends available time slots when everyone can meet based on the stored data.
 
+
 ## 📚 STACKS
 <div align=center> 
   <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> 
@@ -25,7 +26,7 @@ Our service allows users to save their timetables and store them in a database w
 ![personal_calendar](https://github.com/hail2222/Capstone-Project/assets/100838589/644b2821-2a1d-4fa3-80ec-5c68a14721a6)
 ![meetings](https://github.com/hail2222/Capstone-Project/assets/100838589/86c5b019-3f65-48d5-a7a6-8daa61f6de61)
 ![friends](https://github.com/hail2222/Capstone-Project/assets/100838589/b7a1f2ac-6982-46f4-97fe-38309d9b3f86)
-![howto](https://github.com/hail2222/Capstone-Project/assets/76465265/86f5ec20-3b0d-4d24-b9f4-ffd46a589c43)
+![howto](https://github.com/hail2222/Capstone-Project/assets/100838589/785f8ea5-8db7-481d-b69f-237086d03c7a)
 
 
 ## 🛠️ FEATURES
