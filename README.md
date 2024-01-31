@@ -1,6 +1,6 @@
 # TIMECODI
 
-<https://time-codi.netlify.app/>
+<https://timecodi.netlify.app/>
 
 유저의 타임테이블을 저장하고 그룹을 맺은 팀원들과의 타임테이블을 데이터베이스로 저장하여 모두가 가능한 시간대를 추천해주는 서비스
 
