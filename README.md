@@ -6,6 +6,8 @@
 
 Our service allows users to save their timetables and store them in a database with schedules of team members who are part of the same group. It recommends available time slots when everyone can meet based on the stored data.
 
+[Test account]  id: test  ,  pw: 1234
+
 
 ## 📚 STACKS
 <div align=center> 
