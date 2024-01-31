@@ -9,8 +9,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = ["https://time-codi.netlify.app"]
-# "https://timecodi.netlify.app"
+origins = ["https://time-codi.netlify.app", "https://timecodi.netlify.app"]
 
 app.add_middleware(
     CORSMiddleware,
